@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="br.com.boemyo.Activitys.FinalizarCadastroActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_concluir_dados"
+        android:layout_marginTop="20dp"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:text="@string/tv_label_finalizar_dados"
+        />
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/iv_perfil_finalize"
+        android:layout_below="@+id/tv_concluir_dados"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="15dp"
+        />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/et_nome_atual"
+        android:hint="Nome"
+        android:layout_marginRight="10dp"
+        android:enabled="false"
+        android:layout_below="@+id/iv_perfil_finalize"
+        android:inputType="textAutoComplete"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/et_email_atual"
+        android:hint="E-mail"
+        android:inputType="textEmailAddress"
+        android:layout_below="@+id/et_nome_atual"
+        android:enabled="false"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/et_data_nasc_atual"
+        android:hint="Data de Nascimento"
+        android:inputType="date"
+        android:layout_below="@+id/et_email_atual"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/et_genero_atual"
+        android:hint="Gênero"
+        android:inputType="text"
+        android:layout_below="@+id/et_data_nasc_atual"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bt_atualiza_dados"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="20dp"
+        android:text="@string/bt_label_atualizar_dados"/>
+
+</RelativeLayout>

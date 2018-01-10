@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="br.com.boemyo"
+    android:installLocation="preferExternal">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/logo_vinho"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/logo_boemyo"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+        <meta-data
+            android:name="com.google.android.gms.vision"
+            android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name=".Activitys.ChoiceActivity"
+            android:theme="@style/Theme.MyThemeCru">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Activitys.LoginActivity"
+            android:theme="@style/Theme.MyThemeCru" />
+        <activity android:name=".Activitys.CadastroActivity" />
+        <activity
+            android:name=".Activitys.ProcuraLocaisActivity"
+            android:theme="@style/AppThemeWhite" />
+        <activity android:name=".Activitys.FinalizarCadastroActivity" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <!--
+            <activity
+            android:name=".Activitys.FindPlaceMapsActivity"
+            android:label="@string/title_activity_find_place_maps"></activity>
+        -->
+        <activity android:name=".Activitys.MainEstabelecimentoActivity" />
+        <activity android:name=".Activitys.CardapioActivity" />
+        <activity android:name=".Activitys.CategoriaCardapioActivity" />
+        <activity android:name=".Activitys.ProdutoCardapioActivity" />
+        <activity android:name=".Activitys.DetalhesProdutosActivity" />
+        <activity android:name=".Activitys.ComandaActivity" />
+        <activity
+            android:name=".Activitys.HomeActivity"
+            android:label="@string/title_activity_home"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".Activitys.PerfilEstabelecimentoActivity" />
+        <activity android:name=".Activitys.FavoritoActivity" />
+        <activity android:name=".Activitys.IndiqueEstabelecimentoActivity" />
+        <activity
+            android:name=".Activitys.EstabelecimentoMainActivity"
+            android:label="@string/title_activity_estabelecimento_main"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".Activitys.AdicionaNovoCartaoActivity" />
+        <activity android:name=".Activitys.PagamentosActivity" />
+        <activity android:name=".Activitys.FinalizarComandaActivity"></activity>
+    </application>
+
+</manifest>

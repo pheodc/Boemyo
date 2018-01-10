@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@mipmap/ic_home_grey600_24dp"
+            android:title="Home" />
+        <item
+            android:id="@+id/nav_pagamento"
+            android:icon="@mipmap/ic_credit_card_grey600_24dp"
+            android:title="Pagamento" />
+        <item
+            android:id="@+id/nav_promocao"
+            android:icon="@mipmap/ic_wallet_giftcard_grey600_24dp"
+            android:title="Promoções" />
+        <item
+            android:id="@+id/nav_favorito"
+            android:icon="@mipmap/ic_heart_grey600_24dp"
+            android:title="Favoritos" />
+
+        <item
+            android:id="@+id/nav_avalie"
+            android:icon="@mipmap/ic_star_grey600_24dp"
+            android:title="Avalie-nos" />
+    </group>
+
+    <item android:title="Suporte">
+        <menu>
+            <item
+                android:id="@+id/nav_sobre"
+                android:icon="@mipmap/ic_information_grey600_24dp"
+                android:title="Sobre" />
+            <item
+                android:id="@+id/nav_configuracao"
+                android:icon="@mipmap/ic_settings_grey600_24dp"
+                android:title="Configuração" />
+        </menu>
+    </item>
+
+</menu>

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "452275602173",
+    "firebase_url": "https://boemyo-8e4ef.firebaseio.com",
+    "project_id": "boemyo-8e4ef",
+    "storage_bucket": "boemyo-8e4ef.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:452275602173:android:321f8f789f1ca7f5",
+        "android_client_info": {
+          "package_name": "br.com.boemyo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "452275602173-qfqbc474ictl76aq7itk5mgqq0ui03sa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.boemyo",
+            "certificate_hash": "e93f963ded6aabb61178f5d9b389934034d5d72b"
+          }
+        },
+        {
+          "client_id": "452275602173-inidmtgdv2b0f8h068csj6i13s3v33l4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAt3L7V1Gqf783kU2I-pXnKLCiyxvGxsyw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "452275602173-inidmtgdv2b0f8h068csj6i13s3v33l4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

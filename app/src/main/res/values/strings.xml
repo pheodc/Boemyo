@@ -1,0 +1,132 @@
+<resources>
+    <string name="app_name">Boemyo</string>
+
+
+    <!-- Exceptions -->
+    <string name="valida_empty">Algum campo está vazio!</string>
+    <string name="mesa_empty">Informe o número de sua mesa!</string>
+    <string name="erro_password">Melhore sua Senha</string>
+    <string name="erro_password_login">Senha Incorreta</string>
+    <string name="erro_email">Seu e-mail não é Válido</string>
+    <string name="erro_exist">Esse e-mail já está em Uso</string>
+    <string name="erro_geral">Tente Novamente</string>
+    <string name="erro_confirma_senha">Senhas não batem!</string>
+    <string name="cancelamento_realizado">Esse pedido já foi cancelado</string>
+    <string name="cancelamento_pedido_entregue">Esse pedido já foi entregue</string>
+
+    <!-- Message -->
+    <string name="valida_sucesso">Cadastrado com Sucesso</string>
+    <string name="valida_cartao_invalido">Cartão Inválido!</string>
+    <string name="valida_sucesso_indique">Obrigado pela sua colaboração!</string>
+    <string name="login_nao_sucesso">Dados Incorretos</string>
+    <string name="dialog_permission_title">Permissões negadas</string>
+    <string name="dialog_permission_message">Para utilizar esse app, é necessário aceitar as permissões</string>
+    <string name="dialog_qrcode_title">QR Code Invalido</string>
+    <string name="dialog_qrcode_message">Esse QR CODE não faz parte da rede Boemyo.</string>
+    <string name="dialog_confirma_produto_title">Tem certeza que deseja realizar o pedido?</string>
+    <string name="dialog_confirma_produto_message">Após a confirmação do pedido, poderá ser cancelado em no máximo 3 minutos sem nenhuma
+    cobrança, após isso será cobrado o valor do prato selecionado.</string>
+    <string name="dialog_informa_mesa_title">Informe o número da mesa que você se encontra:</string>
+    <string name="dialog_confirma_favorito_title">Tem certeza que deseja favoritar </string>
+    <string name="dialog_confirma_favorito_message">Após a confirmação você poderá visualizar seus
+        locais favoritos na opção Favoritos no menu lateral ou na tela incial.</string>
+    <string name="dialog_confirma_pedencias_title">Você precisa encerrar sua comanda:</string>
+    <string name="dialog_confirma_pendencias_message">Encontramos valores na sua comanda em aberto, será necessário
+    realizar o pagamento para poder sair do estabelecimento!</string>
+    <string name="dialog_confirma_cancelar_pedido_title">Deseja realmente cancelar o pedido:</string>
+    <string name="dialog_confirma_cancelar_pedido_sem_taxa_message">Não será cobrado nenhuma taxa para
+    esse cancelamento!</string>
+    <string name="dialog_confirma_cancelar_pedido_com_taxa_message">O tempo limite para cancelamento foi excedido, será
+    cobrado uma taxa de R$ 5,00 reais pelo cancelamento</string>
+    <string name="dialog_finalizar_cartao_title">Pagamento com Cartão:</string>
+
+    <!-- Labels -->
+    <string name="bt_cadastrar">Cadastrar-se</string>
+    <string name="bt_login">Login</string>
+    <string name="bt_dialog_positive">CONFIRMAR</string>
+    <string name="bt_dialog_comanda">COMANDA</string>
+    <string name="bt_dialog_nagative">CANCELAR</string>
+    <string name="bt_dialog_qrcode">TENTE NOVAMENTE</string>
+    <string name="bt_inserir_imagem">Inserir Imagem</string>
+    <string name="tv_label_QR">Leia o QR code do estabelecimento </string>
+    <string name="tv_vermais_categoria">Ver Mais </string>
+    <string name="tv_termos_uso"><u>Termos de Uso</u> </string>
+    <string name="tv_horario">Horários</string>
+    <string name="tv_endereco">Endereço</string>
+    <string name="tv_title_indique">Informe os dados do local</string>
+    <string name="bt_label_conhecer_estab">Estabelecimentos </string>
+    <string name="bt_label_indicar">Indique</string>
+    <string name="bt_label_favoritos">Favoritos</string>
+    <string name="bt_label_cardapio">Cardápio</string>
+    <string name="bt_label_comanda">Comanda</string>
+    <string name="bt_label_atualizar_dados">Concluir Cadastro</string>
+    <string name="bt_label_confirmar_pedido">Confirmar Pedido</string>
+    <string name="bt_label_sair_estabelecimento">Sair do Estabelecimento</string>
+    <string name="bt_label_login_fb">Login com Facebook</string>
+    <string name="bt_label_finalizar_comanda">Encerrar Comanda</string>
+    <string name="bt_label_adiciona_cartao">Adicionar Cartão</string>
+    <string name="tv_label_finalizar_dados">Finalize seu Cadastro</string>
+    <string name="tv_label_abrir_cadastro">Criar Conta</string>
+    <string name="tv_label_esqueci_senha">Esqueci a Senha</string>
+    <string name="tv_qrdialog_title">Está em um estabelecimento?</string>
+    <string name="tv_qrdialog_subtitle">Toque no ícone  para ler o Qrcode.</string>
+    <string name="title_activity_find_place_maps">Map</string>
+    <string name="tv_comanda">Comanda</string>
+    <string name="tv_cardapio">Cardápio</string>
+    <string name="tv_desc_produto">Descrição:</string>
+    <string name="tv_valor_produto">Valor:</string>
+    <string name="tv_qtde_produto">Quantidade:</string>
+    <string name="tv_obs_produto">Observações</string>
+    <string name="tv_subtotal">SubTotal</string>
+    <string name="tv_obs_hint_produto">Algo que deseja nos informar?</string>
+    <string name="tv_title_pag_local">Estabelecimento</string>
+    <string name="tv_subtile_pag_local">Realize o pagamento no local</string>
+    <string name="tv_selecione_pagamento">Selecione a forma de pagamento:</string>
+
+    <!-- Array String -->
+    <string name="info_um">O Boemyo foi pensado para quem ainda gostar de estar presente em bares e restaurantes</string>
+    <string name="info_dois">Uma nova forma de ir em seus estabelecimentos favoritos</string>
+    <string name="info_tres">Faça tudo pelo Boemyo, desde escolher seu prato até o pagamento!</string>
+    <string name="tab_um"> PROXIMOS A MIM</string>
+    <string name="tab_dois"> LOCAIS</string>
+
+
+    <!-- Toolbar Strings -->
+
+    <string name="title_cadastro">Cadastro</string>
+    <string name="title_procura">Encontre Estabelecimentos</string>
+    <string name="title_indique">Ajude-nos</string>
+    <string name="title_favoritos">Favoritos</string>
+    <string name="title_categoria">Escolha uma Categoria:</string>
+    <string name="title_produto">Escolha um Prato:</string>
+    <string name="title_comanda">Comanda</string>
+    <string name="title_pagamentos">Meios de Pagamento:</string>
+    <string name="title_finalizar_comanda">Finalize sua Comanda</string>
+    <string name="title_adiciona_cartao">Informe os dados do Cartão:</string>
+    <string name="title_estabelecimento">Estabelecimento</string>
+    <string name="sub_title_cadastro">Informe seus dados pessoais:</string>
+    <string name="sub_title_favoritos">Seus locais favoritos</string>
+
+
+    <!-- Facebook Strings -->
+    <string name="action_sign_in_facebook">Login com Facebook</string>
+    <string name="facebook_app_id">739384672911318</string>
+    <string name="title_activity_home">HomeActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- Menu -->
+    <string name="action_settings">Configurações</string>
+    <string name="action_logout">Sair</string>
+
+    <!-- Situacao Pedido -->
+    <string name="situacao_andamento">Em Andamento</string>
+    <string name="situacao_entregue">Entregue as </string>
+    <string name="situacao_cancelado">Cancelado</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
+    <string name="title_activity_estabelecimento_main">EstabelecimentoMainActivity</string>
+</resources>

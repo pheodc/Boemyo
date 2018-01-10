@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="br.com.boemyo.Activitys.PagamentosActivity">
+
+    <include android:id="@+id/tb_pagamentos"
+        layout="@layout/toolbar"></include>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/lv_pagamentos"
+        android:layout_below="@+id/tb_pagamentos"
+        android:layout_marginTop="8dp"></ListView>
+
+</RelativeLayout>

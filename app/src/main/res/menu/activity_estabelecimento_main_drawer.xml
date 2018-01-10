@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home_estab"
+            android:icon="@mipmap/ic_home_grey600_24dp"
+            android:title="Home" />
+        <item
+            android:id="@+id/nav_pagamento_estab"
+            android:icon="@mipmap/ic_credit_card_grey600_24dp"
+            android:title="Pagamento" />
+        <item
+            android:id="@+id/nav_promocao_estab"
+            android:icon="@mipmap/ic_wallet_giftcard_grey600_24dp"
+            android:title="Promoções" />
+        <item
+            android:id="@+id/nav_favorito_estab"
+            android:icon="@mipmap/ic_heart_grey600_24dp"
+            android:title="Favoritos" />
+
+        <item
+            android:id="@+id/nav_avalie_estab"
+            android:icon="@mipmap/ic_star_grey600_24dp"
+            android:title="Avalie-nos" />
+        <item
+            android:id="@+id/nav_estabelecimentos_estab"
+            android:icon="@mipmap/ic_map_marker_grey600_24dp"
+            android:title="Estabelecimentos com Boemyo" />
+        <item
+            android:id="@+id/nav_indique_estab"
+            android:icon="@mipmap/ic_map_marker_plus_grey600_24dp"
+            android:title="Indique Estabelecimentos" />
+    </group>
+
+    <item android:title="Suporte">
+        <menu>
+            <item
+                android:id="@+id/nav_sobre_estab"
+                android:icon="@mipmap/ic_information_grey600_24dp"
+                android:title="Sobre" />
+            <item
+                android:id="@+id/nav_configuracao_estab"
+                android:icon="@mipmap/ic_settings_grey600_24dp"
+                android:title="Configuração" />
+        </menu>
+    </item>
+
+</menu>

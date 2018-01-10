@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="72dp">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:id="@+id/iv_img_produto" />
+        <RelativeLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="72dp"
+            android:layout_marginRight="16dp"
+            android:layout_toRightOf="@+id/iv_logo"
+            android:layout_toEndOf="@+id/iv_logo">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_nome_produto_lista"
+                    android:textSize="16sp"
+                    android:text="Produto"
+                    android:paddingLeft="8dp"
+                    android:textColor="@color/colorPrimaryText"
+                    >
+                </TextView>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_des_produto_lista"
+                    android:textSize="13sp"
+                    android:text="Desc"
+                    android:layout_marginRight="40dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:layout_below="@+id/tv_nome_produto_lista"
+                    android:paddingLeft="8dp"
+                    android:textColor="@color/colorSecondaryText"
+                    >
+                </TextView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_valor_lista"
+                    android:textSize="13sp"
+                    android:text="Valor"
+
+                    android:layout_alignParentRight="true"
+                    android:textColor="@color/colorSecondaryText"
+                    android:layout_marginLeft="8dp">
+                </TextView>
+
+        </RelativeLayout>
+</RelativeLayout>
