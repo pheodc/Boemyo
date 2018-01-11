@@ -70,7 +70,8 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".Activitys.AdicionaNovoCartaoActivity" />
         <activity android:name=".Activitys.PagamentosActivity" />
-        <activity android:name=".Activitys.FinalizarComandaActivity"></activity>
+        <activity android:name=".Activitys.FinalizarComandaActivity" />
+        <activity android:name=".Activitys.EsqueciSenhaActivity"></activity>
     </application>
 
 </manifest>

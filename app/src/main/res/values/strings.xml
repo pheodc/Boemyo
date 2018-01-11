@@ -14,6 +14,14 @@
     <string name="cancelamento_realizado">Esse pedido já foi cancelado</string>
     <string name="cancelamento_pedido_entregue">Esse pedido já foi entregue</string>
 
+
+    <!-- Snacks -->
+
+    <string name="send_email_sucesso">Confirme seu E-mail </string>
+    <string name="send_email_erro">Não conseguimos enviar um e-mail para você</string>
+    <string name="verific_email_false">Você precisa confirmar seu E-mail</string>
+    <string name="send_troca_email_sucesso">E-mail enviado com Sucesso</string>
+
     <!-- Message -->
     <string name="valida_sucesso">Cadastrado com Sucesso</string>
     <string name="valida_cartao_invalido">Cartão Inválido!</string>
@@ -65,6 +73,7 @@
     <string name="bt_label_login_fb">Login com Facebook</string>
     <string name="bt_label_finalizar_comanda">Encerrar Comanda</string>
     <string name="bt_label_adiciona_cartao">Adicionar Cartão</string>
+    <string name="bt_label_esqueci_senha">Enviar-me um E-mail</string>
     <string name="tv_label_finalizar_dados">Finalize seu Cadastro</string>
     <string name="tv_label_abrir_cadastro">Criar Conta</string>
     <string name="tv_label_esqueci_senha">Esqueci a Senha</string>
@@ -82,6 +91,7 @@
     <string name="tv_title_pag_local">Estabelecimento</string>
     <string name="tv_subtile_pag_local">Realize o pagamento no local</string>
     <string name="tv_selecione_pagamento">Selecione a forma de pagamento:</string>
+    <string name="tv_informe_email">Informe abaixo o E-mail cadastrado:</string>
 
     <!-- Array String -->
     <string name="info_um">O Boemyo foi pensado para quem ainda gostar de estar presente em bares e restaurantes</string>
@@ -106,6 +116,7 @@
     <string name="title_estabelecimento">Estabelecimento</string>
     <string name="sub_title_cadastro">Informe seus dados pessoais:</string>
     <string name="sub_title_favoritos">Seus locais favoritos</string>
+    <string name="title_esqueci_senha">Esqueci Minha Senha</string>
 
 
     <!-- Facebook Strings -->

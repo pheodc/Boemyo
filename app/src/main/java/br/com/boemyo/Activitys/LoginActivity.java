@@ -52,6 +52,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextView tvCriarConta;
     private Button loginUser;
     private Button loginFacebookUser;
+    private TextView tvEsqueciSenha;
     private String identificadorUsuarioLogado;
     private FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
@@ -60,6 +61,7 @@ public class LoginActivity extends AppCompatActivity {
     private CallbackManager callbackManager;
     private ProgressBar pbLogin;
     private RelativeLayout rlFundoProgress;
+    private FirebaseUser user;
     /*@Override
     protected void onStop() {
         super.onStop();
@@ -78,6 +80,7 @@ public class LoginActivity extends AppCompatActivity {
         tvCriarConta = (TextView) findViewById(R.id.tv_abrir_cadastro);
         loginUser = (Button) findViewById(R.id.bt_login);
         loginFacebookUser = (Button) findViewById(R.id.bt_login_facebook);
+        tvEsqueciSenha = (TextView) findViewById(R.id.tv_esqueci_senha);
         pbLogin = (ProgressBar) findViewById(R.id.pb_login);
         rlFundoProgress = (RelativeLayout) findViewById(R.id.rl_fundo_progress);
         if(preferencias.getEmail() != null){
@@ -128,6 +131,14 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        tvEsqueciSenha.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this, EsqueciSenhaActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     @Override
@@ -168,13 +179,9 @@ public class LoginActivity extends AppCompatActivity {
 
                                         Usuario usuario = dataSnapshot.getValue(Usuario.class);
                                         Log.i("LOG_FIREBASE",  usuario.getNomeUsuario());
-                                        preferencias.salvarUsuarioPreferencias( identificadorUsuarioLogado,
-                                                                                usuario.getNomeUsuario(),
-                                                                                usuario.getEmailUsuario(),
-                                                                                usuario.getImagemUsuario());
-                                        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                                        startActivity(intent);
-                                        finish();
+
+                                        validaAutendicaEmail(usuario);
+
 
                                     }
 
@@ -228,7 +235,7 @@ public class LoginActivity extends AppCompatActivity {
                             emailUser.setEnabled(false);
                             passwordUser.setEnabled(false);
                             loginUser.setEnabled(false);
-                            FirebaseUser user = firebaseAuth.getCurrentUser();
+                            user = firebaseAuth.getCurrentUser();
 
                                 Usuario usuario = new Usuario();
                                 String tipoIndetificador;
@@ -283,5 +290,28 @@ public class LoginActivity extends AppCompatActivity {
     private void exibirProgress(boolean exibir) {
         pbLogin.setVisibility(exibir ? View.VISIBLE : View.GONE);
         rlFundoProgress.setVisibility(exibir ? View.VISIBLE : View.GONE);
+    }
+
+    private void validaAutendicaEmail(Usuario usuario){
+        user = firebaseAuth.getCurrentUser();
+        if(user.isEmailVerified() == true){
+            preferencias.salvarUsuarioPreferencias( identificadorUsuarioLogado,
+                    usuario.getNomeUsuario(),
+                    usuario.getEmailUsuario(),
+                    usuario.getImagemUsuario());
+
+            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+            startActivity(intent);
+            finish();
+
+        }else{
+            exibirProgress(false);
+            Snackbar snackbar = Snackbar.make(loginUser, R.string.verific_email_false, Snackbar.LENGTH_SHORT);
+            snackbar.show();
+            emailUser.setEnabled(true);
+            passwordUser.setEnabled(true);
+            loginUser.setEnabled(true);
+            firebaseAuth.signOut();
+        }
     }
 }

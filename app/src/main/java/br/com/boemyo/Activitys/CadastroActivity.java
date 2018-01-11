@@ -184,6 +184,7 @@ public class CadastroActivity extends AppCompatActivity {
 
 
         if (emailValido.isEmpty() || senhaValido.isEmpty()) {
+            progressDialog.dismiss();
             Snackbar snackbar = Snackbar.make(cadastroUser, R.string.valida_empty, Snackbar.LENGTH_SHORT);
             snackbar.show();
 
@@ -216,11 +217,11 @@ public class CadastroActivity extends AppCompatActivity {
                                                 usuario.setPasswordUsuario(senhaValido);
                                                 usuario.setImagemUsuario(urlPerfilUser);
                                                 usuario.salvarFirebase();
-
+                                                autenticaEmail();
                                                 progressDialog.dismiss();
-                                                Intent intent = new Intent(CadastroActivity.this, FinalizarCadastroActivity.class);
+                                                /*Intent intent = new Intent(CadastroActivity.this, LoginActivity.class);
                                                 startActivity(intent);
-                                                finish();
+                                                finish();*/
 
                             } else {
 
@@ -286,5 +287,27 @@ public class CadastroActivity extends AppCompatActivity {
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    private void autenticaEmail(){
+
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        user.sendEmailVerification()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            Snackbar snackbar = Snackbar.make(cadastroUser, R.string.send_email_sucesso, Snackbar.LENGTH_LONG);
+                            snackbar.show();
+                            firebaseAuth.signOut();
+
+                        }else{
+                            Snackbar snackbar = Snackbar.make(cadastroUser, R.string.send_email_erro, Snackbar.LENGTH_LONG);
+                            snackbar.show();
+                            firebaseAuth.signOut();
+                        }
+                    }
+                });
+
     }
 }
