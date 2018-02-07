@@ -2,10 +2,15 @@ package br.com.boemyo.Fragments;
 
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.GpsStatus;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -35,12 +40,16 @@ import br.com.boemyo.Configure.SlidingTabLayout;
 import br.com.boemyo.Model.Usuario;
 import br.com.boemyo.R;
 
+import static android.content.Context.LOCATION_SERVICE;
+import static android.location.GpsStatus.GPS_EVENT_STARTED;
+import static android.location.GpsStatus.GPS_EVENT_STOPPED;
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class EncontraLocaisFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+        LocationListener, GpsStatus.Listener {
 
     private String[] permissoesNecessarias = new String[]{
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -50,6 +59,7 @@ public class EncontraLocaisFragment extends Fragment implements GoogleApiClient.
 
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
+    LocationManager lm;
     private FragmentManager fragmentManager;
     private Usuario usuario;
     private Preferencias preferencias;
@@ -60,17 +70,21 @@ public class EncontraLocaisFragment extends Fragment implements GoogleApiClient.
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
+
         preferencias = new Preferencias(getContext());
         usuario = new Usuario();
         Permissao.validaPermissoes(1, getActivity(), permissoesNecessarias);
-
+        lm = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
         callConnection();
-        return inflater.inflate(R.layout.fragment_encontra_locais, container, false);
+        registerGpsStatusListener();
+        validaGps();
 
+        return inflater.inflate(R.layout.fragment_encontra_locais, container, false);
 
     }
 
     public synchronized void callConnection() {
+
         googleApiClient = new GoogleApiClient.Builder(getContext())
                 .addOnConnectionFailedListener(this)
                 .addConnectionCallbacks(this)
@@ -114,7 +128,7 @@ public class EncontraLocaisFragment extends Fragment implements GoogleApiClient.
         }
         Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
 
-        if(location != null ){
+        if (location != null) {
             Log.i("LOG", "Latitude" + location.getLatitude());
             Log.i("LOG", "Longitude" + location.getLongitude());
             usuario.setLatUsuario(location.getLatitude());
@@ -122,7 +136,7 @@ public class EncontraLocaisFragment extends Fragment implements GoogleApiClient.
             preferencias.salvarCoordusuario(location.getLatitude(), location.getLongitude());
             fragmentManager = getFragmentManager();
             FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.add(R.id.fl_maps, new FindPlaceMapsActivity(), "MapsFragment" );
+            transaction.add(R.id.fl_maps, new FindPlaceMapsActivity(), "MapsFragment");
             transaction.commitAllowingStateLoss();
         }
 
@@ -155,8 +169,8 @@ public class EncontraLocaisFragment extends Fragment implements GoogleApiClient.
         }
     }
 
-    private void alertaValidacaoPermissao(){
-        AlertDialog.Builder builder = new AlertDialog.Builder( getActivity() );
+    private void alertaValidacaoPermissao() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.dialog_permission_title);
         builder.setMessage(R.string.dialog_permission_message);
 
@@ -170,4 +184,58 @@ public class EncontraLocaisFragment extends Fragment implements GoogleApiClient.
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
+    private void validaGps() {
+
+        if (!lm.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                !lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            // Build the alert dialog
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AppThemeDialog);
+            builder.setTitle(R.string.dialog_valida_gps_title);
+            builder.setMessage(R.string.dialog_valida_gps_message);
+            builder.setPositiveButton("Configurações", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    // Show location settings when the user acknowledges the alert dialog
+                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(intent);
+
+                }
+            });
+            Dialog alertDialog = builder.create();
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.show();
+        }
+
+    }
+
+    private void registerGpsStatusListener() {
+
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        lm.addGpsStatusListener(this);
+    }
+    @Override
+    public void onGpsStatusChanged(int event) {
+        switch (event) {
+            case GpsStatus.GPS_EVENT_STARTED:
+                Log.e("LOG_GPS", "onGpsStatusChanged started");
+                break;
+
+            case GpsStatus.GPS_EVENT_STOPPED:
+                Log.e("LOG_GPS", "onGpsStatusChanged stopped");
+                //validaGps();
+                break;
+
+            case GpsStatus.GPS_EVENT_FIRST_FIX:
+                Log.e("LOG_GPS", "onGpsStatusChanged first fix");
+                break;
+
+            case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
+                Log.e("LOG_GPS", "onGpsStatusChanged status");
+                break;
+        }
+
+    }
+
 }

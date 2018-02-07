@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="br.com.boemyo"
     android:installLocation="preferExternal">
 
@@ -40,7 +41,7 @@
         <activity
             android:name=".Activitys.ProcuraLocaisActivity"
             android:theme="@style/AppThemeWhite" />
-        <activity android:name=".Activitys.FinalizarCadastroActivity" />
+        <activity android:name=".Activitys.EditarPerfilActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

@@ -19,6 +19,7 @@ public class Usuario {
     private String dataNascimentoUsuario;
     private String generoUsuario;
     private String imagemUsuario;
+    private String cpfUsuario;
     private double latUsuario;
     private double longUsuario;
 
@@ -100,5 +101,13 @@ public class Usuario {
 
     public void setImagemUsuario(String imagemUsuario) {
         this.imagemUsuario = imagemUsuario;
+    }
+
+    public String getCpfUsuario() {
+        return cpfUsuario;
+    }
+
+    public void setCpfUsuario(String cpfUsuario) {
+        this.cpfUsuario = cpfUsuario;
     }
 }

@@ -37,8 +37,6 @@ public class DetalhesProdutosActivity extends AppCompatActivity {
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private Toolbar tbDetalheProduto;
     private Preferencias preferencias;
-    private DatabaseReference firebase;
-    private ValueEventListener valueEventListener;
     private Date hora = Calendar.getInstance().getTime();
     private ImageView ivImgProduto;
     private TextView tvDescProduto;

@@ -1,5 +1,9 @@
 package br.com.boemyo.Configure;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import java.util.Calendar;
 import java.util.Date;
 
@@ -25,4 +29,7 @@ public class Helper {
 
         return diffMinutos;
     }
+
+
+
 }

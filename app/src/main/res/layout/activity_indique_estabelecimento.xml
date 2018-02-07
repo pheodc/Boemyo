@@ -10,6 +10,10 @@
     <include android:id="@+id/tb_indique_estabelecimento"
         layout="@layout/toolbar"/>
 
+    <include android:id="@+id/conexao_indique_estabelecimento"
+        layout="@layout/conexao"
+        android:visibility="visible"
+        ></include>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

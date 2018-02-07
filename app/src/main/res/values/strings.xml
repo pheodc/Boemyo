@@ -4,6 +4,10 @@
 
     <!-- Exceptions -->
     <string name="valida_empty">Algum campo está vazio!</string>
+    <string name="valida_empty_nome_editar">Seu Nome não pode estar vazio!</string>
+    <string name="valida_empty_data_editar">Informe Uma data de Nascimento válida!</string>
+    <string name="valida_cpf_editar">Esse CPF não é válido!</string>
+    <string name="valida_conexao">Ops, conecte-se a internet!</string>
     <string name="mesa_empty">Informe o número de sua mesa!</string>
     <string name="erro_password">Melhore sua Senha</string>
     <string name="erro_password_login">Senha Incorreta</string>
@@ -13,6 +17,7 @@
     <string name="erro_confirma_senha">Senhas não batem!</string>
     <string name="cancelamento_realizado">Esse pedido já foi cancelado</string>
     <string name="cancelamento_pedido_entregue">Esse pedido já foi entregue</string>
+
 
 
     <!-- Snacks -->
@@ -47,6 +52,8 @@
     <string name="dialog_confirma_cancelar_pedido_com_taxa_message">O tempo limite para cancelamento foi excedido, será
     cobrado uma taxa de R$ 5,00 reais pelo cancelamento</string>
     <string name="dialog_finalizar_cartao_title">Pagamento com Cartão:</string>
+    <string name="dialog_valida_gps_title">Localização não está ativa:</string>
+    <string name="dialog_valida_gps_message">Por favor habilite seu serviço de localização</string>
 
     <!-- Labels -->
     <string name="bt_cadastrar">Cadastrar-se</string>
@@ -69,11 +76,14 @@
     <string name="bt_label_comanda">Comanda</string>
     <string name="bt_label_atualizar_dados">Concluir Cadastro</string>
     <string name="bt_label_confirmar_pedido">Confirmar Pedido</string>
+    <string name="bt_label_editar_perfil">Atualizar Dados</string>
     <string name="bt_label_sair_estabelecimento">Sair do Estabelecimento</string>
     <string name="bt_label_login_fb">Login com Facebook</string>
     <string name="bt_label_finalizar_comanda">Encerrar Comanda</string>
     <string name="bt_label_adiciona_cartao">Adicionar Cartão</string>
     <string name="bt_label_esqueci_senha">Enviar-me um E-mail</string>
+    <string name="bt_label_genero_masculino">Masculino</string>
+    <string name="bt_label_genero_feminino">Feminino</string>
     <string name="tv_label_finalizar_dados">Finalize seu Cadastro</string>
     <string name="tv_label_abrir_cadastro">Criar Conta</string>
     <string name="tv_label_esqueci_senha">Esqueci a Senha</string>
@@ -89,6 +99,7 @@
     <string name="tv_subtotal">SubTotal</string>
     <string name="tv_obs_hint_produto">Algo que deseja nos informar?</string>
     <string name="tv_title_pag_local">Estabelecimento</string>
+    <string name="title_img">Selecione a Imagem:</string>
     <string name="tv_subtile_pag_local">Realize o pagamento no local</string>
     <string name="tv_selecione_pagamento">Selecione a forma de pagamento:</string>
     <string name="tv_informe_email">Informe abaixo o E-mail cadastrado:</string>
@@ -117,6 +128,7 @@
     <string name="sub_title_cadastro">Informe seus dados pessoais:</string>
     <string name="sub_title_favoritos">Seus locais favoritos</string>
     <string name="title_esqueci_senha">Esqueci Minha Senha</string>
+    <string name="title_editar_perfil">Seu Perfil:</string>
 
 
     <!-- Facebook Strings -->

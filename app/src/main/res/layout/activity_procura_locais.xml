@@ -11,14 +11,21 @@
     <include android:id="@+id/tb_procura"
         layout="@layout/toolbar"/>
 
+
+
     <br.com.boemyo.Configure.SlidingTabLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="45dp"
         android:id="@+id/stl_tabs"
         android:background="@color/colorPrimary"
         android:elevation="5dp">
 
     </br.com.boemyo.Configure.SlidingTabLayout>
+
+    <include android:id="@+id/conexao_procura_locais"
+        layout="@layout/conexao"
+        android:visibility="gone"
+        ></include>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/vp_pagina"

@@ -9,6 +9,14 @@
     <include android:id="@+id/tb_favoritos"
         layout="@layout/toolbar"/>
 
+    <include android:id="@+id/conexao_favoritos"
+        android:layout_height="40dp"
+        android:layout_width="match_parent"
+        android:layout_below="@id/tb_favoritos"
+        layout="@layout/conexao"
+        android:visibility="gone"
+        ></include>
+
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

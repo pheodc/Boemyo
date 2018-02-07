@@ -1,10 +1,12 @@
 package br.com.boemyo.Activitys;
 
+import android.content.IntentFilter;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -20,12 +22,14 @@ import java.util.Calendar;
 import java.util.Date;
 
 import br.com.boemyo.Configure.Base64Custom;
+import br.com.boemyo.Configure.ConnectivityChangeReceiver;
 import br.com.boemyo.Configure.Preferencias;
 import br.com.boemyo.Model.IndiqueEtabelecimentos;
 import br.com.boemyo.R;
 
-public class IndiqueEstabelecimentoActivity extends AppCompatActivity {
+public class IndiqueEstabelecimentoActivity extends AppCompatActivity implements ConnectivityChangeReceiver.OnConnectivityChangedListener {
 
+    private ConnectivityChangeReceiver connectivityChangeReceiver;
     private Toolbar tbIndique;
     private EditText nomeEstabIndique;
     private EditText cidadeEstabIndique;
@@ -36,11 +40,13 @@ public class IndiqueEstabelecimentoActivity extends AppCompatActivity {
     private RelativeLayout rlFundoIndique;
     private Preferencias preferencias;
     private Date hora = Calendar.getInstance().getTime();
+    private RelativeLayout conexao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_indique_estabelecimento);
+
 
         preferencias = new Preferencias(IndiqueEstabelecimentoActivity.this);
         tbIndique = (Toolbar) findViewById(R.id.tb_indique_estabelecimento);
@@ -57,7 +63,12 @@ public class IndiqueEstabelecimentoActivity extends AppCompatActivity {
             }
         });
 
+        connectivityChangeReceiver = new ConnectivityChangeReceiver(this);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(connectivityChangeReceiver, filter);
 
+        conexao = (RelativeLayout) findViewById(R.id.conexao_indique_estabelecimento);
         nomeEstabIndique = (EditText) findViewById(R.id.et_nome_indique);
         cidadeEstabIndique = (EditText) findViewById(R.id.et_cidade_indique);
         telefoneEstabIndique = (EditText) findViewById(R.id.et_telefone_indique);
@@ -124,6 +135,17 @@ public class IndiqueEstabelecimentoActivity extends AppCompatActivity {
         obsEstabIndique.setText("");
 
     }
+
+    @Override
+    public void onConnectivityChanged(boolean isConnected) {
+        Log.i("LOG_CONEXAO", String.valueOf(isConnected));
+        if (isConnected == false){
+            conexao.setVisibility(View.VISIBLE);
+        }else{
+            conexao.setVisibility(View.GONE);
+        }
+    }
+
 
 }
 

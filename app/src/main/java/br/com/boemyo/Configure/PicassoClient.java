@@ -18,7 +18,7 @@ public class PicassoClient {
 
         if(url != null ){
 
-            Picasso.with(context).load(url).placeholder(R.drawable.food_off_boemyo).into(imageView);
+            Picasso.with(context).load(url).into(imageView);
 
         }else{
 

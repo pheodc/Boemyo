@@ -2,6 +2,7 @@ package br.com.boemyo.Activitys;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -13,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.login.LoginManager;
@@ -24,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import br.com.boemyo.Configure.ConnectivityChangeReceiver;
 import br.com.boemyo.Configure.FirebaseInstance;
 import br.com.boemyo.Configure.PicassoClient;
 import br.com.boemyo.Configure.Preferencias;
@@ -32,8 +35,9 @@ import br.com.boemyo.Model.Favorito;
 import br.com.boemyo.Model.Pedido;
 import br.com.boemyo.R;
 
-public class PerfilEstabelecimentoActivity extends AppCompatActivity {
+public class PerfilEstabelecimentoActivity extends AppCompatActivity implements ConnectivityChangeReceiver.OnConnectivityChangedListener {
 
+    private ConnectivityChangeReceiver connectivityChangeReceiver;
     private Intent intent;
     private Estabelecimento estabelecimento;
     private CollapsingToolbarLayout collapsingToolbarLayout;
@@ -49,21 +53,23 @@ public class PerfilEstabelecimentoActivity extends AppCompatActivity {
     private String idQRCODE;
     private ArrayList<String> qrcodes;
     private Preferencias preferencias;
+    private RelativeLayout conexao;
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil_estabelecimento);
+
+        connectivityChangeReceiver = new ConnectivityChangeReceiver(this);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(connectivityChangeReceiver, filter);
+
         preferencias = new Preferencias(PerfilEstabelecimentoActivity.this);
         intent = getIntent();
         estabelecimento = (Estabelecimento) intent.getSerializableExtra("estabelecimento");
-
+        conexao = (RelativeLayout) findViewById(R.id.conexao_perfil_estab);
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_tb_perfil_estab);
         collapsingToolbarLayout.setTitle(estabelecimento.getNomeEstabelecimento());
         tbPerfilEstab = (Toolbar) findViewById(R.id.tb_perfil_estab);
@@ -208,6 +214,17 @@ public class PerfilEstabelecimentoActivity extends AppCompatActivity {
         }
 
     }
+
+    @Override
+    public void onConnectivityChanged(boolean isConnected) {
+        Log.i("LOG_CONEXAO", String.valueOf(isConnected));
+        if (isConnected == false){
+            conexao.setVisibility(View.VISIBLE);
+        }else{
+            conexao.setVisibility(View.GONE);
+        }
+    }
+
 
 }
 

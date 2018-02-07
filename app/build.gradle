@@ -44,6 +44,7 @@ dependencies {
     compile 'com.github.rtoshiro.mflibrary:mflibrary:1.0.0'
     compile 'com.android.support:recyclerview-v7:26.0.+'
     compile 'com.braintreepayments:card-form:3.1.+'
+    compile 'com.wdullaer:materialdatetimepicker:2.+'
     testCompile 'junit:junit:4.12'
 }
 apply plugin: 'com.google.gms.google-services'

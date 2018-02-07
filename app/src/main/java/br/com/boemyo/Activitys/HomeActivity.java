@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.PointF;
 import android.os.Bundle;
@@ -42,7 +43,9 @@ import java.util.Calendar;
 import java.util.Date;
 
 import br.com.boemyo.Configure.Base64Custom;
+import br.com.boemyo.Configure.ConnectivityChangeReceiver;
 import br.com.boemyo.Configure.FirebaseInstance;
+import br.com.boemyo.Configure.Helper;
 import br.com.boemyo.Configure.Permissao;
 import br.com.boemyo.Configure.PicassoClient;
 import br.com.boemyo.Configure.Preferencias;
@@ -51,9 +54,10 @@ import br.com.boemyo.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, QRCodeReaderView.OnQRCodeReadListener {
+        implements NavigationView.OnNavigationItemSelectedListener, QRCodeReaderView.OnQRCodeReadListener, ConnectivityChangeReceiver.OnConnectivityChangedListener {
 
-
+    private ConnectivityChangeReceiver connectivityChangeReceiver;
+    private RelativeLayout conexao;
     private RelativeLayout rlQrcodeDialog;
     private CircleImageView cvImgDrawer;
     private TextView tvNomeDrawer;
@@ -71,6 +75,7 @@ public class HomeActivity extends AppCompatActivity
 
     };
 
+
     private String idQRCODE;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +89,11 @@ public class HomeActivity extends AppCompatActivity
         FacebookSdk.sdkInitialize(getApplicationContext());
         Permissao.validaPermissoes(1 ,this, permissoesNecessarias);
 
+        connectivityChangeReceiver = new ConnectivityChangeReceiver(this);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(connectivityChangeReceiver, filter);
+
 
         toolbar.setSubtitle(R.string.app_name);
         if(preferencias.getcodQRcode() != null && preferencias.getidComanda() != null){
@@ -96,7 +106,17 @@ public class HomeActivity extends AppCompatActivity
         cvImgDrawer = (CircleImageView) view.findViewById(R.id.iv_img_drawer);
         tvNomeDrawer = (TextView) view.findViewById(R.id.tv_nome_drawer);
         tvEmailDrawer = (TextView) view.findViewById(R.id.tv_email_drawer);
+        conexao = (RelativeLayout) findViewById(R.id.conexao_home);
 
+
+
+        cvImgDrawer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HomeActivity.this, EditarPerfilActivity.class);
+                startActivity(intent);
+            }
+        });
 
         if(preferencias.getNome() != null){
             PicassoClient.downloadImage(this, preferencias.getUrlImagem(), cvImgDrawer);
@@ -320,5 +340,15 @@ public class HomeActivity extends AppCompatActivity
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    @Override
+    public void onConnectivityChanged(boolean isConnected) {
+        Log.i("LOG_CONEXAO", String.valueOf(isConnected));
+        if (isConnected == false){
+            conexao.setVisibility(View.VISIBLE);
+        }else{
+            conexao.setVisibility(View.GONE);
+        }
     }
 }

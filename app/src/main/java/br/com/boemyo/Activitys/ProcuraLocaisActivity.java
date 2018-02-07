@@ -3,6 +3,7 @@ package br.com.boemyo.Activitys;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -20,6 +21,7 @@ import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -37,6 +39,7 @@ import java.util.Date;
 import java.util.List;
 
 import br.com.boemyo.Adapter.TabAdapter;
+import br.com.boemyo.Configure.ConnectivityChangeReceiver;
 import br.com.boemyo.Configure.FirebaseInstance;
 import br.com.boemyo.Configure.Permissao;
 import br.com.boemyo.Configure.Preferencias;
@@ -45,15 +48,10 @@ import br.com.boemyo.Model.Estabelecimento;
 import br.com.boemyo.Model.Usuario;
 import br.com.boemyo.R;
 
-public class ProcuraLocaisActivity extends AppCompatActivity
-        {
-
+public class ProcuraLocaisActivity extends AppCompatActivity implements ConnectivityChangeReceiver.OnConnectivityChangedListener {
+    private ConnectivityChangeReceiver connectivityChangeReceiver;
     private String[] permissoesNecessarias = new String[]{
-            Manifest.permission.ACCESS_FINE_LOCATION,
-
-
-    };
-
+            Manifest.permission.ACCESS_FINE_LOCATION};
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
     private FragmentManager fragmentManager;
@@ -63,11 +61,18 @@ public class ProcuraLocaisActivity extends AppCompatActivity
     private SlidingTabLayout slidingTabLayout;
     private ViewPager viewPager;
     private Toolbar tbProcura;
+    private RelativeLayout conexao;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_procura_locais);
+
+        connectivityChangeReceiver = new ConnectivityChangeReceiver(this);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(connectivityChangeReceiver, filter);
 
         tbProcura = (Toolbar) findViewById(R.id.tb_procura);
         tbProcura.setTitle(R.string.title_procura);
@@ -82,6 +87,7 @@ public class ProcuraLocaisActivity extends AppCompatActivity
                 finish();
             }
         });
+        conexao = (RelativeLayout) findViewById(R.id.conexao_procura_locais);
 
         slidingTabLayout = (SlidingTabLayout) findViewById(R.id.stl_tabs);
         viewPager = (ViewPager) findViewById(R.id.vp_pagina);
@@ -95,6 +101,14 @@ public class ProcuraLocaisActivity extends AppCompatActivity
 
     }
 
-
+    @Override
+    public void onConnectivityChanged(boolean isConnected) {
+        Log.i("LOG_CONEXAO", String.valueOf(isConnected));
+        if (isConnected == false){
+            conexao.setVisibility(View.VISIBLE);
+        }else{
+            conexao.setVisibility(View.GONE);
+        }
+    }
 
 }

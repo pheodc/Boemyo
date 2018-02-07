@@ -6,8 +6,15 @@
     android:layout_height="match_parent"
     android:background="@color/colorText"
     tools:context="br.com.boemyo.Activitys.AdicionaNovoCartaoActivity">
+
     <include android:id="@+id/tb_adiciona_cartao"
         layout="@layout/toolbar"></include>
+
+    <include android:id="@+id/conexao_adiciona_cartao"
+        layout="@layout/conexao"
+        android:visibility="gone"
+        ></include>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

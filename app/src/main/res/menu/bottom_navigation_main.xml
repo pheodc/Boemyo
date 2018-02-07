@@ -5,7 +5,7 @@
         android:id="@+id/action_estabelecimentos"
         android:enabled="true"
         android:icon="@mipmap/ic_map_marker_grey600_24dp"
-        android:title="Estabelecimento"
+        android:title="Estabelecimentos"
         app:showAsAction="ifRoom"
         />
     <item

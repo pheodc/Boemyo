@@ -1,6 +1,7 @@
 package br.com.boemyo.Activitys;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -10,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import com.facebook.login.LoginManager;
 import com.google.firebase.database.DataSnapshot;
@@ -20,14 +22,16 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import br.com.boemyo.Adapter.ListaPagamentoAdapter;
+import br.com.boemyo.Configure.ConnectivityChangeReceiver;
 import br.com.boemyo.Configure.FirebaseInstance;
 import br.com.boemyo.Configure.Preferencias;
 import br.com.boemyo.Model.CategoriaCardapio;
 import br.com.boemyo.Model.Pagamento;
 import br.com.boemyo.R;
 
-public class PagamentosActivity extends AppCompatActivity {
+public class PagamentosActivity extends AppCompatActivity implements ConnectivityChangeReceiver.OnConnectivityChangedListener {
 
+    private ConnectivityChangeReceiver connectivityChangeReceiver;
     private ListView lvPagamento;
     private ArrayAdapter adapter;
     private DatabaseReference firebase;
@@ -35,6 +39,7 @@ public class PagamentosActivity extends AppCompatActivity {
     private ArrayList<Pagamento> arrayPagamento;
     private Preferencias preferencias;
     private Toolbar tbPagamentos;
+    private RelativeLayout conexao;
 
     @Override
     protected void onStart() {
@@ -53,6 +58,11 @@ public class PagamentosActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pagamentos);
 
+        connectivityChangeReceiver = new ConnectivityChangeReceiver(this);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(connectivityChangeReceiver, filter);
+
         preferencias = new Preferencias(PagamentosActivity.this);
 
         tbPagamentos = (Toolbar) findViewById(R.id.tb_pagamentos);
@@ -69,6 +79,7 @@ public class PagamentosActivity extends AppCompatActivity {
             }
         });
 
+        conexao = (RelativeLayout) findViewById(R.id.conexao_favoritos);
         lvPagamento = (ListView) findViewById(R.id.lv_pagamentos);
 
         arrayPagamento = new ArrayList<>();
@@ -126,4 +137,13 @@ public class PagamentosActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onConnectivityChanged(boolean isConnected) {
+        Log.i("LOG_CONEXAO", String.valueOf(isConnected));
+        if (isConnected == false){
+            conexao.setVisibility(View.VISIBLE);
+        }else{
+            conexao.setVisibility(View.GONE);
+        }
+    }
 }
