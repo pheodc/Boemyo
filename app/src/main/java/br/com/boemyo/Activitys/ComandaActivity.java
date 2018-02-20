@@ -2,6 +2,7 @@ package br.com.boemyo.Activitys;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +31,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import br.com.boemyo.Adapter.ListaPedidosAdapter;
+import br.com.boemyo.Configure.ConnectivityChangeReceiver;
 import br.com.boemyo.Configure.FirebaseInstance;
 import br.com.boemyo.Configure.Helper;
 import br.com.boemyo.Configure.Preferencias;
@@ -36,8 +39,10 @@ import br.com.boemyo.Model.Pedido;
 import br.com.boemyo.Model.Produto;
 import br.com.boemyo.R;
 
-public class ComandaActivity extends AppCompatActivity {
+public class ComandaActivity extends AppCompatActivity implements ConnectivityChangeReceiver.OnConnectivityChangedListener{
 
+    private ConnectivityChangeReceiver connectivityChangeReceiver;
+    private RelativeLayout conexao;
     private ListView lvComanda;
     private ArrayAdapter adapter;
     private DatabaseReference firebase;
@@ -50,7 +55,6 @@ public class ComandaActivity extends AppCompatActivity {
     private Double subTotal = 0.0;
     private Pedido pedido;
     private NumberFormat format = NumberFormat.getCurrencyInstance();
-
 
     @Override
     protected void onStart() {
@@ -87,6 +91,12 @@ public class ComandaActivity extends AppCompatActivity {
             }
         });
 
+        connectivityChangeReceiver = new ConnectivityChangeReceiver(this);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(connectivityChangeReceiver, filter);
+
+        conexao = (RelativeLayout) findViewById(R.id.conexao_comanda);
         lvComanda = (ListView) findViewById(R.id.lv_comanda);
         tvSubTotal = (TextView) findViewById(R.id.tv_subtotal_pedido);
         btFinalizarComanda = (Button) findViewById(R.id.bt_finalizar_comanda);
@@ -226,5 +236,15 @@ public class ComandaActivity extends AppCompatActivity {
         Intent intent = new Intent(ComandaActivity.this, EstabelecimentoMainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void onConnectivityChanged(boolean isConnected) {
+        Log.i("LOG_CONEXAO", String.valueOf(isConnected));
+        if (isConnected == false){
+            conexao.setVisibility(View.VISIBLE);
+        }else{
+            conexao.setVisibility(View.GONE);
+        }
     }
 }

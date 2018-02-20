@@ -8,6 +8,11 @@
     tools:context="br.com.boemyo.Activitys.EstabelecimentoMainActivity"
     tools:showIn="@layout/app_bar_estabelecimento_main">
 
+    <include android:id="@+id/conexao_estabelecimento_main"
+        layout="@layout/conexao"
+        android:visibility="gone"
+        ></include>
+
     <android.support.v7.widget.CardView android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/card_cardapio"
@@ -17,7 +22,6 @@
         android:layout_marginRight="8dp"
         app:cardElevation="10dp"
         app:cardCornerRadius="6dp">
-
 
         <RelativeLayout
             android:layout_width="match_parent"

@@ -1,6 +1,7 @@
 package br.com.boemyo.Activitys;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.menu.ExpandedMenuView;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,14 +22,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.boemyo.Adapter.ListaCategoriaAdapter;
+import br.com.boemyo.Configure.ConnectivityChangeReceiver;
 import br.com.boemyo.Configure.FirebaseInstance;
 import br.com.boemyo.Configure.Preferencias;
 import br.com.boemyo.Model.CategoriaCardapio;
 import br.com.boemyo.Model.Estabelecimento;
 import br.com.boemyo.R;
 
-public class CategoriaCardapioActivity extends AppCompatActivity {
+public class CategoriaCardapioActivity extends AppCompatActivity implements ConnectivityChangeReceiver.OnConnectivityChangedListener {
 
+    private ConnectivityChangeReceiver connectivityChangeReceiver;
+    private RelativeLayout conexao;
     private ListView lvCategoria;
     private ArrayAdapter adapter;
     private DatabaseReference firebase;
@@ -69,6 +74,12 @@ public class CategoriaCardapioActivity extends AppCompatActivity {
             }
         });
 
+        connectivityChangeReceiver = new ConnectivityChangeReceiver(this);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(connectivityChangeReceiver, filter);
+
+        conexao = (RelativeLayout) findViewById(R.id.conexao_categoria_cardapio);
 
         lvCategoria = (ListView) findViewById(R.id.lv_categoria_cardapio);
 
@@ -116,5 +127,15 @@ public class CategoriaCardapioActivity extends AppCompatActivity {
 
             }
         };
+    }
+
+    @Override
+    public void onConnectivityChanged(boolean isConnected) {
+        Log.i("LOG_CONEXAO", String.valueOf(isConnected));
+        if (isConnected == false){
+            conexao.setVisibility(View.VISIBLE);
+        }else{
+            conexao.setVisibility(View.GONE);
+        }
     }
 }

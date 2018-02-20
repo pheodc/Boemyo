@@ -2,6 +2,7 @@ package br.com.boemyo.Activitys;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -24,14 +26,17 @@ import com.google.zxing.common.StringUtils;
 import java.util.ArrayList;
 
 import br.com.boemyo.Adapter.ListaPagamentoAdapter;
+import br.com.boemyo.Configure.ConnectivityChangeReceiver;
 import br.com.boemyo.Configure.FirebaseInstance;
 import br.com.boemyo.Configure.Preferencias;
 import br.com.boemyo.Model.Comanda;
 import br.com.boemyo.Model.Pagamento;
 import br.com.boemyo.R;
 
-public class FinalizarComandaActivity extends AppCompatActivity {
+public class FinalizarComandaActivity extends AppCompatActivity implements  ConnectivityChangeReceiver.OnConnectivityChangedListener  {
 
+    private ConnectivityChangeReceiver connectivityChangeReceiver;
+    private RelativeLayout conexao;
     private ListView lvFinalizaComanda;
     private ArrayAdapter adapter;
     private DatabaseReference firebase;
@@ -73,6 +78,13 @@ public class FinalizarComandaActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        connectivityChangeReceiver = new ConnectivityChangeReceiver(this);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(connectivityChangeReceiver, filter);
+
+        conexao = (RelativeLayout) findViewById(R.id.conexao_finaliza_comanda);
 
         lvFinalizaComanda = (ListView) findViewById(R.id.lv_finaliza_comanda);
 
@@ -179,5 +191,15 @@ public class FinalizarComandaActivity extends AppCompatActivity {
         final AlertDialog dialog = builder.create();
         dialog.show();
 
+    }
+
+    @Override
+    public void onConnectivityChanged(boolean isConnected) {
+        Log.i("LOG_CONEXAO", String.valueOf(isConnected));
+        if (isConnected == false){
+            conexao.setVisibility(View.VISIBLE);
+        }else{
+            conexao.setVisibility(View.GONE);
+        }
     }
 }

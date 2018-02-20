@@ -2,6 +2,7 @@ package br.com.boemyo.Activitys;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -29,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 
 import java.text.SimpleDateFormat;
 
+import br.com.boemyo.Configure.ConnectivityChangeReceiver;
 import br.com.boemyo.Configure.FirebaseInstance;
 import br.com.boemyo.Configure.PicassoClient;
 import br.com.boemyo.Configure.Preferencias;
@@ -39,9 +41,10 @@ import br.com.boemyo.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class EstabelecimentoMainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ConnectivityChangeReceiver.OnConnectivityChangedListener {
 
-
+    private ConnectivityChangeReceiver connectivityChangeReceiver;
+    private RelativeLayout conexao;
     private CircleImageView cvImgDrawerEstab;
     private TextView tvNomeDrawerEstab;
     private TextView tvEmailDrawerEstab;
@@ -59,6 +62,12 @@ public class EstabelecimentoMainActivity extends AppCompatActivity
         toolbar.setTitle("Bem vindo");
         setSupportActionBar(toolbar);
 
+        connectivityChangeReceiver = new ConnectivityChangeReceiver(this);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(connectivityChangeReceiver, filter);
+
+        conexao = (RelativeLayout) findViewById(R.id.conexao_estabelecimento_main);
         numMesa = preferencias.getNumMesa();
         //preferencias.salvarSubTotal(0.0);
         //Log.i("LOG_SUB", preferencias.getSubTotal());
@@ -243,6 +252,16 @@ public class EstabelecimentoMainActivity extends AppCompatActivity
         final AlertDialog dialog = builder.create();
         dialog.show();
 
+    }
+
+    @Override
+    public void onConnectivityChanged(boolean isConnected) {
+        Log.i("LOG_CONEXAO", String.valueOf(isConnected));
+        if (isConnected == false){
+            conexao.setVisibility(View.VISIBLE);
+        }else{
+            conexao.setVisibility(View.GONE);
+        }
     }
 
 }

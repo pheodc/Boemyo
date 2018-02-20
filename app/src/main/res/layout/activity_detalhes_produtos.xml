@@ -41,6 +41,14 @@
                 app:layout_collapseMode="pin"
                 />
 
+            <include android:id="@+id/conexao_detalhes_produtos"
+                android:layout_height="40dp"
+                android:layout_width="match_parent"
+                android:layout_below="@id/tb_detalhes_produtos"
+                layout="@layout/conexao"
+                android:visibility="gone"
+                ></include>
+
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 

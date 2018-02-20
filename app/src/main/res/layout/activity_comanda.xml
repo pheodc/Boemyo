@@ -9,6 +9,14 @@
 
     <include android:id="@+id/tb_comanda"
         layout="@layout/toolbar"></include>
+
+    <include android:id="@+id/conexao_comanda"
+        android:layout_height="40dp"
+        android:layout_width="match_parent"
+        android:layout_below="@id/tb_comanda"
+        layout="@layout/conexao"
+        android:visibility="gone"
+        ></include>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

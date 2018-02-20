@@ -3,6 +3,7 @@ package br.com.boemyo.Activitys;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -27,6 +28,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.rtoshiro.util.format.SimpleMaskFormatter;
@@ -48,15 +50,18 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
 
+import br.com.boemyo.Configure.ConnectivityChangeReceiver;
 import br.com.boemyo.Configure.FirebaseInstance;
 import br.com.boemyo.Configure.PicassoClient;
 import br.com.boemyo.Configure.Preferencias;
+import br.com.boemyo.Configure.RecyclerViewOnClickListenerHack;
 import br.com.boemyo.Model.Usuario;
 import br.com.boemyo.R;
 
-public class EditarPerfilActivity extends AppCompatActivity  {
+public class EditarPerfilActivity extends AppCompatActivity implements ConnectivityChangeReceiver.OnConnectivityChangedListener  {
     public static final int IMAGEM_INTERNA = 13;
-    //private static final String ARQUIVO_PREFERENCES = "ArquivoBoemyo";
+    private ConnectivityChangeReceiver connectivityChangeReceiver;
+    private RelativeLayout conexao;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private Toolbar tbEditarPerfil;
     private TextInputLayout tilNomeEditar;
@@ -123,6 +128,12 @@ public class EditarPerfilActivity extends AppCompatActivity  {
             public void onClick(View view) {finish();}
         });
 
+        connectivityChangeReceiver = new ConnectivityChangeReceiver(this);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(connectivityChangeReceiver, filter);
+
+        conexao = (RelativeLayout) findViewById(R.id.conexao_editar_perfil);
         imagemPerfilEditar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -387,6 +398,18 @@ public class EditarPerfilActivity extends AppCompatActivity  {
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, new Locale("pt","BR"));
 
         dataNascEditar.setText(sdf.format(myCalendar.getTime()));
+    }
+
+    @Override
+    public void onConnectivityChanged(boolean isConnected) {
+        Log.i("LOG_CONEXAO", String.valueOf(isConnected));
+        if (isConnected == false){
+            conexao.setVisibility(View.VISIBLE);
+            desabilitaCampos();
+        }else{
+            conexao.setVisibility(View.GONE);
+
+        }
     }
 
 }
