@@ -17,12 +17,12 @@ public class PicassoClient {
     public static void downloadImage(Context context, String url, ImageView imageView){
 
         if(url != null ){
-
-            Picasso.with(context).load(url).into(imageView);
+            Picasso.get().load(url).into(imageView);
+            //Picasso.with(context).load(url).into(imageView);
 
         }else{
 
-            Picasso.with(context).load(R.drawable.food_off_boemyo).into(imageView);
+            Picasso.get().load(R.drawable.food_off_boemyo).placeholder(R.color.colorSecondaryText).into(imageView);
 
         }
 

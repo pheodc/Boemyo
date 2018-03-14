@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/ll_bottom_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    android:orientation="vertical"
+    android:background="#ffffff"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
+    app:behavior_hideable="false"
+    app:behavior_peekHeight="0dp"
+    >
+    <RelativeLayout
+        android:id="@+id/fragment_history_bottom_sheet_edit"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="horizontal"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:padding="16dp">
+        <com.braintreepayments.cardform.view.SupportedCardTypesView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/iv_sheet_icon_card"
+            />
+        <TextView
+            android:id="@+id/tv_sheet_numero_cartao"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="60dp"
+            android:layout_centerInParent="true"
+            android:layout_alignParentLeft="true"
+            android:textColor="@color/colorPrimaryText"
+            android:text="Numero Cartão"/>
+
+        <TextView
+            android:id="@+id/tv_sheet_alterar_cartao"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="30dp"
+            android:layout_centerInParent="true"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/colorAccent"
+            android:text="Alterar"/>
+
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.50dp"
+        android:background="@color/colorPrimaryText"
+        ></View>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_tempo_maximo"
+            android:text="@string/dialog_confirma_produto_message"
+            android:textSize="12sp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:textColor="@color/colorPrimaryText"
+            android:textAlignment="center"/>
+
+        <Button
+            android:id="@+id/bt_confirma_sheet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_tempo_maximo"
+            android:textColor="@color/colorText"
+            android:background="@drawable/ripple_efect"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:text="@string/bt_label_confirmar_pagamento"
+            />
+
+
+    </RelativeLayout>
+</LinearLayout>

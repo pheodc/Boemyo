@@ -6,8 +6,7 @@
         android:radius="26dp"
         />
 
-    <solid
-        android:color="@color/color_facebook"
-        />
+
+    <solid android:color="@color/color_facebook" /> <!-- background color -->
 
 </shape>

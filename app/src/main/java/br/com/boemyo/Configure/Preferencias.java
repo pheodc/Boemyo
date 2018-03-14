@@ -24,8 +24,10 @@ public class Preferencias {
     private String CHAVE_LONG_USUARIO = "longUsuario";
     private String CHAVE_QR_CODE = "longUsuario";
     private String CHAVE_IDCOMANDA = "idComanda";
+    private String CHAVE_IDESTABELECIMENTO = "idEstabelecimento";
     private String CHAVE_NUMMESA = "numMesa";
     private String CHAVE_SUBTOTAL = "subtotal";
+    private String CHAVE_IDPAGAMENTO = "idPagamento";
 
     public Preferencias(Context contextoParametro) {
 
@@ -49,9 +51,10 @@ public class Preferencias {
         editor.commit();
     }
 
-    public void salvarQrCodeEstabelecimento(String codQrcode, String idComanda){
+    public void salvarQrCodeEstabelecimento(String codQrcode, String idComanda, String idEstabelecimento){
         editor.putString(CHAVE_QR_CODE, codQrcode);
         editor.putString(CHAVE_IDCOMANDA, idComanda);
+        editor.putString(CHAVE_IDESTABELECIMENTO, idEstabelecimento);
 
 
         editor.commit();
@@ -63,14 +66,18 @@ public class Preferencias {
         editor.commit();
     }
 
-    public void salvarSubTotal(Double subTotal){
-        editor.putString(CHAVE_SUBTOTAL, subTotal.toString());
+    public void salvarIdPagamento(String idPagamento){
+        editor.putString(CHAVE_IDPAGAMENTO, idPagamento);
 
         editor.commit();
     }
 
     public String getIdentificador(){
         return preferences.getString(CHAVE_IDUSUARIO, null);
+    }
+
+    public String getIdEstabelecimento(){
+        return preferences.getString(CHAVE_IDESTABELECIMENTO, null);
     }
 
     public String getNome(){
@@ -105,8 +112,8 @@ public class Preferencias {
         return preferences.getString(CHAVE_NUMMESA, null);
     }
 
-    public String getSubTotal(){
-        return preferences.getString(CHAVE_SUBTOTAL, null);
+    public String getIdPagamento(){
+        return preferences.getString(CHAVE_IDPAGAMENTO, null);
     }
 
     public void limparDados(){
@@ -117,8 +124,9 @@ public class Preferencias {
     public void removerPreferencias(){
         editor.remove(CHAVE_QR_CODE);
         editor.remove(CHAVE_IDCOMANDA);
+        editor.remove(CHAVE_IDESTABELECIMENTO);
         editor.remove(CHAVE_NUMMESA);
-        editor.remove(CHAVE_SUBTOTAL);
+        editor.remove(CHAVE_IDPAGAMENTO);
         editor.commit();
     }
 

@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.RelativeLayout;
 
 import com.google.firebase.database.DataSnapshot;
@@ -22,6 +23,7 @@ import br.com.boemyo.Adapter.FavoritosAdapter;
 import br.com.boemyo.Configure.ConnectivityChangeReceiver;
 import br.com.boemyo.Configure.FirebaseInstance;
 import br.com.boemyo.Configure.Preferencias;
+import br.com.boemyo.Model.Estabelecimento;
 import br.com.boemyo.Model.Favorito;
 import br.com.boemyo.R;
 import br.com.boemyo.Configure.RecyclerViewOnClickListenerHack;
@@ -32,22 +34,17 @@ public class FavoritoActivity extends AppCompatActivity implements RecyclerViewO
     private RecyclerView rvFavorito;
     private FavoritosAdapter adapter;
     private DatabaseReference firebase;
-    private ValueEventListener valueEventListener;
-    private ArrayList<Favorito> arrayFavoritos;
+     private ArrayList<Estabelecimento> arrayFavoritos;
+    private ArrayList<String> arrayIdEstabelecimentos;
     private Preferencias preferencias;
     private android.support.v7.widget.Toolbar tbFavoritos;
-    private RelativeLayout conexao;
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        firebase.addValueEventListener(valueEventListener);
-    }
+    private RelativeLayout conexao;
 
     @Override
     protected void onStop() {
         super.onStop();
-        firebase.removeEventListener(valueEventListener);
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -87,39 +84,57 @@ public class FavoritoActivity extends AppCompatActivity implements RecyclerViewO
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvFavorito.setLayoutManager(linearLayoutManager);
         arrayFavoritos = new ArrayList<>();
+        arrayIdEstabelecimentos = new ArrayList<>();
         adapter = new FavoritosAdapter(this, arrayFavoritos);
         adapter.setRecyclerViewOnClickListenerHack(this);
         rvFavorito.setAdapter(adapter);
 
 
-        firebase = FirebaseInstance.getFirebase()
-                .child("favorito")
-                .child(preferencias.getIdentificador());
+        firebase = FirebaseInstance.getFirebase();
 
-        valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+                firebase.child("usuario").child(preferencias.getIdentificador()).child("favorito").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
 
-                arrayFavoritos.clear();
+                        arrayFavoritos.clear();
 
-                for(DataSnapshot dados : dataSnapshot.getChildren()){
-                    Favorito favorito = dados.getValue(Favorito.class);
-                    Log.i("LOG_NOMECAT", favorito.getNomeFavorito());
-                    arrayFavoritos.add(favorito);
-                }
-                adapter.notifyDataSetChanged();
-            }
+                        for(DataSnapshot dados : dataSnapshot.getChildren()){
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                           firebase.child("estabelecimento").child(dados.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
 
-            }
-        };
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot2) {
+
+
+                                    Estabelecimento estabelecimento = dataSnapshot2.getValue(Estabelecimento.class);
+                                    arrayFavoritos.add(estabelecimento);
+                                    Log.i("LOG_FAV", estabelecimento.getNomeEstabelecimento());
+                                    adapter.notifyDataSetChanged();
+
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
     }
 
 
     @Override
-    public void onClickListener(View view, int position) {
+    public void onClickListener(AdapterView<?> parent, View view, int position) {
 
     }
 

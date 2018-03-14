@@ -1,44 +1,43 @@
 package br.com.boemyo.Activitys;
 
-import android.content.DialogInterface;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.google.zxing.common.StringUtils;
 
 import java.util.ArrayList;
 
-import br.com.boemyo.Adapter.ListaPagamentoAdapter;
+import br.com.boemyo.Adapter.ListaEscolhePagamentoAdapter;
 import br.com.boemyo.Configure.ConnectivityChangeReceiver;
 import br.com.boemyo.Configure.FirebaseInstance;
 import br.com.boemyo.Configure.Preferencias;
+import br.com.boemyo.Configure.RecyclerViewOnClickListenerHack;
 import br.com.boemyo.Model.Comanda;
 import br.com.boemyo.Model.Pagamento;
 import br.com.boemyo.R;
 
-public class FinalizarComandaActivity extends AppCompatActivity implements  ConnectivityChangeReceiver.OnConnectivityChangedListener  {
+public class EscolhePagamentoActivity extends AppCompatActivity implements RecyclerViewOnClickListenerHack, ConnectivityChangeReceiver.OnConnectivityChangedListener  {
 
     private ConnectivityChangeReceiver connectivityChangeReceiver;
     private RelativeLayout conexao;
-    private ListView lvFinalizaComanda;
-    private ArrayAdapter adapter;
+    private RelativeLayout rlPagamentoLocal;
+    private RecyclerView rvFinalizaComanda;
+    private ListaEscolhePagamentoAdapter adapter;
     private DatabaseReference firebase;
     private ValueEventListener valueEventListener;
     private ArrayList<Pagamento> arrayFinalizaComanda;
@@ -61,23 +60,13 @@ public class FinalizarComandaActivity extends AppCompatActivity implements  Conn
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_finalizar_comanda);
+        setContentView(R.layout.activity_escolhe_pagamento);
 
-        preferencias = new Preferencias(FinalizarComandaActivity.this);
+        preferencias = new Preferencias(EscolhePagamentoActivity.this);
 
         tbFizalizaComanda = (Toolbar) findViewById(R.id.tb_finaliza_comanda);
-        tbFizalizaComanda.setTitle(R.string.title_finalizar_comanda);
+        tbFizalizaComanda.setTitle(R.string.title_escolhe_pagamento);
         setSupportActionBar(tbFizalizaComanda);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        tbFizalizaComanda.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
 
         connectivityChangeReceiver = new ConnectivityChangeReceiver(this);
         IntentFilter filter = new IntentFilter();
@@ -86,17 +75,33 @@ public class FinalizarComandaActivity extends AppCompatActivity implements  Conn
 
         conexao = (RelativeLayout) findViewById(R.id.conexao_finaliza_comanda);
 
-        lvFinalizaComanda = (ListView) findViewById(R.id.lv_finaliza_comanda);
+        rlPagamentoLocal = (RelativeLayout) findViewById(R.id.rl_escolhe_local);
+        rvFinalizaComanda = (RecyclerView) findViewById(R.id.rv_finaliza_comanda);
 
         arrayFinalizaComanda = new ArrayList<>();
-        adapter = new ListaPagamentoAdapter(this, arrayFinalizaComanda);
-        lvFinalizaComanda.setAdapter(adapter);
+        adapter = new ListaEscolhePagamentoAdapter(this, arrayFinalizaComanda);
+        adapter.setRecyclerViewOnClickListenerHack(this);
 
-        lvFinalizaComanda.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
+        rvFinalizaComanda.setLayoutManager(linearLayoutManager);
+
+        rvFinalizaComanda.setAdapter(adapter);
+
+        /*lvFinalizaComanda.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long l) {
                 Pagamento pagamento = (Pagamento) parent.getItemAtPosition(position);
                 alertaFinalizarCartao(pagamento);
+            }
+        });*/
+
+        rlPagamentoLocal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                preferencias.salvarIdPagamento("pag_local");
+                finish();
             }
         });
 
@@ -142,7 +147,7 @@ public class FinalizarComandaActivity extends AppCompatActivity implements  Conn
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_adiciona_cartao) {
 
-            Intent intent = new Intent(FinalizarComandaActivity.this, AdicionaNovoCartaoActivity.class);
+            Intent intent = new Intent(EscolhePagamentoActivity.this, AdicionaNovoCartaoActivity.class);
             startActivity(intent);
 
             return true;
@@ -152,7 +157,7 @@ public class FinalizarComandaActivity extends AppCompatActivity implements  Conn
         return super.onOptionsItemSelected(item);
     }
 
-    private void alertaFinalizarCartao(Pagamento pagamento){
+/*    public void alertaFinalizarCartao(Pagamento pagamento){
         final AlertDialog.Builder builder = new AlertDialog.Builder( this );
         builder.setTitle(R.string.dialog_finalizar_cartao_title);
         View viewCustomDialog = getLayoutInflater().inflate(R.layout.custom_dados_cartao_finaliza, null);
@@ -177,7 +182,7 @@ public class FinalizarComandaActivity extends AppCompatActivity implements  Conn
                 comanda.salvarFirebase();
 
                 preferencias.removerPreferencias();
-                Intent intent = new Intent(FinalizarComandaActivity.this, HomeActivity.class);
+                Intent intent = new Intent(EscolhePagamentoActivity.this, HomeActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -191,7 +196,7 @@ public class FinalizarComandaActivity extends AppCompatActivity implements  Conn
         final AlertDialog dialog = builder.create();
         dialog.show();
 
-    }
+    }*/
 
     @Override
     public void onConnectivityChanged(boolean isConnected) {
@@ -201,5 +206,10 @@ public class FinalizarComandaActivity extends AppCompatActivity implements  Conn
         }else{
             conexao.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onClickListener(AdapterView<?> parent, View view, int position) {
+
     }
 }

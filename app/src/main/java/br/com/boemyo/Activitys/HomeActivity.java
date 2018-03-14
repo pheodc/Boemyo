@@ -38,6 +38,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -49,6 +50,8 @@ import br.com.boemyo.Configure.Helper;
 import br.com.boemyo.Configure.Permissao;
 import br.com.boemyo.Configure.PicassoClient;
 import br.com.boemyo.Configure.Preferencias;
+import br.com.boemyo.Model.Comanda;
+import br.com.boemyo.Model.DataComanda;
 import br.com.boemyo.Model.Estabelecimento;
 import br.com.boemyo.R;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -68,6 +71,7 @@ public class HomeActivity extends AppCompatActivity
     private QRCodeReaderView qrCodeReaderView;
     private Preferencias preferencias;
     private ArrayList<String> qrcodes;
+    private String idEstabelecimento;
     private Date hora = Calendar.getInstance().getTime();
     private String[] permissoesNecessarias = new String[]{
             Manifest.permission.CAMERA,
@@ -280,43 +284,68 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onQRCodeRead(final String text, PointF[] points) {
+        Log.i("LOG_QRS", text);
         qrCodeReaderView.stopCamera();
         if(!text.isEmpty()) {
+            Log.i("LOG_QRS", "Entrou aqui");
+            firebase = FirebaseInstance.getFirebase();
 
-            firebase = FirebaseInstance.getFirebase()
-                    .child("estabelecimento");
-            valueEventListener = new ValueEventListener() {
+            firebase.child("qrcode")
+                    .child(text).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    for(DataSnapshot dados : dataSnapshot.getChildren()){
-                        idQRCODE = String.valueOf(dados.child("idQRCODE").getValue());
-                        qrcodes.add(idQRCODE);
-                        Log.i("LOG_QRCODES", idQRCODE);
+                    Log.i("LOG_QRS", dataSnapshot.toString());
+                    if(dataSnapshot.getValue() != null){
+                        for (DataSnapshot dados : dataSnapshot.getChildren()){
+                            Log.i("LOG_QRS", dados.getKey());
+
+                            Comanda comanda = new Comanda();
+                            Log.i("LOG_CONTAINS", "Possue");
+                            String idComanda = Base64Custom.codificarBase64(text + preferencias.getEmail() + hora);
+                            preferencias.salvarQrCodeEstabelecimento(text, idComanda, dados.getKey());
+
+                            comanda.setIdComanda(idComanda);
+                            comanda.setIdUsuario(preferencias.getIdentificador());
+                            comanda.setIdEstabelecimento(dados.getKey());
+                            comanda.setSituacaoComanda(true);
+                            comanda.setDataAbertura(getDataAbertura(hora));
+                            comanda.setHoraAbertura(getHoraAbertura(hora));
+                            comanda.setSubTotal(0.0);
+
+                            comanda.salvarFirebase();
+                            comanda.salvarEstabelecimento();
+                            comanda.salvarUsuario();
+                            comanda.salvarComandaUsuario();
+                            comanda.salvarComandaEstabelecimento();
+
+                            DataComanda dataComanda = new DataComanda();
+
+                            dataComanda.setDataComanda(getDataAbertura(hora));
+                            dataComanda.setIdEstabelecimento(dados.getKey());
+                            dataComanda.setIdComanda(idComanda);
+
+                            dataComanda.salvarFirebase();
+
+                            Intent intent = new Intent(HomeActivity.this, EstabelecimentoMainActivity.class);
+                            startActivity(intent);
+                            finish();
 
 
-                    }
 
-                    if(qrcodes.contains(text)){
-                        Log.i("LOG_CONTAINS", "Possue");
-                        String idComanda = Base64Custom.codificarBase64(text + preferencias.getEmail() + hora);
-
-                        preferencias.salvarQrCodeEstabelecimento(text, idComanda);
-                        Intent intent = new Intent(HomeActivity.this, EstabelecimentoMainActivity.class);
-                        startActivity(intent);
-                        finish();
+                        }
                     }else{
-                        Log.i("LOG_CONTAINS", "Ñ Possui");
                         alertaQRCODE();
-
                     }
+
+
+
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
 
                 }
-            };
-            firebase.addValueEventListener(valueEventListener);
+            });
 
             Log.i("VALUE_QR", text);
             Vibrator vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
@@ -351,4 +380,24 @@ public class HomeActivity extends AppCompatActivity
             conexao.setVisibility(View.GONE);
         }
     }
+
+    private String getDataAbertura(Date hora){
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+
+        String dataAbertura = simpleDateFormat.format(hora);
+
+        return dataAbertura;
+    }
+
+
+    private String getHoraAbertura(Date hora){
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
+
+        String horaAbertura = simpleDateFormat.format(hora);
+
+        return horaAbertura;
+    }
+
 }

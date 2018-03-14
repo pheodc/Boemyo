@@ -71,7 +71,7 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".Activitys.AdicionaNovoCartaoActivity" />
         <activity android:name=".Activitys.PagamentosActivity" />
-        <activity android:name=".Activitys.FinalizarComandaActivity" />
+        <activity android:name=".Activitys.EscolhePagamentoActivity" />
         <activity android:name=".Activitys.EsqueciSenhaActivity"></activity>
     </application>
 

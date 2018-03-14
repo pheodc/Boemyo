@@ -3,7 +3,9 @@ package br.com.boemyo.Activitys;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -44,6 +46,7 @@ public class EstabelecimentoMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ConnectivityChangeReceiver.OnConnectivityChangedListener {
 
     private ConnectivityChangeReceiver connectivityChangeReceiver;
+    private DatabaseReference firebse;
     private RelativeLayout conexao;
     private CircleImageView cvImgDrawerEstab;
     private TextView tvNomeDrawerEstab;
@@ -71,9 +74,17 @@ public class EstabelecimentoMainActivity extends AppCompatActivity
         numMesa = preferencias.getNumMesa();
         //preferencias.salvarSubTotal(0.0);
         //Log.i("LOG_SUB", preferencias.getSubTotal());
+
+        if(preferencias.getIdPagamento() == null){
+            Intent intent = new Intent(EstabelecimentoMainActivity.this, EscolhePagamentoActivity.class);
+            startActivity(intent);
+        }
+
         if(numMesa == null){
             alertaInformaMesa();
         }
+
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -99,16 +110,20 @@ public class EstabelecimentoMainActivity extends AppCompatActivity
 
 
        cardCardapio.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View view) {
+                cardCardapio.setElevation(22);
                 Intent intent = new Intent(EstabelecimentoMainActivity.this, CategoriaCardapioActivity.class);
                 startActivity(intent);
             }
         });
 
         cardComanda.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View view) {
+                cardComanda.setElevation(22);
                 Intent intent = new Intent(EstabelecimentoMainActivity.this, ComandaActivity.class);
                 startActivity(intent);
                 finish();
@@ -144,15 +159,15 @@ public class EstabelecimentoMainActivity extends AppCompatActivity
         if (id == R.id.action_settings_estab) {
             return true;
         }else if (id == R.id.action_logout_estab) {
-
-            if(preferencias.getSubTotal() != null && !preferencias.getSubTotal().equals("0.0")){
+            preferencias.removerPreferencias();
+            Intent intent = new Intent(EstabelecimentoMainActivity.this, HomeActivity.class);
+            startActivity(intent);
+            finish();
+            /*if(preferencias.getSubTotal() != null && !preferencias.getSubTotal().equals("0.0")){
                 alertaPendencias();
             }else{
-                preferencias.removerPreferencias();
-                Intent intent = new Intent(EstabelecimentoMainActivity.this, HomeActivity.class);
-                startActivity(intent);
-                finish();
-            }
+
+            }*/
 
 
         }
@@ -218,12 +233,17 @@ public class EstabelecimentoMainActivity extends AppCompatActivity
                 }else{
                     preferencias.salvarNumMesa(numMesa);
 
-                    Comanda comanda = new Comanda();
-                    comanda.setIdQrCode(preferencias.getcodQRcode());
+                    firebse = FirebaseInstance.getFirebase()
+                            .child("comanda")
+                                .child(preferencias.getidComanda())
+                                    .child("numMesa");
+                    firebse.setValue(numMesa);
+
+                    /*Comanda comanda = new Comanda();
+                    comanda.setIdEstabelecimento(preferencias.getIdEstabelecimento());
                     comanda.setIdComanda(preferencias.getidComanda());
                     comanda.setNumMesa(numMesa);
-                    comanda.setSituacaoComanda("0");
-                    comanda.salvarFirebase();
+                    comanda.salvarFirebase();*/
                     dialog.dismiss();
                 }
             }

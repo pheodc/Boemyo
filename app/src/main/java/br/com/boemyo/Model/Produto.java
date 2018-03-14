@@ -12,7 +12,7 @@ public class Produto implements Serializable {
     private String nomeProduto;
     private Double valorProduto;
     private String descProduto;
-    private String categoriaProduto;
+    private String categoria;
     private String urlImagemProduto;
 
     public Produto() {
@@ -42,13 +42,6 @@ public class Produto implements Serializable {
         this.descProduto = descProduto;
     }
 
-    public String getCategoriaProduto() {
-        return categoriaProduto;
-    }
-
-    public void setCategoriaProduto(String categoriaProduto) {
-        this.categoriaProduto = categoriaProduto;
-    }
 
     public String getUrlImagemProduto() {
         return urlImagemProduto;
@@ -64,5 +57,13 @@ public class Produto implements Serializable {
 
     public void setValorProduto(Double valorProduto) {
         this.valorProduto = valorProduto;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
     }
 }

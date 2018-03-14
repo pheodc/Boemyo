@@ -1,8 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="72dp">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/view_background"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:background="@color/bg_row_background">
+
+        <ImageView
+            android:id="@+id/delete_icon"
+            android:layout_width="@dimen/ic_delete"
+            android:layout_height="@dimen/ic_delete"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/padd_10"
+            android:src="@mipmap/ic_delete_white_24dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/padd_10"
+            android:layout_toLeftOf="@id/delete_icon"
+            android:text="@string/delete"
+            android:textColor="#fff"
+            android:textSize="13dp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/view_foreground"
+        android:layout_width="wrap_content"
+        android:layout_height="72dp"
+        android:background="@color/colorText">
         <com.braintreepayments.cardform.view.SupportedCardTypesView
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -18,26 +52,26 @@
             android:layout_marginRight="16dp"
             android:layout_marginLeft="72dp">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/tv_num_cartao"
-                    android:textSize="16sp"
-                    android:text="N° Cartão"
-                    android:paddingLeft="8dp"
-                    android:textColor="@color/colorPrimaryText"
-                    >
-                </TextView>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_num_cartao"
+                android:textSize="16sp"
+                android:text="N° Cartão"
+                android:paddingLeft="8dp"
+                android:textColor="@color/colorPrimaryText"
+                >
+            </TextView>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/tv_dt_vencimento"
-                    android:textSize="13sp"
-                    android:text="00/00"
-                    android:textColor="@color/colorSecondaryText"
-                    android:layout_marginLeft="8dp">
-                </TextView>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_dt_vencimento"
+                android:textSize="13sp"
+                android:text="00/00"
+                android:textColor="@color/colorSecondaryText"
+                android:layout_marginLeft="8dp">
+            </TextView>
 
 
         </LinearLayout>
@@ -48,4 +82,9 @@
             android:layout_marginRight="8dp"
             android:layout_marginTop="24dp"
             android:background="@mipmap/ic_chevron_right_grey600_24dp"/>
-</RelativeLayout>
+    </RelativeLayout>
+
+
+
+</FrameLayout>
+

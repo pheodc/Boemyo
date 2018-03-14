@@ -24,12 +24,12 @@
         android:id="@+id/rl_list_comanda"
         android:layout_above="@id/ll_subtotal">
 
-        <ListView
+        <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginTop="8dp"
-            android:background="@color/colorText"
-            android:id="@+id/lv_comanda"></ListView>
+
+            android:id="@+id/rv_comanda"></android.support.v7.widget.RecyclerView>
 
     </RelativeLayout>
 
@@ -60,7 +60,7 @@
                     android:textSize="20sp"
                     />
                 <View
-                    android:layout_width="140dp"
+                    android:layout_width="160dp"
                     android:layout_height="2dp"
                     android:layout_marginTop="15dp"
                     android:layout_marginLeft="8dp"
@@ -70,10 +70,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="R$1000,00"
                     android:id="@+id/tv_subtotal_pedido"
                     android:textStyle="bold"
-                    android:textColor="@color/colorPrimaryText"
+                    android:textColor="@color/colorPrimaryDark"
                     android:textSize="22sp"
                     />
             </LinearLayout>
@@ -85,7 +84,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/bt_finalizar_comanda"
             android:layout_below="@+id/rl_subtotal"
-            android:background="@color/colorAccent"
+            android:background="@drawable/ripple_efect"
             android:text="@string/bt_label_finalizar_comanda"
             android:textColor="@color/colorText"/>
 

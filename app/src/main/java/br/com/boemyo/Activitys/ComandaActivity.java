@@ -1,12 +1,16 @@
 package br.com.boemyo.Activitys;
 
+import android.animation.ValueAnimator;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -35,19 +39,22 @@ import br.com.boemyo.Configure.ConnectivityChangeReceiver;
 import br.com.boemyo.Configure.FirebaseInstance;
 import br.com.boemyo.Configure.Helper;
 import br.com.boemyo.Configure.Preferencias;
+import br.com.boemyo.Configure.RecyclerItemTouchHelper;
+import br.com.boemyo.Configure.RecyclerItemTouchHelperComanda;
+import br.com.boemyo.Model.Comanda;
 import br.com.boemyo.Model.Pedido;
 import br.com.boemyo.Model.Produto;
 import br.com.boemyo.R;
 
-public class ComandaActivity extends AppCompatActivity implements ConnectivityChangeReceiver.OnConnectivityChangedListener{
+public class ComandaActivity extends AppCompatActivity implements RecyclerItemTouchHelperComanda.RecyclerItemTouchHelperListener, ConnectivityChangeReceiver.OnConnectivityChangedListener{
 
     private ConnectivityChangeReceiver connectivityChangeReceiver;
     private RelativeLayout conexao;
-    private ListView lvComanda;
-    private ArrayAdapter adapter;
+    private RecyclerView rvComanda;
+    private ListaPedidosAdapter adapter;
     private DatabaseReference firebase;
     private ValueEventListener valueEventListener;
-    private ArrayList<Pedido> arrayPedidos;
+    private ArrayList<String> arrayPedidos;
     private Preferencias preferencias;
     private Toolbar tbComanda;
     private TextView tvSubTotal;
@@ -56,17 +63,7 @@ public class ComandaActivity extends AppCompatActivity implements ConnectivityCh
     private Pedido pedido;
     private NumberFormat format = NumberFormat.getCurrencyInstance();
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        firebase.addValueEventListener(valueEventListener);
-    }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        firebase.removeEventListener(valueEventListener);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,13 +94,23 @@ public class ComandaActivity extends AppCompatActivity implements ConnectivityCh
         registerReceiver(connectivityChangeReceiver, filter);
 
         conexao = (RelativeLayout) findViewById(R.id.conexao_comanda);
-        lvComanda = (ListView) findViewById(R.id.lv_comanda);
+        rvComanda = (RecyclerView) findViewById(R.id.rv_comanda);
         tvSubTotal = (TextView) findViewById(R.id.tv_subtotal_pedido);
         btFinalizarComanda = (Button) findViewById(R.id.bt_finalizar_comanda);
         arrayPedidos = new ArrayList<>();
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
+        rvComanda.setLayoutManager(linearLayoutManager);
+
         adapter = new ListaPedidosAdapter(this, arrayPedidos);
-        lvComanda.setAdapter(adapter);
-        lvComanda.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        rvComanda.setAdapter(adapter);
+
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelperComanda(0, ItemTouchHelper.LEFT, this);
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(rvComanda);
+
+        /*lvComanda.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long l) {
                 Date horarioAtual =  Calendar.getInstance().getTime();
@@ -125,30 +132,37 @@ public class ComandaActivity extends AppCompatActivity implements ConnectivityCh
                     alertaCancelamento(pedido, diferenca);
                 }
             }
-        });
+        });*/
 
         //Recuperar Firebase
 
-        firebase = FirebaseInstance.getFirebase()
-                .child("comanda")
-                    .child(preferencias.getcodQRcode())
-                        .child(preferencias.getidComanda())
-                            .child(preferencias.getIdentificador());
+        firebase = FirebaseInstance.getFirebase();
 
-        valueEventListener = new ValueEventListener() {
+        firebase.child("comanda")
+                    .child(preferencias.getidComanda()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
                 arrayPedidos.clear();
+                Comanda comanda = dataSnapshot.getValue(Comanda.class);
+                Log.i("LOG_COMANDA", comanda.getSubTotal().toString());
+                //tvSubTotal.setText(format.format( comanda.getSubTotal()));
+                startCountAnimation(Float.parseFloat(comanda.getSubTotal().toString()));
+                firebase.child("comanda").child(preferencias.getidComanda()).child("pedidos").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for(DataSnapshot dados : dataSnapshot.getChildren()){
+                            Log.i("LOG_COMANDA_PEDIDOS", dados.getKey());
+                            arrayPedidos.add(dados.getKey());
+                            adapter.notifyDataSetChanged();
+                        }
 
-                for(DataSnapshot dados : dataSnapshot.getChildren()){
-                    pedido = dados.getValue(Pedido.class);
-                    Log.i("LOG_NOMECAT", pedido.getIdPedido());
-                    arrayPedidos.add(pedido);
-                }
+                    }
 
-                adapter.notifyDataSetChanged();
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
+                    }
+                });
 
             }
 
@@ -156,65 +170,44 @@ public class ComandaActivity extends AppCompatActivity implements ConnectivityCh
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        };
+        });
 
-        if(preferencias.getSubTotal() != null){
-            subTotal = Double.parseDouble(preferencias.getSubTotal());
-        }
 
-        tvSubTotal.setText(format.format(subTotal));
 
         btFinalizarComanda.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(preferencias.getSubTotal() == null){
-                    preferencias.removerPreferencias();
-                    Intent intent = new Intent(ComandaActivity.this, HomeActivity.class);
-                    startActivity(intent);
-                }
-                Intent intent = new Intent(ComandaActivity.this, FinalizarComandaActivity.class);
-                startActivity(intent);
+                alertaConfirmaEncerrado();
+
+
             }
         });
     }
 
-    private void alertaCancelamento(final Pedido pedido, final Long diferencaHorario){
+    public void alertaConfirmaEncerrado(){
         final AlertDialog.Builder builder = new AlertDialog.Builder( this );
-        builder.setTitle(R.string.dialog_confirma_cancelar_pedido_title);
-        if(diferencaHorario > 5){
+        builder.setTitle(R.string.dialog_title_encerra_comanda);
+        builder.setMessage(R.string.dialog_message_encerra_comanda);
 
-            builder.setMessage(R.string.dialog_confirma_cancelar_pedido_com_taxa_message);
-
-        }else{
-
-            builder.setMessage(R.string.dialog_confirma_cancelar_pedido_sem_taxa_message);
-        }
 
         builder.setPositiveButton(R.string.bt_dialog_positive, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
-                if(diferencaHorario > 5){
-                    subTotal = (subTotal - pedido.getValorPedido()) + 5;
-                    preferencias.salvarSubTotal(subTotal);
-                    tvSubTotal.setText(format.format(subTotal));
-
+                if(preferencias.getIdPagamento() == "pag_local"){
+                    Toast.makeText(ComandaActivity.this, "Em Construção", Toast.LENGTH_SHORT).show();
                 }else{
-                    subTotal = subTotal - pedido.getValorPedido();
-                    preferencias.salvarSubTotal(subTotal);
-                    tvSubTotal.setText(format.format(subTotal));
+                    firebase.child("comanda")
+                            .child(preferencias.getidComanda())
+                            .child("situacaoComanda")
+                            .setValue(false);
+
+                    alertaConfirmaEncerrado();
                 }
 
-                firebase = FirebaseInstance.getFirebase()
-                        .child("comanda")
-                        .child(preferencias.getcodQRcode())
-                        .child(preferencias.getidComanda())
-                        .child(preferencias.getIdentificador())
-                        .child(pedido.getIdPedido())
-                        .child("situacaoPedido");
-
-                firebase.setValue(2);
-
+                preferencias.removerPreferencias();
+                Intent intent = new Intent(ComandaActivity.this, HomeActivity.class);
+                startActivity(intent);
+                finish();
 
             }
         });
@@ -246,5 +239,22 @@ public class ComandaActivity extends AppCompatActivity implements ConnectivityCh
         }else{
             conexao.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
+
+        //adapter.cancelaPedido(viewHolder.getAdapterPosition());
+    }
+
+    private void startCountAnimation(Float finalValue) {
+        ValueAnimator animator = ValueAnimator.ofFloat(0, finalValue);
+        animator.setDuration(1000);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                tvSubTotal.setText(format.format(animation.getAnimatedValue()));
+            }
+        });
+        animator.start();
     }
 }

@@ -11,7 +11,7 @@ import br.com.boemyo.Configure.FirebaseInstance;
 
 public class Favorito {
 
-    private String idQrCode;
+    private String idEstabeleimento;
     private String nomeFavorito;
     private String imgFundoFavorito;
     private String idUsuario;
@@ -19,11 +19,36 @@ public class Favorito {
     public Favorito() {
     }
 
-    public void salvarFavorito(){
+    public void salvarFavoritoEstabelecimento(){
 
         DatabaseReference databaseReference = FirebaseInstance.getFirebase();
-        databaseReference.child("favorito").child(getIdUsuario()).child(getIdQrCode()).setValue(this);
+        databaseReference
+                .child("estabelecimento")
+                    .child(getIdEstabeleimento())
+                        .child("favorito")
+                            .child(getIdUsuario())
+                .setValue(true);
 
+    }
+
+    public void salvarFavoritoUsuario(){
+
+        DatabaseReference databaseReference = FirebaseInstance.getFirebase();
+        databaseReference
+                .child("usuario")
+                    .child(getIdUsuario())
+                        .child("favorito")
+                            .child(getIdEstabeleimento())
+                .setValue(true);
+
+    }
+
+    public String getIdEstabeleimento() {
+        return idEstabeleimento;
+    }
+
+    public void setIdEstabeleimento(String idEstabeleimento) {
+        this.idEstabeleimento = idEstabeleimento;
     }
 
     @Exclude
@@ -33,14 +58,6 @@ public class Favorito {
 
     public void setIdUsuario(String idUsuario) {
         this.idUsuario = idUsuario;
-    }
-
-    public String getIdQrCode() {
-        return idQrCode;
-    }
-
-    public void setIdQrCode(String idQrCode) {
-        this.idQrCode = idQrCode;
     }
 
     public String getNomeFavorito() {

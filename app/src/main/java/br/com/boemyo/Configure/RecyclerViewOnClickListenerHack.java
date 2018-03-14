@@ -1,6 +1,7 @@
 package br.com.boemyo.Configure;
 
 import android.view.View;
+import android.widget.AdapterView;
 
 /**
  * Created by Phelipe Oberst on 19/12/2017.
@@ -8,6 +9,6 @@ import android.view.View;
 
 public interface RecyclerViewOnClickListenerHack {
 
-    public void onClickListener(View view, int position);
+    public void onClickListener(AdapterView<?> parent, View view, int position);
 
 }

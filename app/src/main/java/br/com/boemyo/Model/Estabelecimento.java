@@ -11,6 +11,7 @@ import java.util.List;
 
 public class Estabelecimento implements Serializable {
 
+    private String idEstabelecimento;
     private String idQRCODE;
     private String nomeEstabelecimento;
     private String tipoEstabelecimento;
@@ -23,6 +24,14 @@ public class Estabelecimento implements Serializable {
     private Double longEstabelecimento;
 
     public Estabelecimento() {
+    }
+
+    public String getIdEstabelecimento() {
+        return idEstabelecimento;
+    }
+
+    public void setIdEstabelecimento(String idEstabelecimento) {
+        this.idEstabelecimento = idEstabelecimento;
     }
 
     public String getIdQRCODE() {

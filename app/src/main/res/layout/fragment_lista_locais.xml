@@ -2,12 +2,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/color_grey"
     tools:context="br.com.boemyo.Fragments.ListaLocaisFragment">
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="8dp"
-        android:id="@+id/lv_locais"></ListView>
+        android:background="@color/colorText"
+        android:id="@+id/rv_locais"></android.support.v7.widget.RecyclerView>
 
 </FrameLayout>

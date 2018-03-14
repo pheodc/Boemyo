@@ -3,9 +3,15 @@ package br.com.boemyo.Configure;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
+
+import com.braintreepayments.cardform.utils.CardType;
+import com.braintreepayments.cardform.view.SupportedCardTypesView;
 
 import java.util.Calendar;
 import java.util.Date;
+
+import br.com.boemyo.Model.Pagamento;
 
 /**
  * Created by Phelipe Oberst on 08/01/2018.
@@ -30,6 +36,19 @@ public class Helper {
         return diffMinutos;
     }
 
-
+    public void validaBandeira(Pagamento pagamento, SupportedCardTypesView cardTypesView){
+        Log.i("LOG_TIPO_CARD", pagamento.getBandeira());
+        if(pagamento.getBandeira().equals("VISA") ){
+            cardTypesView.setSupportedCardTypes(CardType.VISA);
+        }else if(pagamento.getBandeira().equals("MASTERCARD") ){
+            cardTypesView.setSupportedCardTypes(CardType.MASTERCARD);
+        }else if(pagamento.getBandeira().equals("AMEX")){
+            cardTypesView.setSupportedCardTypes(CardType.AMEX);
+        }else if(pagamento.getBandeira().equals("DINERS_CLUB")){
+            cardTypesView.setSupportedCardTypes(CardType.DINERS_CLUB);
+        }else{
+            cardTypesView.setSupportedCardTypes(CardType.UNKNOWN);
+        }
+    }
 
 }

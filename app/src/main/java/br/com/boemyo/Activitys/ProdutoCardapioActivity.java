@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -24,16 +26,17 @@ import br.com.boemyo.Adapter.ListaProdutosAdapter;
 import br.com.boemyo.Configure.ConnectivityChangeReceiver;
 import br.com.boemyo.Configure.FirebaseInstance;
 import br.com.boemyo.Configure.Preferencias;
+import br.com.boemyo.Configure.RecyclerViewOnClickListenerHack;
 import br.com.boemyo.Model.CategoriaCardapio;
 import br.com.boemyo.Model.Produto;
 import br.com.boemyo.R;
 
-public class ProdutoCardapioActivity extends AppCompatActivity implements ConnectivityChangeReceiver.OnConnectivityChangedListener {
+public class ProdutoCardapioActivity extends AppCompatActivity implements RecyclerViewOnClickListenerHack, ConnectivityChangeReceiver.OnConnectivityChangedListener {
 
     private ConnectivityChangeReceiver connectivityChangeReceiver;
     private RelativeLayout conexao;
-    private ListView lvProduto;
-    private ArrayAdapter adapter;
+    private RecyclerView rvProduto;
+    private ListaProdutosAdapter adapter;
     private DatabaseReference firebase;
     private ValueEventListener valueEventListener;
     private ArrayList<Produto> arrayProdutos;
@@ -79,12 +82,17 @@ public class ProdutoCardapioActivity extends AppCompatActivity implements Connec
         registerReceiver(connectivityChangeReceiver, filter);
 
         conexao = (RelativeLayout) findViewById(R.id.conexao_produtos);
-        lvProduto = (ListView) findViewById(R.id.lv_produto_cardapio);
+        rvProduto = (RecyclerView) findViewById(R.id.rv_produto_cardapio);
         arrayProdutos = new ArrayList<>();
 
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
+        rvProduto.setLayoutManager(linearLayoutManager);
+
         adapter = new ListaProdutosAdapter(this, arrayProdutos);
-        lvProduto.setAdapter(adapter);
-        lvProduto.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        rvProduto.setAdapter(adapter);
+        /*lvProduto.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Produto produto = (Produto) parent.getItemAtPosition(position);
@@ -92,13 +100,13 @@ public class ProdutoCardapioActivity extends AppCompatActivity implements Connec
                 intent.putExtra("produto", produto);
                 startActivity(intent);
             }
-        });
+        });*/
 
         //Recuperar Firebase
 
         firebase = FirebaseInstance.getFirebase()
                 .child("cardapio")
-                .child(preferencias.getcodQRcode());
+                .child(preferencias.getIdEstabelecimento());
 
         valueEventListener = new ValueEventListener() {
             @Override
@@ -115,12 +123,13 @@ public class ProdutoCardapioActivity extends AppCompatActivity implements Connec
                 for(DataSnapshot dados : dataSnapshot.getChildren()){
                     Produto produto = dados.getValue(Produto.class);
                     Log.i("LOG_NOMECAT", produto.getNomeProduto());
-                    if(produto.getCategoriaProduto().equals(categoriaAtual)){
+                    if(produto.getCategoria().equals(categoriaAtual)){
                         arrayProdutos.add(produto);
+                        adapter.notifyDataSetChanged();
                     }
 
                 }
-                adapter.notifyDataSetChanged();
+
             }
 
             @Override
@@ -139,5 +148,10 @@ public class ProdutoCardapioActivity extends AppCompatActivity implements Connec
         }else{
             conexao.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onClickListener(AdapterView<?> parent, View view, int position) {
+
     }
 }

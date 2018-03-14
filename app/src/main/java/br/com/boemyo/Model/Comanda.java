@@ -3,6 +3,9 @@ package br.com.boemyo.Model;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import br.com.boemyo.Configure.FirebaseInstance;
 
 /**
@@ -11,32 +14,72 @@ import br.com.boemyo.Configure.FirebaseInstance;
 
 public class Comanda {
 
-    private String idQrCode;
+    private String idEstabelecimento;
     private String idComanda;
+    private String idPedido;
+    private String idUsuario;
     private String numMesa;
-    private String situacaoComanda;
-    private String subTotal;
-
+    private Boolean situacaoComanda;
+    private Double subTotal;
+    private String dataAbertura;
+    private String horaAbertura;
+    private DatabaseReference databaseReference = FirebaseInstance.getFirebase();
     public Comanda() {
     }
 
     public void salvarFirebase(){
 
-        DatabaseReference databaseReference = FirebaseInstance.getFirebase();
         databaseReference.child("comanda")
-                .child(getIdQrCode())
+                    .child(getIdComanda())
+                        .setValue(this);
+
+    }
+
+    public void salvarEstabelecimento(){
+        databaseReference.child("comanda")
                 .child(getIdComanda())
-                .child("info")
-                .setValue(this);
-
+                    .child(getIdEstabelecimento())
+                        .setValue(true);
     }
+
+    public void salvarUsuario(){
+        databaseReference.child("comanda")
+                .child(getIdComanda())
+                    .child(getIdUsuario())
+                        .setValue(true);
+    }
+
+    public void salvarComandaUsuario(){
+        databaseReference.child("usuario")
+                .child(getIdUsuario())
+                .child("comandas")
+                    .child(getIdComanda())
+                        .setValue(true);
+    }
+
+    public void salvarComandaEstabelecimento(){
+        databaseReference.child("estabelecimento")
+                .child(getIdEstabelecimento())
+                .child("comandas")
+                    .child(getIdComanda())
+                        .setValue(true);
+    }
+
+    public void salvarPedidoComanda(){
+        databaseReference.child("comanda")
+                .child(getIdComanda())
+                        .child("pedidos")
+                            .child(getIdPedido())
+                                .setValue(true);
+    }
+
     @Exclude
-    public String getIdQrCode() {
-        return idQrCode;
+    public String getIdEstabelecimento() {
+        return idEstabelecimento;
     }
 
-    public void setIdQrCode(String idQrCode) {
-        this.idQrCode = idQrCode;
+    public void setIdEstabelecimento(String idEstabelecimento) {
+        this.idEstabelecimento = idEstabelecimento;
     }
 
     @Exclude
@@ -56,19 +99,52 @@ public class Comanda {
         this.numMesa = numMesa;
     }
 
-    public String getSituacaoComanda() {
+    public Boolean getSituacaoComanda() {
         return situacaoComanda;
     }
 
-    public void setSituacaoComanda(String situacaoComanda) {
+    public void setSituacaoComanda(Boolean situacaoComanda) {
         this.situacaoComanda = situacaoComanda;
     }
 
-    public String getSubTotal() {
+    @Exclude
+    public String getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(String idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
+    public String getDataAbertura() {
+        return dataAbertura;
+    }
+
+    public void setDataAbertura(String dataAbertura) {
+        this.dataAbertura = dataAbertura;
+    }
+
+    public String getHoraAbertura() {
+        return horaAbertura;
+    }
+
+    public void setHoraAbertura(String horaAbertura) {
+        this.horaAbertura = horaAbertura;
+    }
+
+    public Double getSubTotal() {
         return subTotal;
     }
 
-    public void setSubTotal(String subTotal) {
+    public void setSubTotal(Double subTotal) {
         this.subTotal = subTotal;
+    }
+
+    public String getIdPedido() {
+        return idPedido;
+    }
+
+    public void setIdPedido(String idPedido) {
+        this.idPedido = idPedido;
     }
 }

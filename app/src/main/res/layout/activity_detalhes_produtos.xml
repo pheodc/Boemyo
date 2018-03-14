@@ -241,6 +241,7 @@
         </RelativeLayout>
 
     </android.support.v4.widget.NestedScrollView>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -250,11 +251,9 @@
             android:text="@string/bt_label_confirmar_pedido"
             android:textColor="@color/colorText"
             android:id="@+id/bt_confirma_pedido"
-            android:background="@color/colorAccent"
+            android:background="@drawable/ripple_efect"
             android:layout_alignParentBottom="true"/>
-
-
     </RelativeLayout>
 
-
+    <include layout="@layout/bottom_sheet_produto"/>
 </android.support.design.widget.CoordinatorLayout>

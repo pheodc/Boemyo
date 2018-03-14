@@ -6,9 +6,18 @@ package br.com.boemyo.Model;
 
 public class CategoriaCardapio {
 
+    private String idCategoria;
     private String nomeCategoria;
 
     public CategoriaCardapio() {
+    }
+
+    public String getIdCategoria() {
+        return idCategoria;
+    }
+
+    public void setIdCategoria(String idCategoria) {
+        this.idCategoria = idCategoria;
     }
 
     public String getNomeCategoria() {

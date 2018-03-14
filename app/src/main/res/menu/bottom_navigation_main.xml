@@ -4,21 +4,21 @@
     <item
         android:id="@+id/action_estabelecimentos"
         android:enabled="true"
-        android:icon="@mipmap/ic_map_marker_grey600_24dp"
+        android:icon="@mipmap/ic_map_marker_grey600_18dp"
         android:title="Estabelecimentos"
         app:showAsAction="ifRoom"
         />
     <item
         android:id="@+id/action_indique"
         android:enabled="true"
-        android:icon="@mipmap/ic_map_marker_plus_grey600_24dp"
+        android:icon="@mipmap/ic_map_marker_plus_grey600_18dp"
         android:title="Indique"
         app:showAsAction="ifRoom"
         />
     <item
         android:id="@+id/action_favoritos"
         android:enabled="true"
-        android:icon="@mipmap/ic_heart_grey600_24dp"
+        android:icon="@mipmap/ic_heart_grey600_18dp"
         android:title="Favoritos"
         app:showAsAction="ifRoom"
         />

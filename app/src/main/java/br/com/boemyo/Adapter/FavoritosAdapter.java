@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import br.com.boemyo.Configure.FirebaseInstance;
 import br.com.boemyo.Configure.PicassoClient;
 import br.com.boemyo.Configure.Preferencias;
+import br.com.boemyo.Model.Estabelecimento;
 import br.com.boemyo.Model.Favorito;
 import br.com.boemyo.R;
 import br.com.boemyo.Configure.RecyclerViewOnClickListenerHack;
@@ -24,14 +25,15 @@ import br.com.boemyo.Configure.RecyclerViewOnClickListenerHack;
  */
 
 public class FavoritosAdapter extends RecyclerView.Adapter<FavoritosAdapter.ViewHolderFavoritos> {
-    private ArrayList<Favorito> favoritos;
+    private ArrayList<Estabelecimento> estabelecimentos;
     private LayoutInflater liFavoritos;
     private Context context;
     private DatabaseReference firebase;
     private RecyclerViewOnClickListenerHack recyclerViewOnClickListenerHack;
     private Preferencias preferencias;
-    public FavoritosAdapter(Context c, ArrayList<Favorito> favoritos) {
-        this.favoritos = favoritos;
+
+    public FavoritosAdapter(Context c, ArrayList<Estabelecimento> estabelecimentos) {
+        this.estabelecimentos = estabelecimentos;
         this.liFavoritos = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.context = c;
     }
@@ -45,14 +47,15 @@ public class FavoritosAdapter extends RecyclerView.Adapter<FavoritosAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolderFavoritos holder, final int position) {
-        PicassoClient.downloadImage( context, favoritos.get(position).getImgFundoFavorito(), holder.ivBackFavorito);
-        holder.tvNomeLocalFavorito.setText(favoritos.get(position).getNomeFavorito());
+
+        PicassoClient.downloadImage( context, estabelecimentos.get(position).getPerfilEstabelecimento(), holder.ivBackFavorito);
+        holder.tvNomeLocalFavorito.setText(estabelecimentos.get(position).getNomeEstabelecimento());
 
     }
 
     @Override
     public int getItemCount() {
-        return favoritos.size();
+        return estabelecimentos.size();
     }
 
     public void setRecyclerViewOnClickListenerHack(RecyclerViewOnClickListenerHack r){
@@ -62,9 +65,10 @@ public class FavoritosAdapter extends RecyclerView.Adapter<FavoritosAdapter.View
     public void removeItemFavorito(int position){
         preferencias = new Preferencias(context);
         firebase = FirebaseInstance.getFirebase()
-                .child("favorito")
-                .child(preferencias.getIdentificador())
-                .child(favoritos.get(position).getIdQrCode());
+                .child("usuario")
+                    .child(preferencias.getIdentificador())
+                        .child("favorito")
+                            .child(estabelecimentos.get(position).getIdEstabelecimento());
 
         firebase.removeValue();
     }
@@ -89,9 +93,9 @@ public class FavoritosAdapter extends RecyclerView.Adapter<FavoritosAdapter.View
         @Override
         public void onClick(View view) {
             if(recyclerViewOnClickListenerHack != null){
-                recyclerViewOnClickListenerHack.onClickListener(view, getPosition());
+                recyclerViewOnClickListenerHack.onClickListener(null,view, getAdapterPosition());
 
-                removeItemFavorito(getPosition());
+                removeItemFavorito(getAdapterPosition());
             }
         }
     }

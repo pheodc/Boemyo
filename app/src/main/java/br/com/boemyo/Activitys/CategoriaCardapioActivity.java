@@ -5,6 +5,9 @@ import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.menu.ExpandedMenuView;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -25,16 +28,17 @@ import br.com.boemyo.Adapter.ListaCategoriaAdapter;
 import br.com.boemyo.Configure.ConnectivityChangeReceiver;
 import br.com.boemyo.Configure.FirebaseInstance;
 import br.com.boemyo.Configure.Preferencias;
+import br.com.boemyo.Configure.RecyclerViewOnClickListenerHack;
 import br.com.boemyo.Model.CategoriaCardapio;
 import br.com.boemyo.Model.Estabelecimento;
 import br.com.boemyo.R;
 
-public class CategoriaCardapioActivity extends AppCompatActivity implements ConnectivityChangeReceiver.OnConnectivityChangedListener {
+public class CategoriaCardapioActivity extends AppCompatActivity implements RecyclerViewOnClickListenerHack, ConnectivityChangeReceiver.OnConnectivityChangedListener {
 
     private ConnectivityChangeReceiver connectivityChangeReceiver;
     private RelativeLayout conexao;
-    private ListView lvCategoria;
-    private ArrayAdapter adapter;
+    private RecyclerView rvCategoria;
+    private ListaCategoriaAdapter adapter;
     private DatabaseReference firebase;
     private ValueEventListener valueEventListener;
     private ArrayList<CategoriaCardapio> arrayCategorias;
@@ -81,13 +85,17 @@ public class CategoriaCardapioActivity extends AppCompatActivity implements Conn
 
         conexao = (RelativeLayout) findViewById(R.id.conexao_categoria_cardapio);
 
-        lvCategoria = (ListView) findViewById(R.id.lv_categoria_cardapio);
-
+        rvCategoria = (RecyclerView) findViewById(R.id.rv_categoria_cardapio);
+        rvCategoria.setHasFixedSize(true);
         arrayCategorias = new ArrayList<>();
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
+        gridLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
+        rvCategoria.setLayoutManager(gridLayoutManager);
 
         adapter = new ListaCategoriaAdapter(this, arrayCategorias);
-        lvCategoria.setAdapter(adapter);
-        lvCategoria.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        rvCategoria.setAdapter(adapter);
+        /*lvCategoria.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 CategoriaCardapio categoriaCardapio = (CategoriaCardapio) parent.getItemAtPosition(position);
@@ -100,13 +108,13 @@ public class CategoriaCardapioActivity extends AppCompatActivity implements Conn
                 startActivity(intent);
 
             }
-        });
+        });*/
 
         //Recuperar Firebase
 
         firebase = FirebaseInstance.getFirebase()
                 .child("categoria")
-                .child(preferencias.getcodQRcode());
+                .child(preferencias.getIdEstabelecimento());
 
         valueEventListener = new ValueEventListener() {
             @Override
@@ -137,5 +145,10 @@ public class CategoriaCardapioActivity extends AppCompatActivity implements Conn
         }else{
             conexao.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onClickListener(AdapterView<?> parent, View view, int position) {
+
     }
 }

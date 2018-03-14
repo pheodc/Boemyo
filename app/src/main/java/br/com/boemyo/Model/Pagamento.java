@@ -30,7 +30,7 @@ public class Pagamento {
                 .child(getIdPagamento()).setValue(this);
 
     }
-    @Exclude
+
     public String getIdPagamento() {
         return idPagamento;
     }

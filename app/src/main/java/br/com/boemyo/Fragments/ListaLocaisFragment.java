@@ -4,6 +4,8 @@ package br.com.boemyo.Fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,6 +27,7 @@ import br.com.boemyo.Activitys.PerfilEstabelecimentoActivity;
 import br.com.boemyo.Activitys.ProdutoCardapioActivity;
 import br.com.boemyo.Adapter.ListaLocaisAdapter;
 import br.com.boemyo.Configure.FirebaseInstance;
+import br.com.boemyo.Configure.RecyclerViewOnClickListenerHack;
 import br.com.boemyo.Model.Estabelecimento;
 import br.com.boemyo.Model.Produto;
 import br.com.boemyo.R;
@@ -31,10 +35,10 @@ import br.com.boemyo.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ListaLocaisFragment extends Fragment {
+public class ListaLocaisFragment extends Fragment implements RecyclerViewOnClickListenerHack {
 
-    private ListView lvLocais;
-    private ArrayAdapter adapter;
+    private RecyclerView rvLocais;
+    private ListaLocaisAdapter adapter;
     private ArrayList<Estabelecimento> locais;
     private DatabaseReference firebase;
     private ValueEventListener valueEventListener;
@@ -50,27 +54,19 @@ public class ListaLocaisFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_lista_locais, container, false);
 
-        lvLocais = (ListView) view.findViewById(R.id.lv_locais);
-
+        rvLocais = (RecyclerView) view.findViewById(R.id.rv_locais);
+        rvLocais.setHasFixedSize(true);
         locais = new ArrayList<>();
-        /*adapter = new ArrayAdapter(
-                this,
-                R.layout.lista_locais,
-                locais
 
-        );*/
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
+        rvLocais.setLayoutManager(linearLayoutManager);
+
         adapter = new ListaLocaisAdapter(getActivity(), locais);
-        lvLocais.setAdapter(adapter);
-        lvLocais.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Estabelecimento estabelecimento = (Estabelecimento) parent.getItemAtPosition(position);
-                Intent intent = new Intent(getActivity(), PerfilEstabelecimentoActivity.class);
-                intent.putExtra("estabelecimento", estabelecimento);
-                startActivity(intent);
-                getActivity().finish();
-            }
-        });
+        adapter.setRecyclerViewOnClickListenerHack(this);
+        rvLocais.setAdapter(adapter);
+
         //Recuperar Firebase
 
         firebase = FirebaseInstance.getFirebase()
@@ -99,4 +95,6 @@ public class ListaLocaisFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onClickListener(AdapterView<?> parent, View view, int position) {}
 }

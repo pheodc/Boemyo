@@ -37,8 +37,8 @@
     <string name="dialog_qrcode_title">QR Code Invalido</string>
     <string name="dialog_qrcode_message">Esse QR CODE não faz parte da rede Boemyo.</string>
     <string name="dialog_confirma_produto_title">Tem certeza que deseja realizar o pedido?</string>
-    <string name="dialog_confirma_produto_message">Após a confirmação do pedido, poderá ser cancelado em no máximo 3 minutos sem nenhuma
-    cobrança, após isso será cobrado o valor do prato selecionado.</string>
+    <string name="dialog_confirma_produto_message">Após a confirmação do pedido, poderá ser cancelado em no máximo 5 minutos sem nenhuma
+    cobrança.</string>
     <string name="dialog_informa_mesa_title">Informe o número da mesa que você se encontra:</string>
     <string name="dialog_confirma_favorito_title">Tem certeza que deseja favoritar </string>
     <string name="dialog_confirma_favorito_message">Após a confirmação você poderá visualizar seus
@@ -54,6 +54,9 @@
     <string name="dialog_finalizar_cartao_title">Pagamento com Cartão:</string>
     <string name="dialog_valida_gps_title">Localização não está ativa:</string>
     <string name="dialog_valida_gps_message">Por favor habilite seu serviço de localização</string>
+    <string name="dialog_title_encerra_comanda">O Boemyo agradece...</string>
+    <string name="dialog_message_encerra_comanda">Se necessário ou solicitado apresente essa mensagem na saída do local!
+                                                Agradecemos sua preferencia, até a próxima!</string>
 
     <!-- Labels -->
     <string name="bt_cadastrar">Cadastrar-se</string>
@@ -76,6 +79,7 @@
     <string name="bt_label_comanda">Comanda</string>
     <string name="bt_label_atualizar_dados">Concluir Cadastro</string>
     <string name="bt_label_confirmar_pedido">Confirmar Pedido</string>
+    <string name="bt_label_confirmar_pagamento">Confirmar Pagamento</string>
     <string name="bt_label_editar_perfil">Atualizar Dados</string>
     <string name="bt_label_sair_estabelecimento">Sair do Estabelecimento</string>
     <string name="bt_label_login_fb">Login com Facebook</string>
@@ -96,13 +100,17 @@
     <string name="tv_valor_produto">Valor:</string>
     <string name="tv_qtde_produto">Quantidade:</string>
     <string name="tv_obs_produto">Observações</string>
-    <string name="tv_subtotal">SubTotal</string>
+    <string name="tv_subtotal">Total</string>
     <string name="tv_obs_hint_produto">Algo que deseja nos informar?</string>
     <string name="tv_title_pag_local">Estabelecimento</string>
     <string name="title_img">Selecione a Imagem:</string>
     <string name="tv_subtile_pag_local">Realize o pagamento no local</string>
     <string name="tv_selecione_pagamento">Selecione a forma de pagamento:</string>
     <string name="tv_informe_email">Informe abaixo o E-mail cadastrado:</string>
+    <string name="delete">EXCLUIR</string>
+    <string name="cancela_pedido">CANCELAR PEDIDO</string>
+    <string name="pagamento_local">Estabelecimento</string>
+
 
     <!-- Array String -->
     <string name="info_um">O Boemyo foi pensado para quem ainda gostar de estar presente em bares e restaurantes</string>
@@ -122,7 +130,7 @@
     <string name="title_produto">Escolha um Prato:</string>
     <string name="title_comanda">Comanda</string>
     <string name="title_pagamentos">Meios de Pagamento:</string>
-    <string name="title_finalizar_comanda">Finalize sua Comanda</string>
+    <string name="title_escolhe_pagamento">Escolha a forma de Pagamento</string>
     <string name="title_adiciona_cartao">Informe os dados do Cartão:</string>
     <string name="title_estabelecimento">Estabelecimento</string>
     <string name="sub_title_cadastro">Informe seus dados pessoais:</string>

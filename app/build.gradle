@@ -37,7 +37,7 @@ dependencies {
     compile 'com.google.android.gms:play-services:10.2.6'
     compile 'com.google.android.gms:play-services-maps:10.2.6'
     compile 'com.synnapps:carouselview:0.1.4'
-    compile 'com.squareup.picasso:picasso:2.+'
+    compile 'com.squareup.picasso:picasso:2.71828'
     compile 'de.hdodenhof:circleimageview:2.0.+'
     compile 'com.facebook.android:facebook-login:[4,5)'
     compile 'com.android.support:support-v4:26.+'
@@ -45,6 +45,9 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:26.0.+'
     compile 'com.braintreepayments:card-form:3.1.+'
     compile 'com.wdullaer:materialdatetimepicker:2.+'
+    compile 'com.android.support:support-compat:26.+'
+    compile 'com.daimajia.easing:library:2.0@aar'
+    compile 'com.daimajia.androidanimations:library:2.3@aar'
     testCompile 'junit:junit:4.12'
 }
 apply plugin: 'com.google.gms.google-services'

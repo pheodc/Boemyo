@@ -6,8 +6,8 @@
         android:radius="26dp"
         />
 
-    <solid
-        android:color="@color/colorAccent"
-        />
+
+    <solid android:color="@color/colorAccent" /> <!-- background color -->
+
 
 </shape>

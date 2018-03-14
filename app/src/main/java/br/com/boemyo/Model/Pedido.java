@@ -15,36 +15,54 @@ import br.com.boemyo.Configure.FirebaseInstance;
 public class Pedido {
 
     private String idPedido;
-    private String codQrCode;
-    private String idUsuario;
-    private String idComanda;
-    private String idProduto;
+    private String comanda;
+    private String produto;
     private String qtdeProduto;
     private String obsProduto;
     private int situacaoPedido;
     private Double valorPedido;
     private String horaPedido;
-
+    private DatabaseReference databaseReference = FirebaseInstance.getFirebase();
     public Pedido() {
     }
 
     public void salvarFirebase(){
 
-        DatabaseReference databaseReference = FirebaseInstance.getFirebase();
-        databaseReference.child("comanda")
-                .child(getCodQrCode())
+
+        databaseReference.child("pedido")
+                .child(getIdPedido())
+                    .setValue(this);
+
+    }
+
+/*    public void salvarIdComanda(){
+        databaseReference.child("pedido")
+                .child(getIdPedido())
                     .child(getIdComanda())
-                        .child(getIdUsuario())
-                            .child(String.valueOf(getIdPedido())).setValue(this);
-
+                        .setValue(true);
     }
 
-    public String getIdProduto() {
-        return idProduto;
+    public void salvarIdProduto(){
+        databaseReference.child("pedido")
+                .child(getIdPedido())
+                    .child(getIdProduto())
+                        .setValue(true);
+    }*/
+
+    public String getComanda() {
+        return comanda;
     }
 
-    public void setIdProduto(String idProduto) {
-        this.idProduto = idProduto;
+    public void setComanda(String comanda) {
+        this.comanda = comanda;
+    }
+
+    public String getProduto() {
+        return produto;
+    }
+
+    public void setProduto(String produto) {
+        this.produto = produto;
     }
 
     public String getIdPedido() {
@@ -54,15 +72,6 @@ public class Pedido {
     public void setIdPedido(String idPedido) {
         this.idPedido = idPedido;
     }
-
-    public String getIdComanda() {
-        return idComanda;
-    }
-
-    public void setIdComanda(String idComanda) {
-        this.idComanda = idComanda;
-    }
-
 
     public String getQtdeProduto() {
         return qtdeProduto;
@@ -80,23 +89,6 @@ public class Pedido {
         this.obsProduto = obsProduto;
     }
 
-    @Exclude
-    public String getCodQrCode() {
-        return codQrCode;
-    }
-
-    public void setCodQrCode(String codQrCode) {
-        this.codQrCode = codQrCode;
-    }
-
-    @Exclude
-    public String getIdUsuario() {
-        return idUsuario;
-    }
-
-    public void setIdUsuario(String idUsuario) {
-        this.idUsuario = idUsuario;
-    }
 
     public int getSituacaoPedido() {
         return situacaoPedido;

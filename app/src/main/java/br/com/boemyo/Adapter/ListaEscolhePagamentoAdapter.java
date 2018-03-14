@@ -1,26 +1,26 @@
 package br.com.boemyo.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.braintreepayments.cardform.utils.CardType;
 import com.braintreepayments.cardform.view.SupportedCardTypesView;
-import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
 
-import br.com.boemyo.Configure.FirebaseInstance;
+import br.com.boemyo.Activitys.EscolhePagamentoActivity;
+import br.com.boemyo.Activitys.EstabelecimentoMainActivity;
+import br.com.boemyo.Activitys.HomeActivity;
 import br.com.boemyo.Configure.Preferencias;
-import br.com.boemyo.Model.CategoriaCardapio;
+import br.com.boemyo.Configure.RecyclerViewOnClickListenerHack;
+import br.com.boemyo.Model.Comanda;
 import br.com.boemyo.Model.Pagamento;
 import br.com.boemyo.R;
 
@@ -28,15 +28,15 @@ import br.com.boemyo.R;
  * Created by Phelipe Oberst on 07/11/2017.
  */
 
-public class ListaPagamentoAdapter extends RecyclerView.Adapter<ListaPagamentoAdapter.ViewHolderPagamento> {
+public class ListaEscolhePagamentoAdapter extends RecyclerView.Adapter<ListaEscolhePagamentoAdapter.ViewHolderFinalizaComanda> {
 
     private  ArrayList<Pagamento> pagamentos;
     private LayoutInflater liPagamentos;
     private Context context;
-    private Preferencias preferencias;
-    private DatabaseReference firebase;
+    private RecyclerViewOnClickListenerHack recyclerViewOnClickListenerHack;
+    private Comanda comanda;
 
-    public ListaPagamentoAdapter(Context c, ArrayList<Pagamento> pagamentos){
+    public ListaEscolhePagamentoAdapter(Context c, ArrayList<Pagamento> pagamentos){
 
         this.context = c;
         this.pagamentos = pagamentos;
@@ -44,16 +44,16 @@ public class ListaPagamentoAdapter extends RecyclerView.Adapter<ListaPagamentoAd
     }
 
     @Override
-    public ViewHolderPagamento onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public ViewHolderFinalizaComanda onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 
         View v = liPagamentos.inflate(R.layout.lista_pagamento, viewGroup, false);
-        ListaPagamentoAdapter.ViewHolderPagamento vhPagamentos = new ListaPagamentoAdapter.ViewHolderPagamento(v);
+        ListaEscolhePagamentoAdapter.ViewHolderFinalizaComanda vhPagamentos = new ListaEscolhePagamentoAdapter.ViewHolderFinalizaComanda(v);
 
         return vhPagamentos;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolderPagamento holder, int position) {
+    public void onBindViewHolder(ViewHolderFinalizaComanda holder, int position) {
         String dataVencimento = pagamentos.get(position).getDataValidaMes() + "/" + pagamentos.get(position).getDataValidaAno();
         String numCartaoEdit = pagamentos.get(position).getNumCartao().substring(pagamentos.get(position).getNumCartao().length() -4);
         Log.i("LOG_SUBSTRING", numCartaoEdit);
@@ -65,25 +65,36 @@ public class ListaPagamentoAdapter extends RecyclerView.Adapter<ListaPagamentoAd
     @Override
     public int getItemCount() {return pagamentos.size();}
 
-    public class ViewHolderPagamento extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public void setRecyclerViewOnClickListenerHack(RecyclerViewOnClickListenerHack r){
+        recyclerViewOnClickListenerHack = r;
+    }
 
-        public SupportedCardTypesView ctSuportados;
-        public TextView tvNumCartao;
-        public TextView tvDtVencimento;
-        public RelativeLayout viewBackground, viewForeground;
+    public class ViewHolderFinalizaComanda extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        public ViewHolderPagamento(View itemView) {
+        SupportedCardTypesView ctSuportados;
+        TextView tvNumCartao;
+        TextView tvDtVencimento;
+
+        public ViewHolderFinalizaComanda(View itemView) {
             super(itemView);
 
             ctSuportados = (SupportedCardTypesView) itemView.findViewById(R.id.card_type_bandeira);
             tvNumCartao = (TextView) itemView.findViewById(R.id.tv_num_cartao);
             tvDtVencimento = (TextView) itemView.findViewById(R.id.tv_dt_vencimento);
-            viewBackground = itemView.findViewById(R.id.view_background);
-            viewForeground = itemView.findViewById(R.id.view_foreground);
+
+            context = itemView.getContext();
+            itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
+            Pagamento pagamento = pagamentos.get(getAdapterPosition());
+
+            Preferencias preferencias = new Preferencias(context.getApplicationContext());
+
+            preferencias.salvarIdPagamento(pagamento.getIdPagamento());
+
+            ((Activity)context).finish();
 
         }
     }
@@ -103,17 +114,6 @@ public class ListaPagamentoAdapter extends RecyclerView.Adapter<ListaPagamentoAd
         }
     }
 
-    public void deleteCartao(int position){
-        preferencias = new Preferencias(context);
-        firebase = FirebaseInstance.getFirebase()
-                .child("Pagamento")
-                    .child(preferencias.getIdentificador())
-                        .child(pagamentos.get(position).getIdPagamento());
-
-        firebase.removeValue();
-        notifyItemRemoved(position);
-
-    }
     /*public ListaPagamentoAdapter(@NonNull Context c, @NonNull ArrayList<Pagamento> objects) {
         super(c, 0, objects);
         this.pagamentos = objects;

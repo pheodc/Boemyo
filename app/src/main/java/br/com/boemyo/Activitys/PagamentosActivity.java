@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,7 +16,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-import com.facebook.login.LoginManager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,15 +27,15 @@ import br.com.boemyo.Adapter.ListaPagamentoAdapter;
 import br.com.boemyo.Configure.ConnectivityChangeReceiver;
 import br.com.boemyo.Configure.FirebaseInstance;
 import br.com.boemyo.Configure.Preferencias;
-import br.com.boemyo.Model.CategoriaCardapio;
+import br.com.boemyo.Configure.RecyclerItemTouchHelper;
 import br.com.boemyo.Model.Pagamento;
 import br.com.boemyo.R;
 
-public class PagamentosActivity extends AppCompatActivity implements ConnectivityChangeReceiver.OnConnectivityChangedListener {
+public class PagamentosActivity extends AppCompatActivity implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener, ConnectivityChangeReceiver.OnConnectivityChangedListener{
 
     private ConnectivityChangeReceiver connectivityChangeReceiver;
-    private ListView lvPagamento;
-    private ArrayAdapter adapter;
+    private RecyclerView rvPagamento;
+    private ListaPagamentoAdapter adapter;
     private DatabaseReference firebase;
     private ValueEventListener valueEventListener;
     private ArrayList<Pagamento> arrayPagamento;
@@ -80,11 +82,23 @@ public class PagamentosActivity extends AppCompatActivity implements Connectivit
         });
 
         conexao = (RelativeLayout) findViewById(R.id.conexao_favoritos);
-        lvPagamento = (ListView) findViewById(R.id.lv_pagamentos);
+        rvPagamento = (RecyclerView) findViewById(R.id.rv_pagamentos);
 
         arrayPagamento = new ArrayList<>();
         adapter = new ListaPagamentoAdapter(this, arrayPagamento);
-        lvPagamento.setAdapter(adapter);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
+        rvPagamento.setLayoutManager(linearLayoutManager);
+
+
+        rvPagamento.setAdapter(adapter);
+
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(rvPagamento);
+
+
 
         firebase = FirebaseInstance.getFirebase()
                 .child("Pagamento")
@@ -145,5 +159,11 @@ public class PagamentosActivity extends AppCompatActivity implements Connectivit
         }else{
             conexao.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
+
+        adapter.deleteCartao(viewHolder.getAdapterPosition());
     }
 }
