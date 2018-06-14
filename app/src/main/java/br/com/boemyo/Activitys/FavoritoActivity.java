@@ -108,7 +108,7 @@ public class FavoritoActivity extends AppCompatActivity implements RecyclerViewO
 
                                     Estabelecimento estabelecimento = dataSnapshot2.getValue(Estabelecimento.class);
                                     arrayFavoritos.add(estabelecimento);
-                                    Log.i("LOG_FAV", estabelecimento.getNomeEstabelecimento());
+                                    //Log.i("LOG_FAV", estabelecimento.getNomeEstabelecimento());
                                     adapter.notifyDataSetChanged();
 
                                 }

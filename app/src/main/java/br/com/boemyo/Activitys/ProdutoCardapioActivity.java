@@ -42,6 +42,8 @@ public class ProdutoCardapioActivity extends AppCompatActivity implements Recycl
     private ArrayList<Produto> arrayProdutos;
     private Preferencias preferencias;
     private Toolbar tbProduto;
+    private String categoriaAtual;
+    private String nomeCategoriaAtual;
 
     @Override
     protected void onStart() {
@@ -60,9 +62,17 @@ public class ProdutoCardapioActivity extends AppCompatActivity implements Recycl
         setContentView(R.layout.activity_produto_cardapio);
 
         preferencias = new Preferencias(ProdutoCardapioActivity.this);
+        Intent intent = getIntent();
+
+        Bundle bundle = intent.getExtras();
+
+        categoriaAtual = bundle.getString("CHAVE_BUNDLE_CATEGORIA");
+
+        nomeCategoriaAtual = bundle.getString("CHAVE_BUNDLE_NOME_CATEGORIA");
+
 
         tbProduto = (Toolbar) findViewById(R.id.tb_produtos);
-        tbProduto.setTitle(R.string.title_produto);
+        tbProduto.setTitle(nomeCategoriaAtual                                                                                                       );
         setSupportActionBar(tbProduto);
 
 
@@ -92,20 +102,11 @@ public class ProdutoCardapioActivity extends AppCompatActivity implements Recycl
 
         adapter = new ListaProdutosAdapter(this, arrayProdutos);
         rvProduto.setAdapter(adapter);
-        /*lvProduto.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Produto produto = (Produto) parent.getItemAtPosition(position);
-                Intent intent = new Intent(ProdutoCardapioActivity.this, DetalhesProdutosActivity.class);
-                intent.putExtra("produto", produto);
-                startActivity(intent);
-            }
-        });*/
 
         //Recuperar Firebase
 
         firebase = FirebaseInstance.getFirebase()
-                .child("cardapio")
+                .child("produto")
                 .child(preferencias.getIdEstabelecimento());
 
         valueEventListener = new ValueEventListener() {
@@ -113,12 +114,6 @@ public class ProdutoCardapioActivity extends AppCompatActivity implements Recycl
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 arrayProdutos.clear();
-                Intent intent = getIntent();
-
-                Bundle bundle = intent.getExtras();
-
-                String categoriaAtual = bundle.getString("CHAVE_BUNDLE_CATEGORIA");
-
 
                 for(DataSnapshot dados : dataSnapshot.getChildren()){
                     Produto produto = dados.getValue(Produto.class);

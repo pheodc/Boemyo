@@ -72,20 +72,21 @@ public class ListaCategoriaAdapter extends RecyclerView.Adapter<ListaCategoriaAd
         firebase.child("categoria")
                 .child(preferencias.getIdEstabelecimento())
                     .child(categoriaCardapios.get(position).getIdCategoria())
-                       .child("cardapio").addListenerForSingleValueEvent(new ValueEventListener() {
+                       .child("produto").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.getKey() != null){
                     for(DataSnapshot dados : dataSnapshot.getChildren()){
                         Log.i("LOG_CATDATA", dados.getKey());
-                        firebase.child("cardapio").child(preferencias.getIdEstabelecimento()).child(dados.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        firebase.child("produto").child(preferencias.getIdEstabelecimento()).child(dados.getKey()).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 Produto produto = dataSnapshot.getValue(Produto.class);
                                 Log.i("LOG_CATValue", produto.getUrlImagemProduto());
-                                if(produto.getUrlImagemProduto().isEmpty()){
+                                Log.i("LOG_CATValue", produto.getDescProduto());
+                                if(produto.getUrlImagemProduto().equals(null)){
 
-                                    holder.ivImgProdutoCaetgoria.setImageResource(R.drawable.boemyo_marker);
+                                    holder.ivImgProdutoCaetgoria.setImageResource(R.drawable.placeholder);
 
                                 }else {
                                     PicassoClient.downloadImage(context, produto.getUrlImagemProduto(), holder.ivImgProdutoCaetgoria);
@@ -148,6 +149,7 @@ public class ListaCategoriaAdapter extends RecyclerView.Adapter<ListaCategoriaAd
             Intent intent = new Intent(context.getApplicationContext(), ProdutoCardapioActivity.class);
 
             bundle.putString("CHAVE_BUNDLE_CATEGORIA", categoriaCardapio.getIdCategoria());
+            bundle.putString("CHAVE_BUNDLE_NOME_CATEGORIA", categoriaCardapio.getNomeCategoria());
             intent.putExtras(bundle);
             context.startActivity(intent);
         }

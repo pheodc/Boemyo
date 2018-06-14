@@ -19,7 +19,6 @@
     <string name="cancelamento_pedido_entregue">Esse pedido já foi entregue</string>
 
 
-
     <!-- Snacks -->
 
     <string name="send_email_sucesso">Confirme seu E-mail </string>
@@ -57,7 +56,9 @@
     <string name="dialog_title_encerra_comanda">O Boemyo agradece...</string>
     <string name="dialog_message_encerra_comanda">Se necessário ou solicitado apresente essa mensagem na saída do local!
                                                 Agradecemos sua preferencia, até a próxima!</string>
-
+    <string name="dialog_title_adiciona_cartao">Nenhum Cartão Encontrado...</string>
+    <string name="dialog_message_adiciona_cartao">Para abrir uma comanda é necessário ter pelo menos um cartão
+                                                    cadastro!</string>
     <!-- Labels -->
     <string name="bt_cadastrar">Cadastrar-se</string>
     <string name="bt_login">Login</string>
@@ -66,9 +67,10 @@
     <string name="bt_dialog_nagative">CANCELAR</string>
     <string name="bt_dialog_qrcode">TENTE NOVAMENTE</string>
     <string name="bt_inserir_imagem">Inserir Imagem</string>
+    <string name="bt_inserir_cartao">Inserir Cartão</string>
     <string name="tv_label_QR">Leia o QR code do estabelecimento </string>
     <string name="tv_vermais_categoria">Ver Mais </string>
-    <string name="tv_termos_uso"><u>Termos de Uso</u> </string>
+    <string name="tv_termos_uso"><u>Termos de Uso e Privacidade</u> </string>
     <string name="tv_horario">Horários</string>
     <string name="tv_endereco">Endereço</string>
     <string name="tv_title_indique">Informe os dados do local</string>
@@ -92,7 +94,7 @@
     <string name="tv_label_abrir_cadastro">Criar Conta</string>
     <string name="tv_label_esqueci_senha">Esqueci a Senha</string>
     <string name="tv_qrdialog_title">Está em um estabelecimento?</string>
-    <string name="tv_qrdialog_subtitle">Toque no ícone  para ler o Qrcode.</string>
+    <string name="tv_qrdialog_subtitle">Leia o QRcode para acessar o cardápio</string>
     <string name="title_activity_find_place_maps">Map</string>
     <string name="tv_comanda">Comanda</string>
     <string name="tv_cardapio">Cardápio</string>
@@ -107,9 +109,21 @@
     <string name="tv_subtile_pag_local">Realize o pagamento no local</string>
     <string name="tv_selecione_pagamento">Selecione a forma de pagamento:</string>
     <string name="tv_informe_email">Informe abaixo o E-mail cadastrado:</string>
+    <string name="tv_desc_app_tutorial">Boemyo foi pensado em você, que gosta de praticidade,
+                                            e não gosta de esperar.</string>
+    <string name="tv_title_dois_tutorial">Encontre estabelecimentos próximos à você</string>
+    <string name="tv_title_tres_tutorial">Está em um Estabelecimento? Leia o QRCODE para abrir sua comanda!</string>
+    <string name="tv_title_quatro_tutorial">Possui uma comanda aberta? Cardápio do local estará disponível a
+                                                qualquer momento!</string>
+    <string name="tv_title_cinco_tutorial">Escolheu um produto do cardápio? Faça o pedido direto pelo Boemyo!</string>
+    <string name="tv_title_seis_tutorial">Acesse facilmente o cardápio ou sua comanda, a qualquer momento!</string>
+    <string name="tv_title_sete_tutorial">Está na hora de ir embora? Pague sua comanda diretamente pelo Boemyo.
+                                            Chega de Filas!</string>
     <string name="delete">EXCLUIR</string>
     <string name="cancela_pedido">CANCELAR PEDIDO</string>
-    <string name="pagamento_local">Estabelecimento</string>
+    <string name="pagamento_local">Dinheiro</string>
+    <string name="pagamento_null">Adicione um Cartão</string>
+    <string name="pagamento_adiciona">Adicionar</string>
 
 
     <!-- Array String -->
@@ -153,7 +167,7 @@
 
     <!-- Situacao Pedido -->
     <string name="situacao_andamento">Em Andamento</string>
-    <string name="situacao_entregue">Entregue as </string>
+    <string name="situacao_entregue">Entregue</string>
     <string name="situacao_cancelado">Cancelado</string>
 
     <!-- TODO: Remove or change this placeholder text -->

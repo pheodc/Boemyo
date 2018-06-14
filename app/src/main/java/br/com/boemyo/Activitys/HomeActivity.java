@@ -6,13 +6,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.PointF;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
@@ -33,10 +37,14 @@ import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -53,6 +61,8 @@ import br.com.boemyo.Configure.Preferencias;
 import br.com.boemyo.Model.Comanda;
 import br.com.boemyo.Model.DataComanda;
 import br.com.boemyo.Model.Estabelecimento;
+import br.com.boemyo.Model.Pagamento;
+import br.com.boemyo.Model.Usuario;
 import br.com.boemyo.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -66,30 +76,29 @@ public class HomeActivity extends AppCompatActivity
     private TextView tvNomeDrawer;
     private TextView tvEmailDrawer;
     private FirebaseAuth firebaseAuth;
+    private FirebaseUser userInfo;
     private DatabaseReference firebase;
-    private ValueEventListener valueEventListener;
     private QRCodeReaderView qrCodeReaderView;
     private Preferencias preferencias;
     private ArrayList<String> qrcodes;
     private String idEstabelecimento;
     private Date hora = Calendar.getInstance().getTime();
     private String[] permissoesNecessarias = new String[]{
-            Manifest.permission.CAMERA,
             Manifest.permission.VIBRATE,
 
     };
 
 
-    private String idQRCODE;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_home);
         preferencias = new Preferencias(HomeActivity.this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(preferencias.getNome());
-
         setSupportActionBar(toolbar);
+
         FacebookSdk.sdkInitialize(getApplicationContext());
         Permissao.validaPermissoes(1 ,this, permissoesNecessarias);
 
@@ -100,11 +109,9 @@ public class HomeActivity extends AppCompatActivity
 
 
         toolbar.setSubtitle(R.string.app_name);
-        if(preferencias.getcodQRcode() != null && preferencias.getidComanda() != null){
-            Intent intent = new Intent(HomeActivity.this, EstabelecimentoMainActivity.class);
-            startActivity(intent);
-            finish();
-        }
+
+        firebaseAuth = FirebaseInstance.getFirebaseAuth();
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View view = navigationView.getHeaderView(0);
         cvImgDrawer = (CircleImageView) view.findViewById(R.id.iv_img_drawer);
@@ -122,11 +129,29 @@ public class HomeActivity extends AppCompatActivity
             }
         });
 
+        if(preferencias.getAbrirTutorial().equals(null)){
+            preferencias.salvarAbrirTutorial("abrir_tutorial");
+        }
+
+        if(preferencias.getAbrirTutorial().equals("abrir_tutorial")){
+
+            Intent intentTutorial = new Intent(HomeActivity.this, TutorialActivity.class);
+            startActivity(intentTutorial);
+
+
+        }
+
         if(preferencias.getNome() != null){
+
             PicassoClient.downloadImage(this, preferencias.getUrlImagem(), cvImgDrawer);
             tvNomeDrawer.setText(preferencias.getNome());
             tvEmailDrawer.setText(preferencias.getEmail());
         }
+
+
+
+
+
 
         rlQrcodeDialog =(RelativeLayout) findViewById(R.id.rl_qrcode_dialog);
         rlQrcodeDialog.setOnClickListener(new View.OnClickListener() {
@@ -242,9 +267,13 @@ public class HomeActivity extends AppCompatActivity
 
         } else if (id == R.id.action_logout) {
             preferencias.limparDados();
-            firebaseAuth = FirebaseInstance.getFirebaseAuth();
+
             firebaseAuth.signOut();
             LoginManager.getInstance().logOut();
+            Intent intentPagamento = new Intent(HomeActivity.this, PagamentosActivity.class);
+            startActivity(intentPagamento);
+            Intent intentSair = new Intent(HomeActivity.this, ChoiceActivity.class);
+            startActivity(intentSair);
             finish();
         }
 
@@ -284,11 +313,14 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onQRCodeRead(final String text, PointF[] points) {
+        firebase = FirebaseInstance.getFirebase();
+        final Vibrator vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
         Log.i("LOG_QRS", text);
         qrCodeReaderView.stopCamera();
+
         if(!text.isEmpty()) {
             Log.i("LOG_QRS", "Entrou aqui");
-            firebase = FirebaseInstance.getFirebase();
+
 
             firebase.child("qrcode")
                     .child(text).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -301,7 +333,7 @@ public class HomeActivity extends AppCompatActivity
 
                             Comanda comanda = new Comanda();
                             Log.i("LOG_CONTAINS", "Possue");
-                            String idComanda = Base64Custom.codificarBase64(text + preferencias.getEmail() + hora);
+                            String idComanda = firebase.child("comanda").push().getKey();
                             preferencias.salvarQrCodeEstabelecimento(text, idComanda, dados.getKey());
 
                             comanda.setIdComanda(idComanda);
@@ -313,10 +345,9 @@ public class HomeActivity extends AppCompatActivity
                             comanda.setSubTotal(0.0);
 
                             comanda.salvarFirebase();
-                            comanda.salvarEstabelecimento();
-                            comanda.salvarUsuario();
                             comanda.salvarComandaUsuario();
                             comanda.salvarComandaEstabelecimento();
+                            comanda.salvarComandaAberta();
 
                             DataComanda dataComanda = new DataComanda();
 
@@ -328,16 +359,15 @@ public class HomeActivity extends AppCompatActivity
 
                             Intent intent = new Intent(HomeActivity.this, EstabelecimentoMainActivity.class);
                             startActivity(intent);
+
+                            preferencias.salvarAbrirCategoria("open");
+
                             finish();
-
-
 
                         }
                     }else{
                         alertaQRCODE();
                     }
-
-
 
                 }
 
@@ -348,11 +378,14 @@ public class HomeActivity extends AppCompatActivity
             });
 
             Log.i("VALUE_QR", text);
-            Vibrator vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+
             vibrator.vibrate(500);
         }
 
+
     }
+
+
 
     private void alertaQRCODE(){
         AlertDialog.Builder builder = new AlertDialog.Builder( this );
@@ -370,6 +403,9 @@ public class HomeActivity extends AppCompatActivity
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
+
+
 
     @Override
     public void onConnectivityChanged(boolean isConnected) {
@@ -399,5 +435,7 @@ public class HomeActivity extends AppCompatActivity
 
         return horaAbertura;
     }
+
+
 
 }

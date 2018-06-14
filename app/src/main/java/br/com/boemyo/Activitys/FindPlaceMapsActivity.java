@@ -1,5 +1,6 @@
 package br.com.boemyo.Activitys;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -10,6 +11,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -18,7 +20,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.sql.Ref;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import br.com.boemyo.Configure.FirebaseInstance;
 import br.com.boemyo.Configure.Preferencias;
@@ -82,15 +86,26 @@ public class FindPlaceMapsActivity extends SupportMapFragment implements OnMapRe
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
 
-                    Estabelecimento estabelecimento = d.getValue( Estabelecimento.class );
+                    final Estabelecimento estabelecimento = d.getValue( Estabelecimento.class );
                     estabelecimentoList.add(estabelecimento);
 
 
+                    if(estabelecimento.getLatEstabelecimento() != null && estabelecimento.getLongEstabelecimento() != null){
+                        mMap.addMarker(new MarkerOptions()
 
-                    mMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(estabelecimento.getLatEstabelecimento(), estabelecimento.getLongEstabelecimento()))
-                            .title(estabelecimento.getNomeEstabelecimento()))
-                            .setIcon(BitmapDescriptorFactory.fromResource(R.drawable.boemyo_marker));
+                                .position(new LatLng(estabelecimento.getLatEstabelecimento(), estabelecimento.getLongEstabelecimento()))
+                                .title(estabelecimento.getNomeEstabelecimento()))
+                                .setIcon(BitmapDescriptorFactory.fromResource(R.drawable.logo_nova_pin));
+                    }
+
+
+
+                                /*Estabelecimento estabelecimentoParse = estabelecimentoList.get(i);
+                                Log.i("LOG_POSITION_ESTAB", estabelecimentoList.get(i).toString());
+                                Intent intent = new Intent(getActivity(), PerfilEstabelecimentoActivity.class);
+                                intent.putExtra("estabelecimento", estabelecimentoParse);
+                                startActivity(intent);*/
+
                 }
 
             }

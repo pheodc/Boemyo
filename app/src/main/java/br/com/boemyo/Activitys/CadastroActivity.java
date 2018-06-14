@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -96,7 +97,12 @@ public class CadastroActivity extends AppCompatActivity {
         tbCadastro.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                Intent intent = new Intent(CadastroActivity.this, ChoiceActivity.class);
+                startActivity(intent);
                 finish();
+
+
             }
         });
 
@@ -308,6 +314,16 @@ public class CadastroActivity extends AppCompatActivity {
                         }
                     }
                 });
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        Intent intent = new Intent(CadastroActivity.this, ChoiceActivity.class);
+        startActivity(intent);
+        finish();
 
     }
 }

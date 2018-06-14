@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -78,7 +79,7 @@ public class ListaProdutosAdapter extends RecyclerView.Adapter<ListaProdutosAdap
 
     public class ViewHolderProdutos extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        CircleImageView ivImgProduto;
+        RoundedImageView ivImgProduto;
         TextView tvNomeProduto;
         TextView tvDescProduto;
         TextView tvValorProduto;
@@ -86,7 +87,7 @@ public class ListaProdutosAdapter extends RecyclerView.Adapter<ListaProdutosAdap
         public ViewHolderProdutos(View itemView) {
             super(itemView);
 
-            ivImgProduto = (CircleImageView) itemView.findViewById(R.id.iv_img_produto);
+            ivImgProduto = (RoundedImageView) itemView.findViewById(R.id.iv_img_produto);
             tvNomeProduto = (TextView) itemView.findViewById(R.id.tv_nome_produto_lista);
             tvDescProduto = (TextView) itemView.findViewById(R.id.tv_des_produto_lista);
             tvValorProduto = (TextView) itemView.findViewById(R.id.tv_valor_lista);

@@ -11,7 +11,7 @@ import br.com.boemyo.Configure.FirebaseInstance;
 
 public class Favorito {
 
-    private String idEstabeleimento;
+    private String idEstabelecimento;
     private String nomeFavorito;
     private String imgFundoFavorito;
     private String idUsuario;
@@ -24,7 +24,7 @@ public class Favorito {
         DatabaseReference databaseReference = FirebaseInstance.getFirebase();
         databaseReference
                 .child("estabelecimento")
-                    .child(getIdEstabeleimento())
+                    .child(getIdEstabelecimento())
                         .child("favorito")
                             .child(getIdUsuario())
                 .setValue(true);
@@ -38,17 +38,17 @@ public class Favorito {
                 .child("usuario")
                     .child(getIdUsuario())
                         .child("favorito")
-                            .child(getIdEstabeleimento())
+                            .child(getIdEstabelecimento())
                 .setValue(true);
 
     }
 
-    public String getIdEstabeleimento() {
-        return idEstabeleimento;
+    public String getIdEstabelecimento() {
+        return idEstabelecimento;
     }
 
-    public void setIdEstabeleimento(String idEstabeleimento) {
-        this.idEstabeleimento = idEstabeleimento;
+    public void setIdEstabelecimento(String idEstabelecimento) {
+        this.idEstabelecimento = idEstabelecimento;
     }
 
     @Exclude

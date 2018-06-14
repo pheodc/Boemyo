@@ -1,10 +1,13 @@
 package br.com.boemyo.Activitys;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,6 +45,7 @@ import java.util.Arrays;
 import br.com.boemyo.Configure.Base64Custom;
 import br.com.boemyo.Configure.FirebaseInstance;
 import br.com.boemyo.Configure.Preferencias;
+import br.com.boemyo.Model.Comanda;
 import br.com.boemyo.Model.Usuario;
 import br.com.boemyo.R;
 
@@ -62,6 +66,7 @@ public class LoginActivity extends AppCompatActivity {
     private ProgressBar pbLogin;
     private RelativeLayout rlFundoProgress;
     private FirebaseUser user;
+
     /*@Override
     protected void onStop() {
         super.onStop();
@@ -252,6 +257,9 @@ public class LoginActivity extends AppCompatActivity {
                                 //usuario.setPasswordUsuario(senhaValido);
                                 usuario.setImagemUsuario(user.getPhotoUrl().toString());
                                 usuario.salvarFirebase();
+
+                                abrirTutorial();
+
                                 Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                                 startActivity(intent);
                                 finish();
@@ -292,17 +300,50 @@ public class LoginActivity extends AppCompatActivity {
         rlFundoProgress.setVisibility(exibir ? View.VISIBLE : View.GONE);
     }
 
-    private void validaAutendicaEmail(Usuario usuario){
+    private void validaAutendicaEmail(final Usuario usuario){
         user = firebaseAuth.getCurrentUser();
         if(user.isEmailVerified() == true){
-            preferencias.salvarUsuarioPreferencias( identificadorUsuarioLogado,
-                    usuario.getNomeUsuario(),
-                    usuario.getEmailUsuario(),
-                    usuario.getImagemUsuario());
 
-            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-            startActivity(intent);
-            finish();
+            if(usuario.getComandaAberta() != null){
+                databaseReference = FirebaseInstance.getFirebase();
+
+                databaseReference.child("comanda")
+                        .child(usuario.getComandaAberta()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshotComanda) {
+                        Comanda comanda = dataSnapshotComanda.getValue(Comanda.class);
+
+                        abrirTutorial();
+
+                        preferencias.salvarDadosComanda(usuario.getComandaAberta(), comanda.getIdEstabelecimento());
+                        preferencias.salvarUsuarioPreferencias( identificadorUsuarioLogado,
+                                usuario.getNomeUsuario(),
+                                usuario.getEmailUsuario(),
+                                usuario.getImagemUsuario());
+
+                        Intent intent = new Intent(LoginActivity.this, EstabelecimentoMainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {}
+                });
+
+            }else{
+
+                abrirTutorial();
+
+                preferencias.salvarUsuarioPreferencias( identificadorUsuarioLogado,
+                        usuario.getNomeUsuario(),
+                        usuario.getEmailUsuario(),
+                        usuario.getImagemUsuario());
+
+                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
 
         }else{
             exibirProgress(false);
@@ -313,5 +354,25 @@ public class LoginActivity extends AppCompatActivity {
             loginUser.setEnabled(true);
             firebaseAuth.signOut();
         }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        Intent intent = new Intent(LoginActivity.this, ChoiceActivity.class);
+        startActivity(intent);
+        finish();
+
+    }
+
+    public void abrirTutorial(){
+
+        if(preferencias.getAbrirTutorial() == null){
+
+            preferencias.salvarAbrirTutorial("abrir_tutorial");
+        }
+
     }
 }

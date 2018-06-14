@@ -9,7 +9,7 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:fillViewport="true"
         android:id="@+id/scrollLogin"
         android:layout_alignParentLeft="true"
@@ -21,16 +21,17 @@
         >
 
         <ImageView
-            android:layout_width="200dp"
-            android:layout_height="150dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:id="@+id/iv_fonte"
-            android:background="@drawable/fonte_boemyo"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/fundo_transparente_cru"
             android:layout_centerHorizontal="true" />
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/bt_login_facebook"
-            android:layout_marginTop="18dp"
+            android:layout_marginTop="60dp"
             android:layout_marginLeft="18dp"
             android:layout_marginRight="18dp"
             android:text="@string/bt_label_login_fb"
@@ -74,7 +75,8 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/et_email_login"
                     android:inputType="textEmailAddress"
-                    android:hint="E-mail"/>
+                    android:hint="E-mail"
+                    />
 
             </android.support.design.widget.TextInputLayout>
             </LinearLayout>
@@ -118,7 +120,7 @@
                 android:textColor="@color/colorText"
                 android:textStyle="bold"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/style_radius_button"
+                android:background="@drawable/ripple_efect_circle"
                 android:id="@+id/bt_login"
                 android:layout_below="@+id/ll_senha_login"
                 android:text="Login"/>
@@ -132,7 +134,7 @@
                 android:textColor="@color/colorPrimary"
                 android:layout_marginBottom="20dp"
                 android:layout_marginLeft="18dp"
-                android:layout_below="@+id/bt_login"
+
                 android:layout_alignParentBottom="true"
                 />
             <TextView
@@ -144,7 +146,7 @@
                 android:textColor="@color/colorPrimary"
                 android:layout_marginBottom="20dp"
                 android:layout_marginRight="18dp"
-                android:layout_below="@+id/bt_login"
+
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 />

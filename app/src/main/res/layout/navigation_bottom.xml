@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
-    app:itemIconTint="@drawable/nav_item_color_state"
-    app:itemTextColor="@drawable/nav_item_color_state"
-    app:itemBackground="@color/colorText"
+    app:itemIconTint="@color/colorAccent"
+    app:itemTextColor="@color/colorAccent"
+    app:itemBackground="@drawable/ripple_efect_nav_bottom"
     app:menu="@menu/bottom_navigation_main"
     />

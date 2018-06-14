@@ -11,7 +11,7 @@
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/back_add_foto"
+            android:src="@drawable/placeholder"
             ></ImageView>
         <TableLayout
 

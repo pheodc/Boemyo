@@ -17,12 +17,14 @@ import com.github.rtoshiro.util.format.MaskFormatter;
 import com.github.rtoshiro.util.format.SimpleMaskFormatter;
 import com.github.rtoshiro.util.format.text.MaskTextWatcher;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
+import com.google.firebase.database.DatabaseReference;
 
 import java.util.Calendar;
 import java.util.Date;
 
 import br.com.boemyo.Configure.Base64Custom;
 import br.com.boemyo.Configure.ConnectivityChangeReceiver;
+import br.com.boemyo.Configure.FirebaseInstance;
 import br.com.boemyo.Configure.Preferencias;
 import br.com.boemyo.Model.IndiqueEtabelecimentos;
 import br.com.boemyo.R;
@@ -41,7 +43,7 @@ public class IndiqueEstabelecimentoActivity extends AppCompatActivity implements
     private Preferencias preferencias;
     private Date hora = Calendar.getInstance().getTime();
     private RelativeLayout conexao;
-
+    private DatabaseReference databaseReference = FirebaseInstance.getFirebase();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,7 +107,7 @@ public class IndiqueEstabelecimentoActivity extends AppCompatActivity implements
         } else {
             exibirProgress(false);
             IndiqueEtabelecimentos indiqueEtabelecimentos = new IndiqueEtabelecimentos();
-            String idIndicadoCodificado = Base64Custom.codificarBase64(nomeEstabIndique.getText().toString() + hora);
+            String idIndicadoCodificado = databaseReference.child("indiqueEstabelecimentos").push().getKey();
             indiqueEtabelecimentos.setIdUsuario(preferencias.getIdentificador());
             indiqueEtabelecimentos.setIdIndicado(idIndicadoCodificado);
             indiqueEtabelecimentos.setNomeIndicado(nomeEstabValido);

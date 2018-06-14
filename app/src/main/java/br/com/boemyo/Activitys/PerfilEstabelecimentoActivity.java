@@ -89,7 +89,9 @@ public class PerfilEstabelecimentoActivity extends AppCompatActivity implements 
         tvDescEstabelecimento.setText(estabelecimento.getDescEstabelecimento());
 
         tvhorarioEstabelecimento = (TextView) findViewById(R.id.tv_horario_estab);
-        tvhorarioEstabelecimento.setText(estabelecimento.getHorarioEstabelecimento());
+        tvhorarioEstabelecimento.setText(estabelecimento.getDiaSemanaEstabelecimento() + " das " +
+                                            estabelecimento.getHorarioAberturaEstabelecimento() + " às " +
+                                                estabelecimento.getHorarioFechamentoEstabelecimento());
 
         tvenderecoEstabelecimento = (TextView) findViewById(R.id.tv_endereco_estab);
         tvenderecoEstabelecimento.setText(estabelecimento.getEnderecoEstabelecimento());
@@ -209,7 +211,7 @@ public class PerfilEstabelecimentoActivity extends AppCompatActivity implements 
             Favorito favorito = new Favorito();
 
             favorito.setIdUsuario(preferencias.getIdentificador());
-            favorito.setIdEstabeleimento(estabelecimento.getIdEstabelecimento());
+            favorito.setIdEstabelecimento(estabelecimento.getIdEstabelecimento());
             favorito.salvarFavoritoEstabelecimento();
             favorito.salvarFavoritoUsuario();
             menu.getItem(0).setIcon(ContextCompat.getDrawable(PerfilEstabelecimentoActivity.this, R.mipmap.ic_heart_white_24dp));

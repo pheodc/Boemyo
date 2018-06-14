@@ -26,8 +26,9 @@ public class Preferencias {
     private String CHAVE_IDCOMANDA = "idComanda";
     private String CHAVE_IDESTABELECIMENTO = "idEstabelecimento";
     private String CHAVE_NUMMESA = "numMesa";
-    private String CHAVE_SUBTOTAL = "subtotal";
     private String CHAVE_IDPAGAMENTO = "idPagamento";
+    private String CHAVE_ABRIR_CATEGORIA = "abrirCategoria";
+    private String CHAVE_ABRIR_TUTORIAL = "abrirTutorial";
 
     public Preferencias(Context contextoParametro) {
 
@@ -60,6 +61,14 @@ public class Preferencias {
         editor.commit();
     }
 
+    public void salvarDadosComanda(String idComanda, String idEstabelecimento){
+        editor.putString(CHAVE_IDCOMANDA, idComanda);
+        editor.putString(CHAVE_IDESTABELECIMENTO, idEstabelecimento);
+
+
+        editor.commit();
+    }
+
     public void salvarNumMesa(String numMesa){
         editor.putString(CHAVE_NUMMESA, numMesa);
 
@@ -68,6 +77,18 @@ public class Preferencias {
 
     public void salvarIdPagamento(String idPagamento){
         editor.putString(CHAVE_IDPAGAMENTO, idPagamento);
+
+        editor.commit();
+    }
+
+    public void salvarAbrirCategoria(String abrirCategoria){
+        editor.putString(CHAVE_ABRIR_CATEGORIA, abrirCategoria);
+
+        editor.commit();
+    }
+
+    public void salvarAbrirTutorial(String abrirTutorial){
+        editor.putString(CHAVE_ABRIR_TUTORIAL, abrirTutorial);
 
         editor.commit();
     }
@@ -116,6 +137,14 @@ public class Preferencias {
         return preferences.getString(CHAVE_IDPAGAMENTO, null);
     }
 
+    public String getAbrirCategoria(){
+        return preferences.getString(CHAVE_ABRIR_CATEGORIA, null);
+    }
+
+    public String getAbrirTutorial(){
+        return preferences.getString(CHAVE_ABRIR_TUTORIAL, null);
+    }
+
     public void limparDados(){
         editor.clear();
         editor.commit();
@@ -127,6 +156,16 @@ public class Preferencias {
         editor.remove(CHAVE_IDESTABELECIMENTO);
         editor.remove(CHAVE_NUMMESA);
         editor.remove(CHAVE_IDPAGAMENTO);
+        editor.commit();
+    }
+
+    public void removerAbrirCategoria(){
+        editor.remove(CHAVE_ABRIR_CATEGORIA);
+        editor.commit();
+    }
+
+    public void removerAbrirTutorial(){
+        editor.remove(CHAVE_ABRIR_TUTORIAL);
         editor.commit();
     }
 

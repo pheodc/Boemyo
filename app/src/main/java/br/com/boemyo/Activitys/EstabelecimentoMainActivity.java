@@ -3,11 +3,15 @@ package br.com.boemyo.Activitys;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.text.InputType;
@@ -22,13 +26,24 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.login.LoginManager;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.text.SimpleDateFormat;
 
@@ -46,7 +61,9 @@ public class EstabelecimentoMainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ConnectivityChangeReceiver.OnConnectivityChangedListener {
 
     private ConnectivityChangeReceiver connectivityChangeReceiver;
-    private DatabaseReference firebse;
+    private DatabaseReference databaseReference;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseUser userInfo;
     private RelativeLayout conexao;
     private CircleImageView cvImgDrawerEstab;
     private TextView tvNomeDrawerEstab;
@@ -54,8 +71,12 @@ public class EstabelecimentoMainActivity extends AppCompatActivity
     private CardView cardCardapio;
     private CardView cardComanda;
     private Preferencias preferencias;
-    private String numMesa;
-    EditText etNuMesa;
+    private String novaComanda;
+    private ImageView ivCardapio;
+    private ImageView ivComanda;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,21 +91,22 @@ public class EstabelecimentoMainActivity extends AppCompatActivity
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         registerReceiver(connectivityChangeReceiver, filter);
 
+        firebaseAuth = FirebaseInstance.getFirebaseAuth();
+
         conexao = (RelativeLayout) findViewById(R.id.conexao_estabelecimento_main);
-        numMesa = preferencias.getNumMesa();
-        //preferencias.salvarSubTotal(0.0);
-        //Log.i("LOG_SUB", preferencias.getSubTotal());
+        ivCardapio = (ImageView) findViewById(R.id.iv_img_cardapio);
+        ivComanda = (ImageView) findViewById(R.id.iv_img_comanda);
 
-        if(preferencias.getIdPagamento() == null){
-            Intent intent = new Intent(EstabelecimentoMainActivity.this, EscolhePagamentoActivity.class);
-            startActivity(intent);
+        //Picasso.get().load(R.drawable.comanda_new_menor).resize(200,200).into(ivComanda);
+
+
+        if(preferencias.getAbrirCategoria() == "open" ){
+            Intent intentNovaComanda = new Intent(EstabelecimentoMainActivity.this, CategoriaCardapioActivity.class);
+            startActivity(intentNovaComanda);
+
         }
 
-        if(numMesa == null){
-            alertaInformaMesa();
-        }
-
-
+        recuperaEstabelecimento(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -100,7 +122,6 @@ public class EstabelecimentoMainActivity extends AppCompatActivity
         tvEmailDrawerEstab = (TextView) view.findViewById(R.id.tv_email_drawer_estab);
         cardCardapio = (CardView) findViewById(R.id.card_cardapio);
         cardComanda = (CardView) findViewById(R.id.card_comanda);
-
 
         if(preferencias.getNome() != null){
             PicassoClient.downloadImage(this, preferencias.getUrlImagem(), cvImgDrawerEstab);
@@ -158,18 +179,6 @@ public class EstabelecimentoMainActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings_estab) {
             return true;
-        }else if (id == R.id.action_logout_estab) {
-            preferencias.removerPreferencias();
-            Intent intent = new Intent(EstabelecimentoMainActivity.this, HomeActivity.class);
-            startActivity(intent);
-            finish();
-            /*if(preferencias.getSubTotal() != null && !preferencias.getSubTotal().equals("0.0")){
-                alertaPendencias();
-            }else{
-
-            }*/
-
-
         }
 
         return super.onOptionsItemSelected(item);
@@ -183,11 +192,7 @@ public class EstabelecimentoMainActivity extends AppCompatActivity
 
         if (id == R.id.nav_home_estab) {
 
-        } else if (id == R.id.nav_pagamento_estab) {
-            Intent intentPagamento = new Intent(EstabelecimentoMainActivity.this, PagamentosActivity.class);
-            startActivity(intentPagamento);
-
-        } else if (id == R.id.nav_promocao_estab) {
+        }else if (id == R.id.nav_promocao_estab) {
 
         } else if (id == R.id.nav_favorito_estab) {
             Intent intentFavorito = new Intent(EstabelecimentoMainActivity.this, FavoritoActivity.class);
@@ -210,45 +215,6 @@ public class EstabelecimentoMainActivity extends AppCompatActivity
         return true;
     }
 
-    private void alertaInformaMesa(){
-        final AlertDialog.Builder builder = new AlertDialog.Builder( this );
-        View viewCustomDialog = getLayoutInflater().inflate(R.layout.custom_num_mesa, null);
-        etNuMesa = (EditText) viewCustomDialog.findViewById(R.id.et_num_mesa);
-        builder.setTitle(R.string.dialog_informa_mesa_title);
-        builder.setCancelable(false);
-        builder.setView(viewCustomDialog);
-        builder.setPositiveButton(R.string.bt_dialog_positive, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {}
-        });
-        final AlertDialog dialog = builder.create();
-        dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String numMesa = etNuMesa.getText().toString();
-
-                if(numMesa.isEmpty()){
-                    Toast.makeText(EstabelecimentoMainActivity.this, R.string.mesa_empty, Toast.LENGTH_LONG).show();
-                }else{
-                    preferencias.salvarNumMesa(numMesa);
-
-                    firebse = FirebaseInstance.getFirebase()
-                            .child("comanda")
-                                .child(preferencias.getidComanda())
-                                    .child("numMesa");
-                    firebse.setValue(numMesa);
-
-                    /*Comanda comanda = new Comanda();
-                    comanda.setIdEstabelecimento(preferencias.getIdEstabelecimento());
-                    comanda.setIdComanda(preferencias.getidComanda());
-                    comanda.setNumMesa(numMesa);
-                    comanda.salvarFirebase();*/
-                    dialog.dismiss();
-                }
-            }
-        });
-    }
 
     private void alertaPendencias(){
         final AlertDialog.Builder builder = new AlertDialog.Builder( this );
@@ -283,5 +249,31 @@ public class EstabelecimentoMainActivity extends AppCompatActivity
             conexao.setVisibility(View.GONE);
         }
     }
+
+    public void recuperaEstabelecimento(final Toolbar toolbar){
+
+        databaseReference = FirebaseInstance.getFirebase();
+
+        databaseReference.child("estabelecimento")
+                .child(preferencias.getIdEstabelecimento()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Estabelecimento estabelecimento = dataSnapshot.getValue(Estabelecimento.class);
+                final ActionBar ab = getSupportActionBar();
+                toolbar.setTitle(estabelecimento.getNomeEstabelecimento());
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+
+    }
+
 
 }

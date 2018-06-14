@@ -80,7 +80,7 @@ public class ListaLocaisFragment extends Fragment implements RecyclerViewOnClick
 
                 for(DataSnapshot dados : dataSnapshot.getChildren()){
                     Estabelecimento estabelecimento = dados.getValue( Estabelecimento.class );
-                    Log.i("LOG_QRCODES", estabelecimento.getIdQRCODE());
+                    //Log.i("LOG_QRCODES", estabelecimento.getIdQRCODE());
                     locais.add(estabelecimento);
                 }
                 adapter.notifyDataSetChanged();

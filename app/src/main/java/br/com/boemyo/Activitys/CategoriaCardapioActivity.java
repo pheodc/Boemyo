@@ -71,6 +71,12 @@ public class CategoriaCardapioActivity extends AppCompatActivity implements Recy
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        if(preferencias.getAbrirCategoria() != null){
+
+            preferencias.removerAbrirCategoria();
+
+        }
+
         tbCategoriaCardapio.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

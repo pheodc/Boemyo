@@ -19,7 +19,9 @@ public class Estabelecimento implements Serializable {
     private String perfilEstabelecimento;
     private String descEstabelecimento;
     private String enderecoEstabelecimento;
-    private String horarioEstabelecimento;
+    private String diaSemanaEstabelecimento;
+    private String horarioAberturaEstabelecimento;
+    private String horarioFechamentoEstabelecimento;
     private Double latEstabelecimento;
     private Double longEstabelecimento;
 
@@ -110,11 +112,27 @@ public class Estabelecimento implements Serializable {
         this.enderecoEstabelecimento = enderecoEstabelecimento;
     }
 
-    public String getHorarioEstabelecimento() {
-        return horarioEstabelecimento;
+    public String getDiaSemanaEstabelecimento() {
+        return diaSemanaEstabelecimento;
     }
 
-    public void setHorarioEstabelecimento(String horarioEstabelecimento) {
-        this.horarioEstabelecimento = horarioEstabelecimento;
+    public void setDiaSemanaEstabelecimento(String diaSemanaEstabelecimento) {
+        this.diaSemanaEstabelecimento = diaSemanaEstabelecimento;
+    }
+
+    public String getHorarioFechamentoEstabelecimento() {
+        return horarioFechamentoEstabelecimento;
+    }
+
+    public void setHorarioFechamentoEstabelecimento(String horarioFechamentoEstabelecimento) {
+        this.horarioFechamentoEstabelecimento = horarioFechamentoEstabelecimento;
+    }
+
+    public String getHorarioAberturaEstabelecimento() {
+        return horarioAberturaEstabelecimento;
+    }
+
+    public void setHorarioAberturaEstabelecimento(String horarioAberturaEstabelecimento) {
+        this.horarioAberturaEstabelecimento = horarioAberturaEstabelecimento;
     }
 }

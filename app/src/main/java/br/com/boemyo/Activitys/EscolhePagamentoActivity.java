@@ -118,8 +118,9 @@ public class EscolhePagamentoActivity extends AppCompatActivity implements Recyc
                     Pagamento pagamento = dados.getValue(Pagamento.class);
                     Log.i("LOG_NOMECAT", pagamento.getNumCartao());
                     arrayFinalizaComanda.add(pagamento);
+                    adapter.notifyDataSetChanged();
                 }
-                adapter.notifyDataSetChanged();
+
             }
 
             @Override

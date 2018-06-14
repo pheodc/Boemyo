@@ -24,6 +24,7 @@ import java.util.Date;
 
 import br.com.boemyo.Configure.Base64Custom;
 import br.com.boemyo.Configure.ConnectivityChangeReceiver;
+import br.com.boemyo.Configure.FirebaseInstance;
 import br.com.boemyo.Configure.Preferencias;
 import br.com.boemyo.Model.Pagamento;
 import br.com.boemyo.Model.Usuario;
@@ -43,6 +44,7 @@ public class AdicionaNovoCartaoActivity extends AppCompatActivity implements OnC
     private Date hora = Calendar.getInstance().getTime();
     private String bandeiraCartao;
     private RelativeLayout conexao;
+    private DatabaseReference databaseReference = FirebaseInstance.getFirebase();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +100,7 @@ public class AdicionaNovoCartaoActivity extends AppCompatActivity implements OnC
 
             Log.i("LOG_BANDEIRA", bandeiraCartao);
             String horaFormatada = dateFormat.format(hora);
-            String idPagamento = Base64Custom.codificarBase64(cfAdicionaCartao.getCardNumber() +  horaFormatada);
+            String idPagamento = databaseReference.child("Pagamento").push().getKey();
             Toast.makeText(this, R.string.valida_sucesso, Toast.LENGTH_SHORT).show();
             Pagamento pagamento = new Pagamento();
             pagamento.setIdUsuario(preferencias.getIdentificador());

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.widget.ImageView;
 
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import br.com.boemyo.R;
@@ -22,7 +23,7 @@ public class PicassoClient {
 
         }else{
 
-            Picasso.get().load(R.drawable.food_off_boemyo).placeholder(R.color.colorSecondaryText).into(imageView);
+            Picasso.get().load(R.drawable.placeholder).placeholder(R.drawable.placeholder).resize(60, 60).fit().into(imageView);
 
         }
 

@@ -13,8 +13,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/logo_vinho"
+        android:icon="@drawable/logo_fundo_cor_azul"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/logo_boemyo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -27,13 +28,7 @@
 
         <activity
             android:name=".Activitys.ChoiceActivity"
-            android:theme="@style/Theme.MyThemeCru">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/Theme.MyThemeCru"></activity>
         <activity
             android:name=".Activitys.LoginActivity"
             android:theme="@style/Theme.MyThemeCru" />
@@ -72,7 +67,18 @@
         <activity android:name=".Activitys.AdicionaNovoCartaoActivity" />
         <activity android:name=".Activitys.PagamentosActivity" />
         <activity android:name=".Activitys.EscolhePagamentoActivity" />
-        <activity android:name=".Activitys.EsqueciSenhaActivity"></activity>
+        <activity android:name=".Activitys.EsqueciSenhaActivity" />
+        <activity
+            android:name=".Activitys.SplashScreenActivity"
+            android:theme="@style/AppCompat.TelaCheia">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity   android:name=".Activitys.TutorialActivity"
+                    android:theme="@style/AppCompat.TelaCheia"></activity>
     </application>
 
 </manifest>

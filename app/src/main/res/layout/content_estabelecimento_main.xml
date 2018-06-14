@@ -29,9 +29,11 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:scaleType="center"
+                android:scaleType="centerCrop"
                 android:id="@+id/iv_img_cardapio"
-                android:background="@drawable/img_cardapio"
+                android:src="@drawable/img_pedidos"
+                android:hardwareAccelerated="false"
+                android:largeHeap="true"
                 android:adjustViewBounds="true"
 
                 />
@@ -81,10 +83,11 @@
                android:layout_width="match_parent"
                android:layout_height="200dp"
                android:id="@+id/iv_img_comanda"
-               android:scaleType="center"
-               android:background="@drawable/img_pedidos"
+               android:src="@drawable/comanda_new_resize"
+               android:scaleType="centerCrop"
+               android:hardwareAccelerated="false"
+               android:largeHeap="true"
                android:adjustViewBounds="true"
-
                />
            <TextView
                android:layout_width="wrap_content"

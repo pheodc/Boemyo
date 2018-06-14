@@ -35,34 +35,32 @@ public class Comanda {
 
     }
 
-    public void salvarEstabelecimento(){
+    /*public void salvarEstabelecimento(){
         databaseReference.child("comanda")
                 .child(getIdComanda())
-                    .child(getIdEstabelecimento())
-                        .setValue(true);
+                    .child("idEstabelecimento")
+                        .setValue(getIdEstabelecimento());
     }
 
     public void salvarUsuario(){
         databaseReference.child("comanda")
                 .child(getIdComanda())
-                    .child(getIdUsuario())
-                        .setValue(true);
-    }
+                    .child("idUsuario")
+                        .setValue(getIdUsuario());
+    }*/
 
     public void salvarComandaUsuario(){
-        databaseReference.child("usuario")
-                .child(getIdUsuario())
-                .child("comandas")
-                    .child(getIdComanda())
-                        .setValue(true);
+        databaseReference.child("comandaUsuario")
+                            .child(getIdUsuario())
+                                .child(getIdComanda())
+                                    .setValue(true);
     }
 
     public void salvarComandaEstabelecimento(){
-        databaseReference.child("estabelecimento")
-                .child(getIdEstabelecimento())
-                .child("comandas")
-                    .child(getIdComanda())
-                        .setValue(true);
+        databaseReference.child("comandaEstabelecimento")
+                            .child(getIdEstabelecimento())
+                                .child(getIdComanda())
+                                    .setValue(true);
     }
 
     public void salvarPedidoComanda(){
@@ -73,7 +71,14 @@ public class Comanda {
                                 .setValue(true);
     }
 
-    @Exclude
+    public void salvarComandaAberta(){
+        databaseReference.child("usuario")
+                .child(getIdUsuario())
+                .child("comandaAberta")
+                .setValue(getIdComanda());
+    }
+
+
     public String getIdEstabelecimento() {
         return idEstabelecimento;
     }
@@ -107,7 +112,7 @@ public class Comanda {
         this.situacaoComanda = situacaoComanda;
     }
 
-    @Exclude
+
     public String getIdUsuario() {
         return idUsuario;
     }
@@ -147,4 +152,6 @@ public class Comanda {
     public void setIdPedido(String idPedido) {
         this.idPedido = idPedido;
     }
+
+
 }

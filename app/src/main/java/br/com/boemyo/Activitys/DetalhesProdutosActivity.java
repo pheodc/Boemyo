@@ -1,8 +1,10 @@
 package br.com.boemyo.Activitys;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -10,6 +12,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.braintreepayments.cardform.utils.CardType;
 import com.braintreepayments.cardform.view.SupportedCardTypesView;
@@ -27,6 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -64,6 +71,9 @@ public class DetalhesProdutosActivity extends AppCompatActivity implements Conne
     private String valor;
     private Double subTotal = 0.0;
     private BottomSheetBehavior behavior;
+    private DatabaseReference databaseReference = FirebaseInstance.getFirebase();
+    private String numMesa;
+    private EditText etNuMesa;
     @Override
     protected void onResume() {
         super.onResume();
@@ -75,6 +85,7 @@ public class DetalhesProdutosActivity extends AppCompatActivity implements Conne
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalhes_produtos);
         preferencias = new Preferencias(DetalhesProdutosActivity.this);
+        numMesa = preferencias.getNumMesa();
 
         View bottomsheet = findViewById(R.id.ll_bottom_sheet);
 
@@ -156,36 +167,12 @@ public class DetalhesProdutosActivity extends AppCompatActivity implements Conne
         btConfirmaProduto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                recuperaDadosPagamento();
-
+                validaPagamento();
             }
         });
 
     }
 
-
-    private void alertaCorfirmaProduto(){
-        AlertDialog.Builder builder = new AlertDialog.Builder( this );
-        builder.setTitle(R.string.dialog_confirma_produto_title);
-        builder.setMessage(R.string.dialog_confirma_produto_message);
-
-        builder.setPositiveButton(R.string.bt_dialog_positive, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-        builder.setNegativeButton(R.string.bt_dialog_nagative, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
 
     public Double getSubTotal(){
 
@@ -234,79 +221,172 @@ public class DetalhesProdutosActivity extends AppCompatActivity implements Conne
         }
     }
 
-    public void recuperaDadosPagamento(){
+    public void aceitaPedido(){
 
-        final SupportedCardTypesView ivIconCardSheet = (SupportedCardTypesView) findViewById(R.id.iv_sheet_icon_card);
-        final TextView tvNumCardSheet = (TextView) findViewById(R.id.tv_sheet_numero_cartao);
-        TextView tvAlterarCardSheet = (TextView) findViewById(R.id.tv_sheet_alterar_cartao);
+
         Button btConfirmaPedidoSheet = (Button) findViewById(R.id.bt_confirma_sheet);
 
-        tvAlterarCardSheet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(DetalhesProdutosActivity.this, EscolhePagamentoActivity.class);
-                startActivity(intent);
-                behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-            }
-        });
 
         btConfirmaPedidoSheet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-                SimpleDateFormat dataPedidoFormat = new SimpleDateFormat("HH:mm:ss");
-                String horaFormatada = dateFormat.format(hora);
-                String horaPedido = dataPedidoFormat.format(hora);
 
-                Pedido pedido =  new Pedido();
-                Comanda comanda = new Comanda();
-                Double valorProdutoTotal = produto.getValorProduto() * qtdeAtual;
-                pedido.setComanda(preferencias.getidComanda());
-                pedido.setIdPedido(horaFormatada);
-                pedido.setProduto(produto.getIdProduto());
-                pedido.setQtdeProduto(String.valueOf(qtdeAtual));
-                pedido.setObsProduto(etObsProduto.getText().toString());
-                pedido.setValorPedido(valorProdutoTotal);
-                pedido.setHoraPedido(horaPedido);
-                pedido.setSituacaoPedido(0);
-                pedido.salvarFirebase();
+                if(numMesa == null){
+                    alertaInformaMesa();
+                }else {
+                    validaPedido();
+                }
 
-
-                comanda.setIdPedido(horaFormatada);
-                comanda.setIdComanda(preferencias.getidComanda());
-                //comanda.setIdEstabelecimento(preferencias.getIdEstabelecimento());
-                comanda.salvarPedidoComanda();
-                salvaSubTotal(valorProdutoTotal);
-                finish();
             }
         });
 
-            firebse.child("Pagamento")
-                    .child(preferencias.getIdentificador())
-                        .child(preferencias.getIdPagamento()).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    Helper helper = new Helper();
-                    Pagamento pagamento = dataSnapshot.getValue(Pagamento.class);
-                    if(preferencias.getIdPagamento().equals("pag_local")){
-                        tvNumCardSheet.setText(R.string.pagamento_local);
-                        ivIconCardSheet.setSupportedCardTypes(CardType.UNKNOWN);
-                    }else {
-                        Log.i("LOG_RECUPERA_PAGAMENTO", pagamento.getNumCartao());
-                        String numCartaoEdit = pagamento.getNumCartao().substring(pagamento.getNumCartao().length() - 4);
-                        tvNumCardSheet.setText("●●●● " + numCartaoEdit);
-                        helper.validaBandeira(pagamento, ivIconCardSheet);
-                    }
+
+
+
+    }
+
+    private void alertaInformaMesa(){
+        final AlertDialog.Builder builder = new AlertDialog.Builder( this );
+        View viewCustomDialog = getLayoutInflater().inflate(R.layout.custom_num_mesa, null);
+        etNuMesa = (EditText) viewCustomDialog.findViewById(R.id.et_num_mesa);
+        builder.setTitle(R.string.dialog_informa_mesa_title);
+        builder.setCancelable(false);
+        builder.setView(viewCustomDialog);
+        builder.setPositiveButton(R.string.bt_dialog_positive, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {}
+        });
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+
+        etNuMesa.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(TextUtils.isEmpty(editable)){
+                    ((AlertDialog) dialog).getButton(
+                            AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                }else {
+                    ((AlertDialog) dialog).getButton(
+                            AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+
+                }
+            }
+        });
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String numMesa = etNuMesa.getText().toString();
+
+                preferencias.salvarNumMesa(numMesa);
+
+                firebse = FirebaseInstance.getFirebase();
+
+                firebse.child("comanda")
+                            .child(preferencias.getidComanda())
+                                .child("numMesa")
+                                    .setValue(numMesa);
+
+                validaPedido();
+                dialog.dismiss();
+
+
+            }
+        });
+    }
+
+
+    public void validaPedido(){
+
+        SimpleDateFormat dataPedidoFormat = new SimpleDateFormat("HH:mm:ss");
+        String idPedido = databaseReference.child("pedido").push().getKey();
+        String horaPedido = dataPedidoFormat.format(hora);
+
+        Pedido pedido =  new Pedido();
+        Comanda comanda = new Comanda();
+        Double valorProdutoTotal = produto.getValorProduto() * qtdeAtual;
+        pedido.setComanda(preferencias.getidComanda());
+        pedido.setIdPedido(idPedido);
+        pedido.setProduto(produto.getIdProduto());
+        pedido.setQtdeProduto(String.valueOf(qtdeAtual));
+        pedido.setObsProduto(etObsProduto.getText().toString());
+        pedido.setValorPedido(valorProdutoTotal);
+        pedido.setHoraPedido(horaPedido);
+        pedido.setSituacaoPedido(0);
+        pedido.salvarFirebase();
+
+
+        comanda.setIdPedido(idPedido);
+        comanda.setIdComanda(preferencias.getidComanda());
+        //comanda.setIdEstabelecimento(preferencias.getIdEstabelecimento());
+        comanda.salvarPedidoComanda();
+        salvaSubTotal(valorProdutoTotal);
+        finish();
+
+
+    }
+
+    public void validaPagamento(){
+        firebse = FirebaseInstance.getFirebase();
+        final Vibrator vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+        final ArrayList<Pagamento> arrayPagamento = new ArrayList<>();
+
+        firebse.child("Pagamento")
+                .child(preferencias.getIdentificador()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshotPagamento) {
+                for(DataSnapshot dados : dataSnapshotPagamento.getChildren()){
+                    Pagamento pagamento = dados.getValue(Pagamento.class);
+                    arrayPagamento.add(pagamento);
                 }
 
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
+                if(arrayPagamento.size() >= 1){
+                    aceitaPedido();
+                    behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                }else{
+                    alertaAdicionaCartao();
+                    vibrator.vibrate(500);
                 }
-            });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
 
+    }
+
+    private void alertaAdicionaCartao(){
+        AlertDialog.Builder builder = new AlertDialog.Builder( this );
+        builder.setTitle(R.string.dialog_title_adiciona_cartao);
+        builder.setMessage(R.string.dialog_message_adiciona_cartao);
+
+        builder.setPositiveButton(R.string.bt_inserir_cartao, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                Intent intent = new Intent(DetalhesProdutosActivity.this, AdicionaNovoCartaoActivity.class);
+                startActivity(intent);
+            }
+        });
+        builder.setNegativeButton(R.string.bt_dialog_nagative, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                dialog.dismiss();
+
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 }

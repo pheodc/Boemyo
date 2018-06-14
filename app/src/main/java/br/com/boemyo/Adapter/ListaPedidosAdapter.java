@@ -53,11 +53,9 @@ public class ListaPedidosAdapter extends RecyclerView.Adapter<ListaPedidosAdapte
     private  ArrayList<String> pedidos;
     private Context context;
     private DatabaseReference firebase;
-    private ValueEventListener valueEventListener;
     private Preferencias preferencias;
     private LayoutInflater liPedidos;
-    private Date hora = Calendar.getInstance().getTime();
-    private Double subTotal = 0.0;
+    //private Date hora = Calendar.getInstance().getTime();
     private NumberFormat format = NumberFormat.getCurrencyInstance();
     public ListaPedidosAdapter(Context c, ArrayList<String> pedidos){
         this.context = c;
@@ -90,7 +88,7 @@ public class ListaPedidosAdapter extends RecyclerView.Adapter<ListaPedidosAdapte
 
                 situacaoPedido(holder.ivSituacao,holder.tvSituacao,pedido.getSituacaoPedido());
                 holder.tvValor.setText(format.format(pedido.getValorPedido()));
-                firebase.child("cardapio").child(preferencias.getIdEstabelecimento()).child(pedido.getProduto()).addListenerForSingleValueEvent(new ValueEventListener() {
+                firebase.child("produto").child(preferencias.getIdEstabelecimento()).child(pedido.getProduto()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                             Produto produto = dataSnapshot.getValue(Produto.class);
@@ -116,7 +114,7 @@ public class ListaPedidosAdapter extends RecyclerView.Adapter<ListaPedidosAdapte
             }
         });
 
-        YoYo.with(Techniques.Wave)
+        YoYo.with(Techniques.FadeInLeft)
                 .duration(700)
                 .playOn(holder.itemView);
 
@@ -182,11 +180,11 @@ public class ListaPedidosAdapter extends RecyclerView.Adapter<ListaPedidosAdapte
 
     public void situacaoPedido(ImageView ivSituacao, TextView tvSituacao, int situacao){
 
-        if(situacao == 0){
+        if(situacao == 0 || situacao == 1){
             tvSituacao.setText(R.string.situacao_andamento);
             ivSituacao.setImageResource(R.drawable.checkbox_pedido_andamento);
 
-        }else if(situacao == 1){
+        }else if(situacao == 2){
            /*Date hora = Calendar.getInstance().getTime();
             SimpleDateFormat dataPedidoFormat = new SimpleDateFormat("HH:mm:ss");
             String horaPedido = dataPedidoFormat.format(hora);*/

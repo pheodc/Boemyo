@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,6 +22,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.braintreepayments.cardform.utils.CardType;
+import com.braintreepayments.cardform.view.SupportedCardTypesView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,6 +45,7 @@ import br.com.boemyo.Configure.Preferencias;
 import br.com.boemyo.Configure.RecyclerItemTouchHelper;
 import br.com.boemyo.Configure.RecyclerItemTouchHelperComanda;
 import br.com.boemyo.Model.Comanda;
+import br.com.boemyo.Model.Pagamento;
 import br.com.boemyo.Model.Pedido;
 import br.com.boemyo.Model.Produto;
 import br.com.boemyo.R;
@@ -53,17 +57,18 @@ public class ComandaActivity extends AppCompatActivity implements RecyclerItemTo
     private RecyclerView rvComanda;
     private ListaPedidosAdapter adapter;
     private DatabaseReference firebase;
-    private ValueEventListener valueEventListener;
     private ArrayList<String> arrayPedidos;
     private Preferencias preferencias;
     private Toolbar tbComanda;
     private TextView tvSubTotal;
     private Button btFinalizarComanda;
+    private Button btConfirmaPagamentoSheet;
     private Double subTotal = 0.0;
     private Pedido pedido;
     private NumberFormat format = NumberFormat.getCurrencyInstance();
-
-
+    private BottomSheetBehavior behavior;
+    private Pagamento pagamento;
+    Helper helper = new Helper();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +83,13 @@ public class ComandaActivity extends AppCompatActivity implements RecyclerItemTo
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        View bottomsheet = findViewById(R.id.ll_bottom_sheet_finaliza);
+
+        behavior = BottomSheetBehavior.from(bottomsheet);
+
+        btConfirmaPagamentoSheet = (Button) findViewById(R.id.bt_confirma_sheet_finaliza);
+
 
         tbComanda.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,15 +189,109 @@ public class ComandaActivity extends AppCompatActivity implements RecyclerItemTo
         btFinalizarComanda.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                alertaConfirmaEncerrado();
+                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                validaPagamento();
 
 
             }
         });
+
+
+        btConfirmaPagamentoSheet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                tempFinalizaSemCartao();
+
+
+            }
+        });
+
     }
 
-    public void alertaConfirmaEncerrado(){
-        final AlertDialog.Builder builder = new AlertDialog.Builder( this );
+    public void validaPagamento(){
+
+        final SupportedCardTypesView ivIconCardSheet = (SupportedCardTypesView) findViewById(R.id.iv_sheet_icon_card_finaliza);
+        final TextView tvNumCardSheet = (TextView) findViewById(R.id.tv_sheet_numero_cartao_finaliza);
+        //final TextView tvAlterarCardSheet = (TextView) findViewById(R.id.tv_sheet_alterar_cartao_finaliza);
+        final RelativeLayout rlAdicionaCartao = (RelativeLayout) findViewById(R.id.rl_aciona_cartao_bottom_sheet_edit_finaliza);
+
+        rlAdicionaCartao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ComandaActivity.this, EscolhePagamentoActivity.class);
+                startActivity(intent);
+                behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            }
+        });
+
+        if(preferencias.getIdPagamento() != null) {
+            firebase.child("Pagamento").child(preferencias.getIdentificador()).child(preferencias.getIdPagamento()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        pagamento = dataSnapshot.getValue(Pagamento.class);
+
+                        if(preferencias.getIdPagamento().equals("pag_local")){
+
+                            tvNumCardSheet.setText(R.string.pagamento_local);
+                            ivIconCardSheet.setSupportedCardTypes(CardType.UNKNOWN);
+                        }else{
+
+                            String numCartaoEdit = pagamento.getNumCartao().substring(pagamento.getNumCartao().length() - 4);
+                            tvNumCardSheet.setText("●●●● " + numCartaoEdit);
+                            helper.validaBandeira(pagamento, ivIconCardSheet);
+                        }
+
+                    }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }else {
+
+            firebase.child("Pagamento")
+                    .child(preferencias.getIdentificador()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.getValue() == null) {
+                        Log.i("LOG_COM_NULO", "ENTROU NULO");
+                        tvNumCardSheet.setText(R.string.pagamento_adiciona);
+                        ivIconCardSheet.setSupportedCardTypes(CardType.UNKNOWN);
+
+                    }else{
+
+                        for(DataSnapshot dados : dataSnapshot.getChildren()){
+                            pagamento = dados.getValue(Pagamento.class);
+
+                            String numCartaoEdit = pagamento.getNumCartao().substring(pagamento.getNumCartao().length() - 4);
+                            tvNumCardSheet.setText("●●●● " + numCartaoEdit);
+                            helper.validaBandeira(pagamento, ivIconCardSheet);
+
+                        }
+
+                    }
+
+
+
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+
+        }
+
+
+
+
+       /* final AlertDialog.Builder builder = new AlertDialog.Builder( this );
         builder.setTitle(R.string.dialog_title_encerra_comanda);
         builder.setMessage(R.string.dialog_message_encerra_comanda);
 
@@ -218,7 +324,7 @@ public class ComandaActivity extends AppCompatActivity implements RecyclerItemTo
             }
         });
         final AlertDialog dialog = builder.create();
-        dialog.show();
+        dialog.show();*/
 
     }
 
@@ -256,5 +362,48 @@ public class ComandaActivity extends AppCompatActivity implements RecyclerItemTo
             }
         });
         animator.start();
+    }
+
+    private void tempFinalizaSemCartao(){
+        AlertDialog.Builder builder = new AlertDialog.Builder( this );
+        builder.setTitle("Antes de Sair...");
+        builder.setMessage("O Boemyo está a cada dia trabalhando mais para proporcionar a melhor experiência a você." +
+                " Porém nesse momento a opção de pagamento por cartão ainda não está disponível, por favor finalize sua" +
+                " comanda no caixa. Obrigado pela compreensão!");
+
+        builder.setPositiveButton("PAGO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                firebase.child("comanda")
+                        .child(preferencias.getidComanda())
+                        .child("situacaoComanda")
+                        .setValue(false);
+
+                firebase.child("usuario")
+                        .child(preferencias.getIdentificador())
+                        .child("comandaAberta")
+                        .removeValue();
+
+
+
+                preferencias.removerPreferencias();
+
+                Intent intent = new Intent(ComandaActivity.this, HomeActivity.class);
+                startActivity(intent);
+                finish();
+
+            }
+        });
+        builder.setNegativeButton(R.string.bt_dialog_nagative, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                dialog.dismiss();
+
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

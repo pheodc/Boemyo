@@ -20,6 +20,7 @@ public class Usuario {
     private String generoUsuario;
     private String imagemUsuario;
     private String cpfUsuario;
+    private String comandaAberta;
     private double latUsuario;
     private double longUsuario;
 
@@ -109,5 +110,13 @@ public class Usuario {
 
     public void setCpfUsuario(String cpfUsuario) {
         this.cpfUsuario = cpfUsuario;
+    }
+
+    public String getComandaAberta() {
+        return comandaAberta;
+    }
+
+    public void setComandaAberta(String comandaAberta) {
+        this.comandaAberta = comandaAberta;
     }
 }

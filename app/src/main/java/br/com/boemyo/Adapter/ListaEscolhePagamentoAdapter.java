@@ -88,12 +88,11 @@ public class ListaEscolhePagamentoAdapter extends RecyclerView.Adapter<ListaEsco
 
         @Override
         public void onClick(View view) {
-            Pagamento pagamento = pagamentos.get(getAdapterPosition());
+            Pagamento pagamento = pagamentos.get(getPosition());
 
             Preferencias preferencias = new Preferencias(context.getApplicationContext());
 
             preferencias.salvarIdPagamento(pagamento.getIdPagamento());
-
             ((Activity)context).finish();
 
         }
