@@ -24,11 +24,26 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphRequestAsyncTask;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 
@@ -40,8 +55,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.UUID;
 
 import br.com.boemyo.Configure.Base64Custom;
@@ -52,7 +70,7 @@ import br.com.boemyo.Model.Usuario;
 import br.com.boemyo.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class CadastroActivity extends AppCompatActivity {
+public class CadastroActivity extends AppCompatActivity  {
 
     public static final int IMAGEM_INTERNA = 12;
     private EditText nomeUser;
@@ -60,27 +78,36 @@ public class CadastroActivity extends AppCompatActivity {
     private EditText passwordUser;
     private EditText passwordConfirmUser;
     private Button cadastroUser;
-    private CircleImageView inserirImagem;
+    private Button cadastroUserFacebook;
+    //private CircleImageView inserirImagem;
     private FirebaseAuth firebaseAuth;
     private FirebaseStorage firebaseStorage;
     private StorageReference storageReference;
-    private Uri filePath;
-    private Bitmap image;
-    private String urlImagemUser;
+    //private Uri filePath;
+    //private Bitmap image;
+    //private String urlImagemUser;
     private Toolbar tbCadastro;
-    private final String DOWNLOADURL = "https://firebasestorage.googleapis.com/v0/b/boemyo-8e4ef.appspot.com/o/Imagens_Usuarios%2F";
-    private final String DOWNLOADURL2 ="?alt=media&token=b4be21c8-4abc-467f-9544-9e8af1a741eb";
+    //private final String DOWNLOADURL = "https://firebasestorage.googleapis.com/v0/b/boemyo-8e4ef.appspot.com/o/Imagens_Usuarios%2F";
+    //private final String DOWNLOADURL2 ="?alt=media&token=b4be21c8-4abc-467f-9544-9e8af1a741eb";
     private String[] permissoesNecessarias = new String[]{
             Manifest.permission.READ_EXTERNAL_STORAGE
     };
-    Preferencias preferencias;
-
+    private Preferencias preferencias;
+    private CallbackManager callbackManager;
+    private FirebaseUser user;
+    private ProgressBar pbCadastro;
+    private RelativeLayout rlFundoProgressCadastro;
+    private TextView tvTermosUso;
+    private TextView tvPrivacidade;
+    private Bundle bundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro);
 
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
         Permissao.validaPermissoes(1 ,this, permissoesNecessarias);
         preferencias = new Preferencias(CadastroActivity.this);
         firebaseStorage = FirebaseInstance.getFirebaseStorage();
@@ -106,15 +133,36 @@ public class CadastroActivity extends AppCompatActivity {
             }
         });
 
-        urlImagemUser = "perfil_" + UUID.randomUUID().toString();
+        //urlImagemUser = "perfil_" + UUID.randomUUID().toString();
         nomeUser = (EditText) findViewById(R.id.et_nome_cadastro);
         emailUser = (EditText) findViewById(R.id.et_email_cadastro);
         passwordUser = (EditText) findViewById(R.id.et_password_cadastro);
         passwordConfirmUser = (EditText) findViewById(R.id.et_password_cnfirma_cadastro);
         cadastroUser = (Button) findViewById(R.id.bt_cadastro);
-        inserirImagem = (CircleImageView) findViewById(R.id.iv_inseirir_imagem);
+        cadastroUserFacebook = (Button) findViewById(R.id.bt_cadastro_facebook);
+        pbCadastro = (ProgressBar) findViewById(R.id.pb_cadastro);
+        rlFundoProgressCadastro = (RelativeLayout) findViewById(R.id.rl_fundo_progress_cadastro);
+        tvTermosUso = (TextView) findViewById(R.id.tv_termos_uso_link);
+        tvPrivacidade = (TextView) findViewById(R.id.tv_privacidade_link);
+        //inserirImagem = (CircleImageView) findViewById(R.id.iv_inseirir_imagem);
 
-        inserirImagem.setOnClickListener(new View.OnClickListener() {
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                validaLoginFace(loginResult.getAccessToken());
+            }
+
+            @Override
+            public void onCancel() {}
+
+            @Override
+            public void onError(FacebookException error) {
+                Snackbar snackbar = Snackbar.make(cadastroUser, error.toString(), Snackbar.LENGTH_SHORT);
+                snackbar.show();
+            }
+        });
+
+        /*inserirImagem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
@@ -123,12 +171,12 @@ public class CadastroActivity extends AppCompatActivity {
                 startActivityForResult(Intent.createChooser(intent,
                         "Selecione a Imagem"), IMAGEM_INTERNA);
             }
-        });
+        });*/
 
         cadastroUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                uploadImage();
+                //uploadImage();
                 validaCadastro(nomeUser.getText().toString(),
                         emailUser.getText().toString(),
                         passwordUser.getText().toString());
@@ -137,9 +185,51 @@ public class CadastroActivity extends AppCompatActivity {
             }
         });
 
+        cadastroUserFacebook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                LoginManager
+                        .getInstance()
+                        .logInWithReadPermissions(CadastroActivity.this, Arrays.asList("public_profile", "email"));
+            }
+        });
+        bundle = new Bundle();
+
+
+
+        tvTermosUso.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CadastroActivity.this, TermosPrivacidadeActivity.class);
+                bundle.putInt("CHAVE_BUNDLE_TB", 1);
+                bundle.putString("CHAVE_BUNDLE_URL", "https://boemyo.com/termos.html");
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+
+        tvPrivacidade.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CadastroActivity.this, TermosPrivacidadeActivity.class);
+                bundle.putInt("CHAVE_BUNDLE_TB", 2);
+                bundle.putString("CHAVE_BUNDLE_URL", "https://boemyo.com/politicas.html");
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+
+
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    /*@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -179,7 +269,7 @@ public class CadastroActivity extends AppCompatActivity {
                     });
         }else{
         }
-    }
+    }*/
 
     public void validaCadastro(final String nomeValido, final String emailValido,  final String senhaValido) {
         firebaseAuth = FirebaseInstance.getFirebaseAuth();
@@ -207,27 +297,27 @@ public class CadastroActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             String urlPerfilUser;
                             if (task.isSuccessful()) {
-                                if(filePath == null){
+                                /*if(filePath == null){
                                     urlPerfilUser = "NOIMAGE";
                                 }else{
                                     urlPerfilUser = DOWNLOADURL + urlImagemUser + DOWNLOADURL2;
-                                }
+                                }*/
 
                                                 Usuario usuario = new Usuario();
 
                                                 String identificadorUsuario = Base64Custom.codificarBase64(emailValido);
-                                                preferencias.salvarUsuarioPreferencias(identificadorUsuario, nomeValido, emailValido, urlPerfilUser);
+                                                //preferencias.salvarUsuarioPreferencias(identificadorUsuario, nomeValido, emailValido);
                                                 usuario.setIdUsuario(identificadorUsuario);
                                                 usuario.setEmailUsuario(emailValido);
                                                 usuario.setNomeUsuario(nomeValido);
                                                 usuario.setPasswordUsuario(senhaValido);
-                                                usuario.setImagemUsuario(urlPerfilUser);
+                                                //usuario.setImagemUsuario(urlPerfilUser);
                                                 usuario.salvarFirebase();
                                                 autenticaEmail();
                                                 progressDialog.dismiss();
-                                                /*Intent intent = new Intent(CadastroActivity.this, LoginActivity.class);
+                                                Intent intent = new Intent(CadastroActivity.this, LoginActivity.class);
                                                 startActivity(intent);
-                                                finish();*/
+                                                finish();
 
                             } else {
 
@@ -262,6 +352,77 @@ public class CadastroActivity extends AppCompatActivity {
                         }
                     });
         }
+    }
+
+    public void validaLoginFace(final AccessToken accessToken){
+        firebaseAuth = FirebaseInstance.getFirebaseAuth();
+        exibirProgress(true);
+        AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
+        firebaseAuth.signInWithCredential(credential)
+                .addOnCompleteListener(CadastroActivity.this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful()){
+                            emailUser.setEnabled(false);
+                            passwordUser.setEnabled(false);
+                            cadastroUser.setEnabled(false);
+
+
+
+                            GraphRequestAsyncTask requestAsyncTask = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
+                                @Override
+                                public void onCompleted(JSONObject userFace, GraphResponse response) {
+                                    user = firebaseAuth.getCurrentUser();
+
+                                    Usuario usuario = new Usuario();
+                                    //Log.i("LOG_IDFACE", userFace.optString("id"));
+                                    String tipoIndetificador = userFace.optString("id");
+                                    //Log.i("LOG_IDFACE", tipoIndetificador);
+                                    preferencias.salvarUsuarioPreferencias(tipoIndetificador, user.getDisplayName(), user.getEmail());
+                                    usuario.setIdUsuario(tipoIndetificador);
+                                    usuario.setEmailUsuario(user.getEmail());
+                                    usuario.setNomeUsuario(user.getDisplayName());
+                                    //usuario.setPasswordUsuario(senhaValido);
+                                    //usuario.setImagemUsuario(user.getPhotoUrl().toString());
+                                    usuario.salvarFirebase();
+
+                                    Intent intent = new Intent(CadastroActivity.this, HomeActivity.class);
+                                    startActivity(intent);
+                                    finish();
+
+                                }
+                            }).executeAsync();
+
+                            abrirTutorial();
+
+                        }else{
+                            int erro = 0;
+
+                            try{
+                                throw task.getException();
+                            }catch (FirebaseAuthInvalidUserException e) {
+                                emailUser.setFocusable(true);
+                                emailUser.setText("");
+                                passwordUser.setText("");
+                                erro = R.string.erro_email;
+                            } catch (FirebaseAuthInvalidCredentialsException e) {
+                                passwordUser.setFocusable(true);
+                                passwordUser.setText("");
+                                erro = R.string.erro_password_login;
+                            } catch (Exception e) {
+                                erro = R.string.erro_geral;
+                                e.printStackTrace();
+                            }
+                            Log.i("ERRO", task.getException().toString());
+                            exibirProgress(false);
+                            Snackbar snackbar = Snackbar.make(cadastroUser, erro, Snackbar.LENGTH_SHORT);
+                            snackbar.show();
+                        }
+                    }
+                });
+
+
+
     }
 
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
@@ -314,6 +475,20 @@ public class CadastroActivity extends AppCompatActivity {
                         }
                     }
                 });
+
+    }
+
+    private void exibirProgress(boolean exibir) {
+        pbCadastro.setVisibility(exibir ? View.VISIBLE : View.GONE);
+        rlFundoProgressCadastro.setVisibility(exibir ? View.VISIBLE : View.GONE);
+    }
+
+    public void abrirTutorial(){
+
+        if(preferencias.getAbrirTutorial() == null){
+
+            preferencias.salvarAbrirTutorial("abrir_tutorial");
+        }
 
     }
 

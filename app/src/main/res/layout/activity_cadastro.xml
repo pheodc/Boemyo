@@ -17,183 +17,242 @@
         android:layout_below="@+id/toolbar_cadastro"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:orientation="vertical">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/bt_cadastro_facebook"
+                android:layout_marginTop="60dp"
+                android:layout_marginLeft="18dp"
+                android:layout_marginRight="18dp"
+                android:text="@string/bt_label_cadastro_fb"
+                android:textColor="@color/colorText"
+                android:textStyle="bold"
+                android:background="@drawable/style_radius_button_fb"
+                android:layout_below="@+id/iv_fonte"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/bt_cadastro_facebook"
+                android:layout_marginTop="30dp"
+                android:layout_centerInParent="true"
+                android:id="@+id/tv_or_cadastro"
+                android:text="OU"
+                android:textStyle="bold"
+                android:textSize="18sp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/ll_nome"
+                android:layout_below="@id/tv_or_cadastro"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@mipmap/ic_account_circle_grey600_24dp"/>
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/et_nome_cadastro"
+                        android:layout_marginRight="18dp"
+                        android:inputType="text"
+                        android:hint="Nome"/>
+
+
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/ll_email"
+                android:layout_below="@id/ll_nome"
+                android:layout_marginTop="14dp"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@mipmap/ic_email_outline_grey600_24dp"/>
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/et_email_cadastro"
+                        android:inputType="textEmailAddress"
+                        android:hint="E-mail"/>
+
+
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/ll_senha"
+                android:layout_below="@id/ll_email"
+                android:layout_marginTop="14dp"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@mipmap/ic_lock_outline_grey600_24dp"/>
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:passwordToggleEnabled="true"
+                    android:layout_weight="1">
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/et_password_cadastro"
+                        android:inputType="textPassword"
+                        android:hint="Senha"/>
+
+
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/ll_senha_confirma"
+                android:layout_below="@id/ll_senha"
+                android:layout_marginTop="14dp"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@mipmap/ic_lock_open_outline_grey600_24dp"/>
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/et_password_cnfirma_cadastro"
+                        android:inputType="textPassword"
+                        android:hint="Confirma Senha"/>
+
+
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="18dp"
+                android:layout_marginRight="18dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/ripple_efect_circle"
+                android:textColor="@color/colorText"
+                android:layout_below="@id/ll_senha_confirma"
+                android:id="@+id/bt_cadastro"
+                android:text="Cadastrar"
+
+                />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/ll_termos"
+                android:layout_below="@id/bt_cadastro"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="18dp"
+                android:layout_marginRight="18dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_termos_uso"
+                    android:text="@string/tv_termos_uso"
+                    android:textSize="10sp"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_termos_uso_link"
+                    android:text="@string/tv_termos_uso_link"
+                    android:textColor="@color/colorAccent"
+                    android:layout_marginLeft="4dp"
+                    android:textSize="10sp"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ll_termos"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="18dp"
+                android:layout_marginRight="18dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_privacidade"
+                    android:text="@string/tv_privacidade"
+                    android:textSize="10sp"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_privacidade_link"
+                    android:text="@string/tv_privacidade_link"
+                    android:textColor="@color/colorAccent"
+                    android:layout_marginLeft="4dp"
+                    android:textSize="10sp"
+                    />
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+    </ScrollView>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
-        android:orientation="vertical">
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="200dp"
-            android:layout_height="100dp"
-            android:id="@+id/iv_inseirir_imagem"
-            android:layout_marginTop="20dp"
-            android:elevation="8dp"
-            android:layout_centerHorizontal="true"
-            android:src="@drawable/back_add_foto"
-            />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/ll_nome"
-            android:layout_below="@id/iv_inseirir_imagem"
-            android:orientation="horizontal">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="20dp"
-                android:background="@mipmap/ic_account_circle_grey600_24dp"/>
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/et_nome_cadastro"
-                    android:layout_marginRight="18dp"
-                    android:inputType="text"
-                    android:hint="Nome"/>
-
-
-             </android.support.design.widget.TextInputLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/ll_email"
-            android:layout_below="@id/ll_nome"
-            android:layout_marginTop="14dp"
-            android:orientation="horizontal">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="20dp"
-                android:background="@mipmap/ic_email_outline_grey600_24dp"/>
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/et_email_cadastro"
-                    android:inputType="textEmailAddress"
-                    android:hint="E-mail"/>
-
-
-            </android.support.design.widget.TextInputLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/ll_senha"
-            android:layout_below="@id/ll_email"
-            android:layout_marginTop="14dp"
-            android:orientation="horizontal">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="20dp"
-                android:background="@mipmap/ic_lock_outline_grey600_24dp"/>
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:passwordToggleEnabled="true"
-                android:layout_weight="1">
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/et_password_cadastro"
-                    android:inputType="textPassword"
-                    android:hint="Senha"/>
-
-
-            </android.support.design.widget.TextInputLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/ll_senha_confirma"
-            android:layout_below="@id/ll_senha"
-            android:layout_marginTop="14dp"
-            android:orientation="horizontal">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="20dp"
-                android:background="@mipmap/ic_lock_open_outline_grey600_24dp"/>
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/et_password_cnfirma_cadastro"
-                    android:inputType="textPassword"
-                    android:hint="Confirma Senha"/>
-
-
-            </android.support.design.widget.TextInputLayout>
-
-        </LinearLayout>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="18dp"
-            android:layout_marginRight="18dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/ripple_efect_circle"
-            android:textColor="@color/colorText"
-            android:layout_below="@id/ll_senha_confirma"
-            android:id="@+id/bt_cadastro"
-            android:text="Cadastrar"
-
-            />
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_below="@id/bt_cadastro"
-            android:layout_marginTop="16dp"
-            android:layout_centerHorizontal="true"
-            android:orientation="horizontal">
-
-            <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/cb_valida_termos"
-                />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/tv_termos_uso"
-                android:text="@string/tv_termos_uso"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                />
-
-        </LinearLayout>
-
-
-    </RelativeLayout>
-    </ScrollView>
-
+        android:id="@+id/rl_fundo_progress_cadastro"
+        android:background="@color/color_fundo_progress"
+        android:visibility="gone"
+        ></RelativeLayout>
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/pb_cadastro"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        />
 </RelativeLayout>

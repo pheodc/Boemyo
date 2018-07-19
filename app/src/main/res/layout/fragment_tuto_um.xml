@@ -19,7 +19,7 @@
         android:layout_centerInParent="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="60dp"
-        android:src="@drawable/icone_fundo_cor"/>
+        android:src="@drawable/nova_transparente_certa"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

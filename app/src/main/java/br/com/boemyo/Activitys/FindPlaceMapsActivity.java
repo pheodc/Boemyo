@@ -95,7 +95,7 @@ public class FindPlaceMapsActivity extends SupportMapFragment implements OnMapRe
 
                                 .position(new LatLng(estabelecimento.getLatEstabelecimento(), estabelecimento.getLongEstabelecimento()))
                                 .title(estabelecimento.getNomeEstabelecimento()))
-                                .setIcon(BitmapDescriptorFactory.fromResource(R.drawable.logo_nova_pin));
+                                .setIcon(BitmapDescriptorFactory.fromResource(R.drawable.pin_novo));
                     }
 
 

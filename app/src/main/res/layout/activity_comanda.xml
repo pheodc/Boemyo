@@ -24,6 +24,15 @@
             layout="@layout/conexao"
             android:visibility="gone"
             ></include>
+        <ProgressBar
+            android:layout_below="@id/conexao_comanda"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/pb_carrega_comanda"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="20dp"
+
+            />
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -35,7 +44,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="8dp"
-
                 android:id="@+id/rv_comanda"></android.support.v7.widget.RecyclerView>
 
         </RelativeLayout>

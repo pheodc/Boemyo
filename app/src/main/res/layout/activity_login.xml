@@ -25,7 +25,7 @@
             android:layout_height="100dp"
             android:id="@+id/iv_fonte"
             android:layout_marginTop="40dp"
-            android:background="@drawable/fundo_transparente_cru"
+            android:background="@drawable/nova_transparente_certa"
             android:layout_centerHorizontal="true" />
         <Button
             android:layout_width="match_parent"

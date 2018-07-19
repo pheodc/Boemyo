@@ -22,9 +22,11 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         ConnectivityManager connectivityManager = (ConnectivityManager)
                 context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.MULTIPATH_PREFERENCE_HANDOVER);
-        boolean isConnected = activeNetInfo != null && activeNetInfo.isConnectedOrConnecting();
-        listener.onConnectivityChanged(isConnected);
+        NetworkInfo activeNetInfoWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        NetworkInfo activeNetInfoMobile = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        boolean isConnectedWifi = activeNetInfoWifi != null && activeNetInfoWifi.isConnectedOrConnecting();
+        boolean isConnectedMobile = activeNetInfoMobile != null && activeNetInfoWifi.isConnectedOrConnecting();
+        listener.onConnectivityChanged(isConnectedWifi && isConnectedMobile );
     }
 
     public interface OnConnectivityChangedListener {

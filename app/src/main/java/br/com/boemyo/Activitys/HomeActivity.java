@@ -143,7 +143,7 @@ public class HomeActivity extends AppCompatActivity
 
         if(preferencias.getNome() != null){
 
-            PicassoClient.downloadImage(this, preferencias.getUrlImagem(), cvImgDrawer);
+            //PicassoClient.downloadImage(this, preferencias.getUrlImagem(), cvImgDrawer);
             tvNomeDrawer.setText(preferencias.getNome());
             tvEmailDrawer.setText(preferencias.getEmail());
         }
@@ -323,7 +323,7 @@ public class HomeActivity extends AppCompatActivity
 
 
             firebase.child("qrcode")
-                    .child(text).addListenerForSingleValueEvent(new ValueEventListener() {
+                    .child(EncodeString(text)).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Log.i("LOG_QRS", dataSnapshot.toString());
@@ -436,6 +436,8 @@ public class HomeActivity extends AppCompatActivity
         return horaAbertura;
     }
 
-
+    public static String EncodeString(String string) {
+        return string.replace(".", ",");
+    }
 
 }

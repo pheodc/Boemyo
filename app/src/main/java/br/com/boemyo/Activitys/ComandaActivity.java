@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +28,7 @@ import com.braintreepayments.cardform.view.SupportedCardTypesView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
@@ -36,6 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
 import br.com.boemyo.Adapter.ListaPedidosAdapter;
 import br.com.boemyo.Configure.ConnectivityChangeReceiver;
@@ -68,6 +71,7 @@ public class ComandaActivity extends AppCompatActivity implements RecyclerItemTo
     private NumberFormat format = NumberFormat.getCurrencyInstance();
     private BottomSheetBehavior behavior;
     private Pagamento pagamento;
+    private ProgressBar pbCarregaComanda;
     Helper helper = new Helper();
 
     @Override
@@ -91,6 +95,7 @@ public class ComandaActivity extends AppCompatActivity implements RecyclerItemTo
         btConfirmaPagamentoSheet = (Button) findViewById(R.id.bt_confirma_sheet_finaliza);
 
 
+
         tbComanda.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -109,6 +114,7 @@ public class ComandaActivity extends AppCompatActivity implements RecyclerItemTo
         rvComanda = (RecyclerView) findViewById(R.id.rv_comanda);
         tvSubTotal = (TextView) findViewById(R.id.tv_subtotal_pedido);
         btFinalizarComanda = (Button) findViewById(R.id.bt_finalizar_comanda);
+        pbCarregaComanda = (ProgressBar) findViewById(R.id.pb_carrega_comanda);
         arrayPedidos = new ArrayList<>();
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -150,6 +156,11 @@ public class ComandaActivity extends AppCompatActivity implements RecyclerItemTo
 
         firebase = FirebaseInstance.getFirebase();
 
+        //HashMap<String, Object> timestampNow = new HashMap<>();
+        //timestampNow.put("timestamp", ServerValue.TIMESTAMP);
+
+
+
         firebase.child("comanda")
                     .child(preferencias.getidComanda()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -159,6 +170,7 @@ public class ComandaActivity extends AppCompatActivity implements RecyclerItemTo
                 Log.i("LOG_COMANDA", comanda.getSubTotal().toString());
                 //tvSubTotal.setText(format.format( comanda.getSubTotal()));
                 startCountAnimation(Float.parseFloat(comanda.getSubTotal().toString()));
+
                 firebase.child("comanda").child(preferencias.getidComanda()).child("pedidos").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -166,6 +178,7 @@ public class ComandaActivity extends AppCompatActivity implements RecyclerItemTo
                             Log.i("LOG_COMANDA_PEDIDOS", dados.getKey());
                             arrayPedidos.add(dados.getKey());
                             adapter.notifyDataSetChanged();
+                            pbCarregaComanda.setVisibility(View.GONE);
                         }
 
                     }
@@ -175,7 +188,6 @@ public class ComandaActivity extends AppCompatActivity implements RecyclerItemTo
 
                     }
                 });
-
             }
 
             @Override
@@ -350,7 +362,7 @@ public class ComandaActivity extends AppCompatActivity implements RecyclerItemTo
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
 
-        //adapter.cancelaPedido(viewHolder.getAdapterPosition());
+        adapter.cancelaPedido(viewHolder.getAdapterPosition());
     }
 
     private void startCountAnimation(Float finalValue) {

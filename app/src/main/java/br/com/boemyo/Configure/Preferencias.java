@@ -37,11 +37,10 @@ public class Preferencias {
         editor = preferences.edit();
     }
 
-    public void salvarUsuarioPreferencias(String idUsuario, String nomeUsuario, String emailUsuario, String urlImagemUsuario){
+    public void salvarUsuarioPreferencias(String idUsuario, String nomeUsuario, String emailUsuario){
         editor.putString(CHAVE_IDUSUARIO, idUsuario);
         editor.putString(CHAVE_NOME, nomeUsuario);
         editor.putString(CHAVE_EMAIL, emailUsuario);
-        editor.putString(CHAVE_URLIMAGEM, urlImagemUsuario);
         editor.commit();
     }
 

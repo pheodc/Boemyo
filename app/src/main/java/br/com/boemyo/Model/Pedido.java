@@ -22,6 +22,7 @@ public class Pedido {
     private int situacaoPedido;
     private Double valorPedido;
     private String horaPedido;
+    private String idEstabelecimento;
     private DatabaseReference databaseReference = FirebaseInstance.getFirebase();
     public Pedido() {
     }
@@ -30,8 +31,18 @@ public class Pedido {
 
 
         databaseReference.child("pedido")
-                .child(getIdPedido())
-                    .setValue(this);
+                            .child(getIdPedido())
+                                .setValue(this);
+
+    }
+
+    public void salvarStatusPedido(){
+
+        databaseReference.child("statusPedido")
+                            .child("novoPedido")
+                                .child(getIdEstabelecimento())
+                                    .child(getIdPedido())
+                                        .setValue(true);
 
     }
 
@@ -112,5 +123,14 @@ public class Pedido {
 
     public void setHoraPedido(String horaPedido) {
         this.horaPedido = horaPedido;
+    }
+
+    @Exclude
+    public String getIdEstabelecimento() {
+        return idEstabelecimento;
+    }
+
+    public void setIdEstabelecimento(String idEstabelecimento) {
+        this.idEstabelecimento = idEstabelecimento;
     }
 }

@@ -1,14 +1,22 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'Boemyp'
+            keyPassword 'Pheledema_2803'
+            storeFile file('C:/Users/Phelipe Oberst/Desktop/Phelipe/Projetos/Boemyo/Boemyo.jks')
+            storePassword 'Pheledema_2803'
+        }
+    }
     compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "br.com.boemyo"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 3
-        versionName "1.1"
+        versionCode 7
+        versionName "1.1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -16,12 +24,12 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })

@@ -124,7 +124,7 @@ public class EstabelecimentoMainActivity extends AppCompatActivity
         cardComanda = (CardView) findViewById(R.id.card_comanda);
 
         if(preferencias.getNome() != null){
-            PicassoClient.downloadImage(this, preferencias.getUrlImagem(), cvImgDrawerEstab);
+            //PicassoClient.downloadImage(this, preferencias.getUrlImagem(), cvImgDrawerEstab);
             tvNomeDrawerEstab.setText(preferencias.getNome());
             tvEmailDrawerEstab.setText(preferencias.getEmail());
         }

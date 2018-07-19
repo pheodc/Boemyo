@@ -60,7 +60,8 @@
                             android:layout_width="200dp"
                             android:layout_height="wrap_content"
                             android:id="@+id/tv_nome_pedido_lista"
-                            android:layout_marginLeft="72dp"
+                            android:layout_toRightOf="@id/iv_situacao_pedido_lista"
+                            android:layout_marginLeft="16dp"
                             android:textSize="16sp"
                             android:textStyle="bold"
                             android:text="Produto"
@@ -70,10 +71,23 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/tv_situacao_pedido_lista"
-                            android:layout_marginLeft="72dp"
+                            android:id="@+id/tv_hora_pedido_lista"
+                            android:layout_toRightOf="@id/iv_situacao_pedido_lista"
+                            android:layout_marginLeft="16dp"
                             android:textSize="13sp"
                             android:layout_below="@+id/tv_nome_pedido_lista"
+                            android:text="Hora"
+                            android:textColor="@color/colorSecondaryText">
+                        </TextView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/tv_situacao_pedido_lista"
+                            android:layout_toRightOf="@id/iv_situacao_pedido_lista"
+                            android:layout_marginLeft="16dp"
+                            android:textSize="13sp"
+                            android:layout_below="@+id/tv_hora_pedido_lista"
                             android:text="Situação"
                             android:textColor="@color/colorSecondaryText">
                         </TextView>

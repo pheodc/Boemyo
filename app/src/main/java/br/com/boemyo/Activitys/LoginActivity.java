@@ -3,13 +3,18 @@ package br.com.boemyo.Activitys;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
+import android.media.MediaCas;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -24,6 +29,9 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphRequestAsyncTask;
+import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -35,11 +43,16 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONObject;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 import br.com.boemyo.Configure.Base64Custom;
@@ -94,6 +107,7 @@ public class LoginActivity extends AppCompatActivity {
             Log.i("LOG_FIREBASE_LOGIN",  "NULL");
         }
 
+
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -122,6 +136,7 @@ public class LoginActivity extends AppCompatActivity {
         loginFacebookUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 LoginManager
                         .getInstance()
                         .logInWithReadPermissions(LoginActivity.this, Arrays.asList("public_profile", "email"));
@@ -228,7 +243,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public void validaLoginFace(AccessToken accessToken){
+    public void validaLoginFace(final AccessToken accessToken){
         firebaseAuth = FirebaseInstance.getFirebaseAuth();
         exibirProgress(true);
         AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
@@ -242,27 +257,47 @@ public class LoginActivity extends AppCompatActivity {
                             loginUser.setEnabled(false);
                             user = firebaseAuth.getCurrentUser();
 
-                                Usuario usuario = new Usuario();
-                                String tipoIndetificador;
-                                if(user.getEmail() != null){
-                                    tipoIndetificador = user.getEmail();
-                                }else{
-                                    tipoIndetificador = user.getUid();
+                            GraphRequestAsyncTask requestAsyncTask = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
+                                @Override
+                                public void onCompleted(JSONObject userFace, GraphResponse response) {
+                                    user = firebaseAuth.getCurrentUser();
+
+                                    identificadorUsuarioLogado = userFace.optString("id");
+
+                                    databaseReference = FirebaseInstance.getFirebase()
+                                            .child("usuario")
+                                            .child(identificadorUsuarioLogado);
+
+                                    valueEventListener = new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                            Usuario usuario = dataSnapshot.getValue(Usuario.class);
+
+                                            if(dataSnapshot.getKey() != null){
+
+                                                validaComanda(usuario);
+
+
+                                            }else {
+                                                exibirProgress(false);
+                                                Snackbar snackbar = Snackbar.make(loginUser, R.string.valida_face_nao_cadastrado, Snackbar.LENGTH_SHORT);
+                                                snackbar.show();
+                                                LoginManager.getInstance().logOut();
+                                            }
+
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    };
+                                    databaseReference.addValueEventListener(valueEventListener);
+
                                 }
-                                String identificadorUsuario = Base64Custom.codificarBase64(tipoIndetificador);
-                                preferencias.salvarUsuarioPreferencias(identificadorUsuario, user.getDisplayName(), user.getEmail(), user.getPhotoUrl().toString());
-                                usuario.setIdUsuario(identificadorUsuario);
-                                usuario.setEmailUsuario(user.getEmail());
-                                usuario.setNomeUsuario(user.getDisplayName());
-                                //usuario.setPasswordUsuario(senhaValido);
-                                usuario.setImagemUsuario(user.getPhotoUrl().toString());
-                                usuario.salvarFirebase();
-
-                                abrirTutorial();
-
-                                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                                startActivity(intent);
-                                finish();
+                            }).executeAsync();
 
 
                         }else{
@@ -304,45 +339,7 @@ public class LoginActivity extends AppCompatActivity {
         user = firebaseAuth.getCurrentUser();
         if(user.isEmailVerified() == true){
 
-            if(usuario.getComandaAberta() != null){
-                databaseReference = FirebaseInstance.getFirebase();
-
-                databaseReference.child("comanda")
-                        .child(usuario.getComandaAberta()).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshotComanda) {
-                        Comanda comanda = dataSnapshotComanda.getValue(Comanda.class);
-
-                        abrirTutorial();
-
-                        preferencias.salvarDadosComanda(usuario.getComandaAberta(), comanda.getIdEstabelecimento());
-                        preferencias.salvarUsuarioPreferencias( identificadorUsuarioLogado,
-                                usuario.getNomeUsuario(),
-                                usuario.getEmailUsuario(),
-                                usuario.getImagemUsuario());
-
-                        Intent intent = new Intent(LoginActivity.this, EstabelecimentoMainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {}
-                });
-
-            }else{
-
-                abrirTutorial();
-
-                preferencias.salvarUsuarioPreferencias( identificadorUsuarioLogado,
-                        usuario.getNomeUsuario(),
-                        usuario.getEmailUsuario(),
-                        usuario.getImagemUsuario());
-
-                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                startActivity(intent);
-                finish();
-            }
+            validaComanda(usuario);
 
 
         }else{
@@ -374,5 +371,50 @@ public class LoginActivity extends AppCompatActivity {
             preferencias.salvarAbrirTutorial("abrir_tutorial");
         }
 
+
     }
+
+    public void validaComanda(final Usuario usuario){
+
+        if(usuario.getComandaAberta() != null){
+            databaseReference = FirebaseInstance.getFirebase();
+
+            databaseReference.child("comanda")
+                    .child(usuario.getComandaAberta()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshotComanda) {
+                    Comanda comanda = dataSnapshotComanda.getValue(Comanda.class);
+
+                    abrirTutorial();
+
+                    preferencias.salvarDadosComanda(usuario.getComandaAberta(), comanda.getIdEstabelecimento());
+                    preferencias.salvarUsuarioPreferencias( identificadorUsuarioLogado,
+                            usuario.getNomeUsuario(),
+                            usuario.getEmailUsuario());
+
+                    Intent intent = new Intent(LoginActivity.this, EstabelecimentoMainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {}
+            });
+
+        }else{
+
+            abrirTutorial();
+
+            preferencias.salvarUsuarioPreferencias( identificadorUsuarioLogado,
+                    usuario.getNomeUsuario(),
+                    usuario.getEmailUsuario());
+
+            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
+    }
+
+
 }

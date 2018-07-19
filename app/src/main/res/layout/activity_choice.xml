@@ -8,15 +8,15 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/chef_back_edit"
+        android:src="@drawable/back_novo_choice"
         android:id="@+id/iv_fundo_choice"
-        android:alpha=".60"
+        android:alpha=".70"
         android:scaleType="centerCrop"/>
     <ImageView
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:scaleType="centerCrop"
-        android:background="@drawable/fundo_transparente_cru"
+        android:background="@drawable/nova_transparente_certa"
         android:layout_alignParentTop="true"
         android:layout_centerInParent="true"
         android:layout_marginTop="50dp"/>

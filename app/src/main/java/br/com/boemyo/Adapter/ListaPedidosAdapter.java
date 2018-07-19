@@ -34,6 +34,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import br.com.boemyo.Activitys.ComandaActivity;
+import br.com.boemyo.Activitys.MotivoCancelamentoActivity;
 import br.com.boemyo.Configure.FirebaseInstance;
 import br.com.boemyo.Configure.Helper;
 import br.com.boemyo.Configure.PicassoClient;
@@ -55,6 +56,7 @@ public class ListaPedidosAdapter extends RecyclerView.Adapter<ListaPedidosAdapte
     private DatabaseReference firebase;
     private Preferencias preferencias;
     private LayoutInflater liPedidos;
+    private Double subTotal;
     //private Date hora = Calendar.getInstance().getTime();
     private NumberFormat format = NumberFormat.getCurrencyInstance();
     public ListaPedidosAdapter(Context c, ArrayList<String> pedidos){
@@ -87,6 +89,7 @@ public class ListaPedidosAdapter extends RecyclerView.Adapter<ListaPedidosAdapte
                 final Pedido pedido = dataSnapshot.getValue(Pedido.class);
 
                 situacaoPedido(holder.ivSituacao,holder.tvSituacao,pedido.getSituacaoPedido());
+                holder.tvHora.setText("Hora do Pedido: " + pedido.getHoraPedido());
                 holder.tvValor.setText(format.format(pedido.getValorPedido()));
                 firebase.child("produto").child(preferencias.getIdEstabelecimento()).child(pedido.getProduto()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -94,6 +97,7 @@ public class ListaPedidosAdapter extends RecyclerView.Adapter<ListaPedidosAdapte
                             Produto produto = dataSnapshot.getValue(Produto.class);
                             Log.i("LOG_PRODUTO", produto.getNomeProduto());
                             holder.tvProduto.setText(pedido.getQtdeProduto() + " x " + produto.getNomeProduto());
+
 
 
 
@@ -105,6 +109,24 @@ public class ListaPedidosAdapter extends RecyclerView.Adapter<ListaPedidosAdapte
                     }
                 });
 
+                firebase.child("comanda")
+                        .child(pedido.getComanda()).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Comanda comanda = dataSnapshot.getValue(Comanda.class);
+
+                        subTotal = comanda.getSubTotal();
+
+                        //Double subTotalCancelamento = comanda.getSubTotal() - produto.getValorProduto();
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
             }
 
@@ -152,6 +174,7 @@ public class ListaPedidosAdapter extends RecyclerView.Adapter<ListaPedidosAdapte
     public class ViewHolderPedidos extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView tvProduto;
+        TextView tvHora;
         TextView tvSituacao;
         TextView tvValor;
         ImageView ivSituacao;
@@ -161,6 +184,7 @@ public class ListaPedidosAdapter extends RecyclerView.Adapter<ListaPedidosAdapte
             super(itemView);
 
             tvProduto = (TextView) itemView.findViewById(R.id.tv_nome_pedido_lista);
+            tvHora = (TextView) itemView.findViewById(R.id.tv_hora_pedido_lista);
             tvSituacao = (TextView) itemView.findViewById(R.id.tv_situacao_pedido_lista);
             tvValor = (TextView) itemView.findViewById(R.id.tv_valor_pedido_lista);
             ivSituacao= (ImageView) itemView.findViewById(R.id.iv_situacao_pedido_lista);
@@ -183,15 +207,40 @@ public class ListaPedidosAdapter extends RecyclerView.Adapter<ListaPedidosAdapte
         if(situacao == 0 || situacao == 1){
             tvSituacao.setText(R.string.situacao_andamento);
             ivSituacao.setImageResource(R.drawable.checkbox_pedido_andamento);
+            tvSituacao.setVisibility(View.GONE);
+            ivSituacao.setVisibility(View.GONE);
 
-        }else if(situacao == 2){
+        }else if(situacao == 2) {
            /*Date hora = Calendar.getInstance().getTime();
             SimpleDateFormat dataPedidoFormat = new SimpleDateFormat("HH:mm:ss");
             String horaPedido = dataPedidoFormat.format(hora);*/
 
             tvSituacao.setText(R.string.situacao_entregue);
             ivSituacao.setImageResource(R.drawable.checkbox_pedido_confirmado);
-        }else{
+            tvSituacao.setVisibility(View.GONE);
+            ivSituacao.setVisibility(View.GONE);
+        }else if(situacao == 4){
+           /*Date hora = Calendar.getInstance().getTime();
+            SimpleDateFormat dataPedidoFormat = new SimpleDateFormat("HH:mm:ss");
+            String horaPedido = dataPedidoFormat.format(hora);*/
+
+                tvSituacao.setText(R.string.situacao_avaliacao);
+                ivSituacao.setImageResource(R.drawable.checkbox_pedido_em_avaliacao);
+        }else if(situacao == 5){
+           /*Date hora = Calendar.getInstance().getTime();
+            SimpleDateFormat dataPedidoFormat = new SimpleDateFormat("HH:mm:ss");
+            String horaPedido = dataPedidoFormat.format(hora);*/
+
+            tvSituacao.setText(R.string.situacao_cancelado_abonado);
+            ivSituacao.setImageResource(R.drawable.checkbox_pedido_cancelado);
+        }else if(situacao == 6){
+           /*Date hora = Calendar.getInstance().getTime();
+            SimpleDateFormat dataPedidoFormat = new SimpleDateFormat("HH:mm:ss");
+            String horaPedido = dataPedidoFormat.format(hora);*/
+
+            tvSituacao.setText(R.string.situacao_cancelado_cobrado);
+            ivSituacao.setImageResource(R.drawable.checkbox_pedido_cancelado);
+        }else {
             tvSituacao.setText(R.string.situacao_cancelado);
             ivSituacao.setImageResource(R.drawable.checkbox_pedido_cancelado);
         }
@@ -199,31 +248,118 @@ public class ListaPedidosAdapter extends RecyclerView.Adapter<ListaPedidosAdapte
 
     }
 
-    /*public void cancelaPedido(int position){
+    public void cancelaPedido(final int position){
 
-        ComandaActivity comanda = new ComandaActivity();
 
-        Date horarioAtual =  Calendar.getInstance().getTime();
-        SimpleDateFormat dataFormat = new SimpleDateFormat("HH:mm:ss");
-        String horaFormatada = dataFormat.format(horarioAtual);
-        int horaPedido = Integer.parseInt(pedidos.get(position).getHoraPedido().substring(0,2));
-        int minPedido = Integer.parseInt(pedidos.get(position).getHoraPedido().substring(3,5));
-        int horaAtual = Integer.parseInt(horaFormatada.substring(0,2));
-        int minAtual = Integer.parseInt(horaFormatada.substring(3,5));
-        Long diferenca = Helper.getDiferencaData(horaPedido, minPedido, horaAtual, minAtual);
 
-        Log.i("LOG_HORA", String.valueOf(diferenca));
-        if(pedidos.get(position).getSituacaoPedido() == 1) {
-            Toast.makeText(context.getApplicationContext(), R.string.cancelamento_pedido_entregue, Toast.LENGTH_LONG).show();
-        }else if(pedidos.get(position).getSituacaoPedido() == 2){
-            Toast.makeText(context.getApplicationContext(), R.string.cancelamento_realizado, Toast.LENGTH_LONG).show();
-        }else {
-            Log.i("LOG_CANCEL", String.valueOf(pedidos.get(position)));
-            notifyItemChanged(position);
-            //alertaCancelamento(pedidos.get(position), diferenca);
-        }
-    }*/
+        firebase = FirebaseInstance.getFirebase();
+        firebase.child("pedido")
+                .child(pedidos.get(position)).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
+                final Pedido pedido = dataSnapshot.getValue(Pedido.class);
+
+                Date horarioAtual =  Calendar.getInstance().getTime();
+                SimpleDateFormat dataFormat = new SimpleDateFormat("HH:mm:ss");
+                String horaFormatada = dataFormat.format(horarioAtual);
+                int horaPedido = Integer.parseInt(pedido.getHoraPedido().substring(0,2));
+                int minPedido = Integer.parseInt(pedido.getHoraPedido().substring(3,5));
+                int horaAtual = Integer.parseInt(horaFormatada.substring(0,2));
+                int minAtual = Integer.parseInt(horaFormatada.substring(3,5));
+                Long diferenca = Helper.getDiferencaData(horaPedido, minPedido, horaAtual, minAtual);
+
+                Log.i("LOG_HORA", String.valueOf(diferenca));
+                Log.i("LOG_SITUACAO", String.valueOf(pedido.getSituacaoPedido()));
+                 if(pedido.getSituacaoPedido() >= 3 ){
+                    Toast.makeText(context.getApplicationContext(), R.string.cancelamento_realizado, Toast.LENGTH_LONG).show();
+                }else {
+                    //Log.i("LOG_CANCEL", String.valueOf(pedidos.get(position)));
+
+                    if(diferenca <= 5){
+                        Toast.makeText(context.getApplicationContext(), R.string.cancelamento_ate_cinco, Toast.LENGTH_LONG).show();
+
+                        firebase.child("pedido")
+                                        .child(pedidos.get(position))
+                                            .child("situacaoPedido")
+                                                    .setValue(3);
+
+                        firebase.child("statusPedido")
+                                    .child("cancelados")
+                                        .child(preferencias.getIdEstabelecimento())
+                                            .child(pedidos.get(position))
+                                                .setValue(true);
+
+                        firebase.child("statusPedido")
+                                    .child("andamentoPedido")
+                                        .child(preferencias.getIdEstabelecimento())
+                                            .child(pedidos.get(position))
+                                                .removeValue();
+
+                        firebase.child("statusPedido")
+                                    .child("novoPedido")
+                                        .child(preferencias.getIdEstabelecimento())
+                                            .child(pedidos.get(position))
+                                                .removeValue();
+
+
+
+                        firebase.child("produto")
+                                    .child(preferencias.getIdEstabelecimento())
+                                        .child(pedido.getProduto()).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                final Produto produto = dataSnapshot.getValue(Produto.class);
+
+
+
+                                firebase.child("comanda")
+                                        .child(pedido.getComanda())
+                                            .child("subTotal")
+                                                .setValue(subTotalCancel(produto.getValorProduto()));
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+
+                    }else{
+                        Bundle bundle = new Bundle();
+                        Intent intent = new Intent(context, MotivoCancelamentoActivity.class);
+                        bundle.putString("BUNDLE_PEDIDO_MOTIVO", pedidos.get(position));
+                        intent.putExtras(bundle);
+                        context.startActivity(intent);
+                    }
+                }
+                notifyItemChanged(position);
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+    }
+
+    public Double subTotalCancel(Double valorProduto){
+
+        Double subTotalCancel = subTotal - valorProduto;
+        Log.i("LOG_SUBTOTAL_CANCEL", String.valueOf(subTotalCancel));
+
+        return subTotalCancel;
+
+
+    }
     /*public ListaPedidosAdapter(@NonNull Context c, @NonNull ArrayList<Pedido> objects) {
         super(c, 0, objects);
         this.pedidos = objects;

@@ -111,7 +111,7 @@ public class ListaPagamentoAdapter extends RecyclerView.Adapter<ListaPagamentoAd
                         .child(pagamentos.get(position).getIdPagamento());
 
         firebase.removeValue();
-        notifyItemRemoved(position);
+            notifyItemRemoved(position);
 
     }
     /*public ListaPagamentoAdapter(@NonNull Context c, @NonNull ArrayList<Pagamento> objects) {

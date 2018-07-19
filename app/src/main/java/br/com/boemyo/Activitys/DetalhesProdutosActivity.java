@@ -23,7 +23,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.braintreepayments.cardform.utils.CardType;
 import com.braintreepayments.cardform.view.SupportedCardTypesView;
 import com.google.firebase.database.DataSnapshot;
@@ -74,6 +73,7 @@ public class DetalhesProdutosActivity extends AppCompatActivity implements Conne
     private DatabaseReference databaseReference = FirebaseInstance.getFirebase();
     private String numMesa;
     private EditText etNuMesa;
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -90,6 +90,7 @@ public class DetalhesProdutosActivity extends AppCompatActivity implements Conne
         View bottomsheet = findViewById(R.id.ll_bottom_sheet);
 
         behavior = BottomSheetBehavior.from(bottomsheet);
+
 
 
         tvDescProduto = (TextView) findViewById(R.id.tv_desc_produto_detalhes);
@@ -318,8 +319,10 @@ public class DetalhesProdutosActivity extends AppCompatActivity implements Conne
         pedido.setObsProduto(etObsProduto.getText().toString());
         pedido.setValorPedido(valorProdutoTotal);
         pedido.setHoraPedido(horaPedido);
+        pedido.setIdEstabelecimento(preferencias.getIdEstabelecimento());
         pedido.setSituacaoPedido(0);
         pedido.salvarFirebase();
+        pedido.salvarStatusPedido();
 
 
         comanda.setIdPedido(idPedido);
@@ -388,5 +391,6 @@ public class DetalhesProdutosActivity extends AppCompatActivity implements Conne
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
 
 }

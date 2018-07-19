@@ -206,8 +206,7 @@ public class EditarPerfilActivity extends AppCompatActivity implements Connectiv
 
                     preferencias.salvarUsuarioPreferencias(usuario.getIdUsuario(),
                             usuario.getNomeUsuario(),
-                            usuario.getEmailUsuario(),
-                            usuario.getImagemUsuario());
+                            usuario.getEmailUsuario());
                     Log.i("LOG_USER", usuario.getNomeUsuario());
                     usuario.salvarFirebase();
                     snackbar = Snackbar.make(btAtualizaDados, R.string.valida_sucesso, Snackbar.LENGTH_SHORT);

@@ -44,14 +44,11 @@ public class SplashScreenActivity extends AppCompatActivity {
         Permissao.validaPermissoes(1 ,this, permissoesNecessarias);
         firebaseAuth = FirebaseAuth.getInstance();
         preferencias = new Preferencias(this);
-
+        //firebaseAuth.signOut();
         YoYo.with(Techniques.BounceInDown)
                 .duration(2000)
                 .playOn(findViewById(R.id.iv_logo_splash));
 
-        YoYo.with(Techniques.BounceInDown)
-                .duration(2000)
-                .playOn(findViewById(R.id.iv_tipografia_splash));
 
         if(firebaseAuth.getCurrentUser() != null ){
 
@@ -111,7 +108,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
                 final Usuario usuario = dataSnapshot.getValue(Usuario.class);
 
-                if(usuario.getComandaAberta() != null){
+                    if(usuario.getComandaAberta() != null){
                     firebase.child("comanda")
                                 .child(usuario.getComandaAberta()).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
