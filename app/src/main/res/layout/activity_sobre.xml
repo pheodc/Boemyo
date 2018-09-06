@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activitys.SobreActivity">
+
+    <include android:id="@+id/tb_sobre"
+        layout="@layout/toolbar" />
+
+
+    <ImageView
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:id="@+id/iv_logo_sobre"
+        android:layout_centerInParent="true"
+        android:src="@drawable/nova_transparente_edit"
+        />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/iv_tipografia"
+        android:layout_below="@id/iv_logo_sobre"
+        android:layout_centerInParent="true"
+        android:src="@drawable/nome_escuro_edit"
+        android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_version_app"
+        android:layout_marginBottom="60dp"
+        android:textSize="16sp"
+        android:textColor="@color/colorSecondaryText"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        />
+
+</RelativeLayout>

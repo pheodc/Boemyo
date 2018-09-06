@@ -7,18 +7,22 @@
             android:icon="@mipmap/ic_home_grey600_24dp"
             android:title="Home" />
         <item
+            android:id="@+id/nav_pagamento_estab"
+            android:icon="@mipmap/ic_credit_card_grey600_24dp"
+            android:title="Carteira" />
+        <!--<item
             android:id="@+id/nav_promocao_estab"
             android:icon="@mipmap/ic_wallet_giftcard_grey600_24dp"
-            android:title="Promoções" />
+            android:title="Promoções" />-->
         <item
             android:id="@+id/nav_favorito_estab"
             android:icon="@mipmap/ic_heart_grey600_24dp"
             android:title="Favoritos" />
 
-        <item
+        <!--<item
             android:id="@+id/nav_avalie_estab"
             android:icon="@mipmap/ic_star_grey600_24dp"
-            android:title="Avalie-nos" />
+            android:title="Avalie-nos" />-->
         <item
             android:id="@+id/nav_estabelecimentos_estab"
             android:icon="@mipmap/ic_map_marker_grey600_24dp"

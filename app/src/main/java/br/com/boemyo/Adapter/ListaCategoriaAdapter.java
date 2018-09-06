@@ -82,11 +82,9 @@ public class ListaCategoriaAdapter extends RecyclerView.Adapter<ListaCategoriaAd
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 Produto produto = dataSnapshot.getValue(Produto.class);
-                                Log.i("LOG_CATValue", produto.getUrlImagemProduto());
-                                Log.i("LOG_CATValue", produto.getDescProduto());
-                                if(produto.getUrlImagemProduto().equals(null)){
+                                if(produto.getUrlImagemProduto() == null){
 
-                                    holder.ivImgProdutoCaetgoria.setImageResource(R.drawable.placeholder);
+                                    holder.ivImgProdutoCaetgoria.setImageResource(R.drawable.placeholder_cinza);
 
                                 }else {
                                     PicassoClient.downloadImage(context, produto.getUrlImagemProduto(), holder.ivImgProdutoCaetgoria);
@@ -113,9 +111,9 @@ public class ListaCategoriaAdapter extends RecyclerView.Adapter<ListaCategoriaAd
         });
         //Log.i("LOG_CATARRAY", categoriaCardapios.get(position).getIdCategoria());
         holder.tvNomeCategoria.setText(categoriaCardapios.get(position).getNomeCategoria());
-        YoYo.with(Techniques.BounceInDown)
+        /*YoYo.with(Techniques.BounceInDown)
                 .duration(700)
-                .playOn(holder.itemView);
+                .playOn(holder.itemView);*/
     }
 
     @Override

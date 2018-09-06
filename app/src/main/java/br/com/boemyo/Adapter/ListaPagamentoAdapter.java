@@ -14,12 +14,17 @@ import android.widget.TextView;
 
 import com.braintreepayments.cardform.utils.CardType;
 import com.braintreepayments.cardform.view.SupportedCardTypesView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import br.com.boemyo.Configure.Base64Custom;
 import br.com.boemyo.Configure.FirebaseInstance;
 import br.com.boemyo.Configure.Preferencias;
+import br.com.boemyo.Model.Carteira;
 import br.com.boemyo.Model.CategoriaCardapio;
 import br.com.boemyo.Model.Pagamento;
 import br.com.boemyo.R;
@@ -30,13 +35,14 @@ import br.com.boemyo.R;
 
 public class ListaPagamentoAdapter extends RecyclerView.Adapter<ListaPagamentoAdapter.ViewHolderPagamento> {
 
-    private  ArrayList<Pagamento> pagamentos;
+    private  ArrayList<Carteira> pagamentos;
     private LayoutInflater liPagamentos;
     private Context context;
     private Preferencias preferencias;
-    private DatabaseReference firebase;
+    private DatabaseReference databaseReference;
 
-    public ListaPagamentoAdapter(Context c, ArrayList<Pagamento> pagamentos){
+
+    public ListaPagamentoAdapter(Context c, ArrayList<Carteira> pagamentos){
 
         this.context = c;
         this.pagamentos = pagamentos;
@@ -53,13 +59,39 @@ public class ListaPagamentoAdapter extends RecyclerView.Adapter<ListaPagamentoAd
     }
 
     @Override
-    public void onBindViewHolder(ViewHolderPagamento holder, int position) {
-        String dataVencimento = pagamentos.get(position).getDataValidaMes() + "/" + pagamentos.get(position).getDataValidaAno();
-        String numCartaoEdit = pagamentos.get(position).getNumCartao().substring(pagamentos.get(position).getNumCartao().length() -4);
-        Log.i("LOG_SUBSTRING", numCartaoEdit);
+    public void onBindViewHolder(final ViewHolderPagamento holder, final int position) {
+
+        preferencias = new Preferencias(context);
+
         validaBandeira(pagamentos.get(position), holder.ctSuportados);
-        holder.tvNumCartao.setText("●●●● " + numCartaoEdit);
-        holder.tvDtVencimento.setText(dataVencimento);
+        holder.tvNumCartao.setText("●●●● " + Base64Custom.decodifcarBase64(pagamentos.get(position).getNumCartao()));
+        holder.tvCVV.setText("Cvv: " + Base64Custom.decodifcarBase64(pagamentos.get(position).getCvv()));
+
+
+        /*.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Carteira carteira = dataSnapshot.getValue(Carteira.class);
+
+
+                validaBandeira(carteira, holder.ctSuportados);
+                holder.tvNumCartao.setText("●●●● " + Base64Custom.decodifcarBase64(carteira.getNumCartao()));
+                holder.tvCVV.setText("Cvv: " + Base64Custom.decodifcarBase64(carteira.getCvv()));
+
+
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });*/
+
+
+
     }
 
     @Override
@@ -69,7 +101,7 @@ public class ListaPagamentoAdapter extends RecyclerView.Adapter<ListaPagamentoAd
 
         public SupportedCardTypesView ctSuportados;
         public TextView tvNumCartao;
-        public TextView tvDtVencimento;
+        public TextView tvCVV;
         public RelativeLayout viewBackground, viewForeground;
 
         public ViewHolderPagamento(View itemView) {
@@ -77,7 +109,7 @@ public class ListaPagamentoAdapter extends RecyclerView.Adapter<ListaPagamentoAd
 
             ctSuportados = (SupportedCardTypesView) itemView.findViewById(R.id.card_type_bandeira);
             tvNumCartao = (TextView) itemView.findViewById(R.id.tv_num_cartao);
-            tvDtVencimento = (TextView) itemView.findViewById(R.id.tv_dt_vencimento);
+            tvCVV= (TextView) itemView.findViewById(R.id.tv_cvv);
             viewBackground = itemView.findViewById(R.id.view_background);
             viewForeground = itemView.findViewById(R.id.view_foreground);
         }
@@ -88,11 +120,11 @@ public class ListaPagamentoAdapter extends RecyclerView.Adapter<ListaPagamentoAd
         }
     }
 
-    public void validaBandeira(Pagamento pagamento, SupportedCardTypesView cardTypesView){
-        Log.i("LOG_TIPO_CARD", pagamento.getBandeira());
+    public void validaBandeira(Carteira pagamento, SupportedCardTypesView cardTypesView){
+//        Log.i("LOG_TIPO_CARD", pagamento.getBandeira());
         if(pagamento.getBandeira().equals("VISA") ){
             cardTypesView.setSupportedCardTypes(CardType.VISA);
-        }else if(pagamento.getBandeira().equals("MASTERCARD") ){
+        }else if(pagamento.getBandeira().equals("MASTER") ){
             cardTypesView.setSupportedCardTypes(CardType.MASTERCARD);
         }else if(pagamento.getBandeira().equals("AMEX")){
             cardTypesView.setSupportedCardTypes(CardType.AMEX);
@@ -105,13 +137,21 @@ public class ListaPagamentoAdapter extends RecyclerView.Adapter<ListaPagamentoAd
 
     public void deleteCartao(int position){
         preferencias = new Preferencias(context);
-        firebase = FirebaseInstance.getFirebase()
-                .child("Pagamento")
-                    .child(preferencias.getIdentificador())
-                        .child(pagamentos.get(position).getIdPagamento());
+        String idPagamento = pagamentos.get(position).getTokenCartao();
+        databaseReference = FirebaseInstance.getFirebase();
 
-        firebase.removeValue();
-            notifyItemRemoved(position);
+        databaseReference.child("carteira")
+                    .child(preferencias.getIdentificador())
+                        .child(idPagamento )
+                                    .removeValue();
+
+
+        if(idPagamento.equals(preferencias.getIdPagamento())){
+
+            preferencias.removerIdPagamento();
+
+        }
+        notifyItemRemoved(position);
 
     }
     /*public ListaPagamentoAdapter(@NonNull Context c, @NonNull ArrayList<Pagamento> objects) {

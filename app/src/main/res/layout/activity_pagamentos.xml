@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorText"
+    android:background="@color/color_grey"
     tools:context="br.com.boemyo.Activitys.PagamentosActivity">
 
     <include android:id="@+id/tb_pagamentos"

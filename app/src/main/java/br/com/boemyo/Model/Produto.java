@@ -14,6 +14,7 @@ public class Produto implements Serializable {
     private String descProduto;
     private String categoria;
     private String urlImagemProduto;
+    private Boolean ativoProduto;
 
     public Produto() {
     }
@@ -65,5 +66,13 @@ public class Produto implements Serializable {
 
     public void setCategoria(String categoria) {
         this.categoria = categoria;
+    }
+
+    public Boolean getAtivoProduto() {
+        return ativoProduto;
+    }
+
+    public void setAtivoProduto(Boolean ativoProduto) {
+        this.ativoProduto = ativoProduto;
     }
 }

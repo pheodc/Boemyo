@@ -9,6 +9,14 @@
     app:cardCornerRadius="6dp"
     app:cardElevation="8dp"
     android:background="?android:attr/selectableItemBackground">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/rl_desabilitado_produto"
+            android:background="@color/color_grey"
+            android:visibility="gone"></RelativeLayout>
+
         <com.makeramen.roundedimageview.RoundedImageView
             android:layout_width="60dp"
             android:layout_height="60dp"
@@ -17,6 +25,7 @@
             android:layout_marginBottom="8dp"
             android:scaleType="centerCrop"
             app:riv_corner_radius="6dp"
+            android:src="@drawable/placeholder_cinza"
             android:id="@+id/iv_img_produto" />
         <RelativeLayout
             android:orientation="vertical"

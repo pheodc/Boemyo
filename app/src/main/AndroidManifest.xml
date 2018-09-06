@@ -16,7 +16,7 @@
         android:icon="@drawable/nova_transparente_certa"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:roundIcon="@mipmap/logo_boemyo"
+        android:roundIcon="@drawable/nova_transparente_certa"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <meta-data
@@ -81,7 +81,10 @@
             android:name=".Activitys.TutorialActivity"
             android:theme="@style/AppCompat.TelaCheia" />
         <activity android:name=".Activitys.TermosPrivacidadeActivity" />
-        <activity android:name=".Activitys.MotivoCancelamentoActivity"></activity>
+        <activity android:name=".Activitys.MotivoCancelamentoActivity" />
+        <activity android:name=".Activitys.EscolheTipoPagamento" />
+        <activity android:name=".Activitys.SobreActivity" />
+        <activity android:name=".Activitys.ConfigActivity"></activity>
     </application>
 
 </manifest>

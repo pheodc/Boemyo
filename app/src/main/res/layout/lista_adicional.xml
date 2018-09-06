@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="35dp"
+    android:layout_marginTop="8dp"
+    android:background="?android:attr/selectableItemBackground">
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/cb_seleciona_adicional"
+            android:layout_centerInParent="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="16dp"
+            android:hint="Produto"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColorHint="@color/colorPrimaryText"
+            android:layout_marginLeft="8dp"
+
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_valor_adicional"
+            android:textSize="12sp"
+            android:text="Valor"
+            android:layout_centerInParent="true"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/colorAccent"
+            android:layout_marginRight="16dp">
+        </TextView>
+
+
+</RelativeLayout>

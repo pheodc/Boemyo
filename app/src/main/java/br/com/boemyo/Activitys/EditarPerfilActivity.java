@@ -144,8 +144,12 @@ public class EditarPerfilActivity extends AppCompatActivity implements Connectiv
                         "Selecione a Imagem"), IMAGEM_INTERNA);
             }
         });
+        if(preferencias.getUrlImagem() != null){
+            PicassoClient.downloadImage(this, preferencias.getUrlImagem(), imagemPerfilEditar);
+        }else {
 
-        PicassoClient.downloadImage(this, preferencias.getUrlImagem(), imagemPerfilEditar);
+        }
+
         desabilitaCampos();
         selecionaGenero();
 

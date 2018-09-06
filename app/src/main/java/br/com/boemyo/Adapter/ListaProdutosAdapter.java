@@ -4,13 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -63,11 +66,19 @@ public class ListaProdutosAdapter extends RecyclerView.Adapter<ListaProdutosAdap
         holder.tvNomeProduto.setText(produtos.get(position).getNomeProduto());
         holder.tvDescProduto.setText(produtos.get(position).getDescProduto());
         NumberFormat format = NumberFormat.getCurrencyInstance();
-        holder.tvValorProduto.setText(format.format(produtos.get(position).getValorProduto()));
+        holder.tvValorProduto.setText(format.format(produtos.get(position).getValorProduto()/100));
 
-        YoYo.with(Techniques.FadeInLeft)
+        if(produtos.get(position).getAtivoProduto() == true || produtos.get(position).getAtivoProduto() == null){
+
+            holder.rlDesabilitaProduto.setVisibility(View.GONE);
+
+        }else {
+            holder.rlDesabilitaProduto.setVisibility(View.VISIBLE);
+        }
+
+        /**YoYo.with(Techniques.FadeInLeft)
                 .duration(700)
-                .playOn(holder.itemView);
+                .playOn(holder.itemView);*/
     }
 
     @Override
@@ -83,6 +94,7 @@ public class ListaProdutosAdapter extends RecyclerView.Adapter<ListaProdutosAdap
         TextView tvNomeProduto;
         TextView tvDescProduto;
         TextView tvValorProduto;
+        RelativeLayout rlDesabilitaProduto;
 
         public ViewHolderProdutos(View itemView) {
             super(itemView);
@@ -91,6 +103,7 @@ public class ListaProdutosAdapter extends RecyclerView.Adapter<ListaProdutosAdap
             tvNomeProduto = (TextView) itemView.findViewById(R.id.tv_nome_produto_lista);
             tvDescProduto = (TextView) itemView.findViewById(R.id.tv_des_produto_lista);
             tvValorProduto = (TextView) itemView.findViewById(R.id.tv_valor_lista);
+            rlDesabilitaProduto = (RelativeLayout) itemView.findViewById(R.id.rl_desabilitado_produto);
             context = itemView.getContext();
             itemView.setOnClickListener(this);
         }
@@ -99,9 +112,17 @@ public class ListaProdutosAdapter extends RecyclerView.Adapter<ListaProdutosAdap
         public void onClick(View view) {
             Produto produto = produtos.get( getAdapterPosition() );
 
-            Intent intent = new Intent(context.getApplicationContext(), DetalhesProdutosActivity.class);
-            intent.putExtra("produto", produto);
-            context.startActivity(intent);
+            if(produto.getAtivoProduto() == false){
+
+                Toast.makeText(context, "Produto Indisponivel", Toast.LENGTH_LONG).show();
+
+            }else {
+                Intent intent = new Intent(context.getApplicationContext(), DetalhesProdutosActivity.class);
+                intent.putExtra("produto", produto);
+                context.startActivity(intent);
+            }
+
+
         }
     }
 

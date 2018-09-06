@@ -1,6 +1,8 @@
 package br.com.boemyo.Activitys;
 
 import android.content.IntentFilter;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -17,6 +19,8 @@ import com.braintreepayments.cardform.view.CardEditText;
 import com.braintreepayments.cardform.view.CardForm;
 import com.braintreepayments.cardform.view.SupportedCardTypesView;
 import com.google.firebase.database.DatabaseReference;
+
+import org.json.JSONException;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -40,11 +44,17 @@ public class AdicionaNovoCartaoActivity extends AppCompatActivity implements OnC
     private CardForm cfAdicionaCartao;
     private SupportedCardTypesView ctSuportados;
     private Button btAddCartao;
+    private Button bttipoCredito;
+    private Button bttipoDebito;
     private Preferencias preferencias;
     private Date hora = Calendar.getInstance().getTime();
     private String bandeiraCartao;
     private RelativeLayout conexao;
+    private String tipoPagamento;
     private DatabaseReference databaseReference = FirebaseInstance.getFirebase();
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,12 +94,16 @@ public class AdicionaNovoCartaoActivity extends AppCompatActivity implements OnC
                 .setup(this);
         cfAdicionaCartao.setOnCardTypeChangedListener(this);
         btAddCartao = (Button) findViewById(R.id.bt_adiciona_cartao);
+        bttipoCredito = (Button) findViewById(R.id.bt_tipo_credito);
+        bttipoDebito = (Button) findViewById(R.id.bt_tipo_debito);
         btAddCartao.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onCardFormSubmit();
             }
         });
+
+        selecionaTipoPagamento();
 
     }
 
@@ -105,13 +119,32 @@ public class AdicionaNovoCartaoActivity extends AppCompatActivity implements OnC
             Pagamento pagamento = new Pagamento();
             pagamento.setIdUsuario(preferencias.getIdentificador());
             pagamento.setIdPagamento( idPagamento );
+            pagamento.setNomeUsuario(preferencias.getNome());
             pagamento.setNumCartao(cfAdicionaCartao.getCardNumber());
             pagamento.setDataValidaMes(cfAdicionaCartao.getExpirationMonth());
             pagamento.setDataValidaAno(cfAdicionaCartao.getExpirationYear());
             pagamento.setCvv(cfAdicionaCartao.getCvv());
-            pagamento.setBandeira(bandeiraCartao);
-            pagamento.salvarFirebase();
-            finish();
+            if(tipoPagamento == null){
+                pagamento.setTipoPagamento("CreditCard");
+            }else{
+                pagamento.setTipoPagamento(tipoPagamento);
+            }
+            if(bandeiraCartao.equals("MASTERCARD")){
+                bandeiraCartao = "MASTER";
+                pagamento.setBandeira(bandeiraCartao);
+            }else {
+                pagamento.setBandeira(bandeiraCartao);
+            }
+
+
+            //pagamento.salvarFirebase();
+            try {
+                pagamento.salvarCartaoTokenizado(this);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
 
         } else {
             cfAdicionaCartao.validate();
@@ -139,5 +172,31 @@ public class AdicionaNovoCartaoActivity extends AppCompatActivity implements OnC
         }else{
             conexao.setVisibility(View.GONE);
         }
+    }
+
+    private void selecionaTipoPagamento(){
+        bttipoCredito.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                bttipoCredito.setBackground(getResources().getDrawable(R.drawable.style_radius_button));
+                bttipoCredito.setTextColor(getResources().getColor(R.color.colorText));
+                bttipoDebito.setBackground(getResources().getDrawable(R.drawable.style_radius_button_transparent));
+                bttipoDebito.setTextColor(getResources().getColor(R.color.colorAccent));
+                tipoPagamento = "CreditCard";
+            }
+        });
+
+        bttipoDebito.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(View view) {
+                bttipoDebito.setBackground(getResources().getDrawable(R.drawable.style_radius_button));
+                bttipoDebito.setTextColor(getResources().getColor(R.color.colorText));
+                bttipoCredito.setBackground(getResources().getDrawable(R.drawable.style_radius_button_transparent));
+                bttipoCredito.setTextColor(getResources().getColor(R.color.colorAccent));
+                tipoPagamento= "DebitCard";
+            }
+        });
     }
 }

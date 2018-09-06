@@ -12,106 +12,123 @@
         layout="@layout/conexao"
         android:visibility="gone"
         ></include>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <android.support.v7.widget.CardView android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/card_cardapio"
-        android:layout_marginBottom="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        app:cardElevation="6dp"
-        app:cardCornerRadius="6dp">
+        <android.support.v7.widget.CardView android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/card_cardapio"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            app:cardElevation="6dp"
+            app:cardCornerRadius="6dp">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <ImageView
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:scaleType="centerCrop"
-                android:id="@+id/iv_img_cardapio"
-                android:src="@drawable/img_pedidos"
-                android:hardwareAccelerated="false"
-                android:largeHeap="true"
-                android:adjustViewBounds="true"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:scaleType="centerCrop"
+                    android:id="@+id/iv_img_cardapio"
+                    android:src="@drawable/img_pedidos"
+                    android:hardwareAccelerated="false"
+                    android:largeHeap="true"
+                    android:adjustViewBounds="true"
 
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="130dp"
-                android:layout_marginLeft="24dp"
-                android:layout_marginBottom="8dp"
-                android:text="@string/tv_cardapio"
-                android:textStyle="bold"
-                android:id="@+id/tv_cardapio"
-                android:textColor="@color/colorText"
-                android:textSize="24sp"/>
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="130dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/tv_cardapio"
+                    android:textStyle="bold"
+                    android:id="@+id/tv_cardapio"
+                    android:textColor="@color/colorText"
+                    android:textSize="24sp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginLeft="24dp"
-                android:layout_centerInParent="true"
-                android:layout_marginBottom="8dp"
-                android:layout_below="@+id/iv_img_cardapio"
-                android:text="Ver mais"
-                android:textColor="@color/colorPrimaryText"
-                android:textSize="14sp"/>
-        </RelativeLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginBottom="8dp"
+                    android:layout_below="@+id/iv_img_cardapio"
+                    android:text="Ver mais"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="14sp"/>
+            </RelativeLayout>
 
-   </android.support.v7.widget.CardView>
+        </android.support.v7.widget.CardView>
 
-    <android.support.v7.widget.CardView android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:id="@+id/card_comanda"
-       android:layout_below="@+id/card_cardapio"
-       android:layout_marginBottom="4dp"
-       android:layout_marginTop="4dp"
-       android:layout_marginLeft="8dp"
-       android:layout_marginRight="8dp"
-       app:cardElevation="6dp"
-       app:cardCornerRadius="6dp">
+        <android.support.v7.widget.CardView android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/card_comanda"
+            android:layout_below="@+id/card_cardapio"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            app:cardElevation="6dp"
+            app:cardCornerRadius="6dp">
 
 
-       <RelativeLayout
-           android:layout_width="match_parent"
-           android:layout_height="match_parent">
-           <ImageView
-               android:layout_width="match_parent"
-               android:layout_height="200dp"
-               android:id="@+id/iv_img_comanda"
-               android:src="@drawable/comanda_new_resize"
-               android:scaleType="centerCrop"
-               android:hardwareAccelerated="false"
-               android:largeHeap="true"
-               android:adjustViewBounds="true"
-               />
-           <TextView
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_marginTop="130dp"
-               android:layout_marginLeft="24dp"
-               android:layout_marginBottom="8dp"
-               android:text="@string/tv_comanda"
-               android:textStyle="bold"
-               android:textColor="@color/colorText"
-               android:textSize="24sp"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:id="@+id/iv_img_comanda"
+                    android:src="@drawable/comanda_new_resize"
+                    android:scaleType="centerCrop"
+                    android:hardwareAccelerated="false"
+                    android:largeHeap="true"
+                    android:adjustViewBounds="true"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="130dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/tv_comanda"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorText"
+                    android:textSize="24sp"/>
 
-           <TextView
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_marginTop="8dp"
-               android:layout_marginLeft="24dp"
-               android:layout_centerInParent="true"
-               android:layout_marginBottom="8dp"
-               android:layout_below="@+id/iv_img_comanda"
-               android:text="Ver mais"
-               android:textColor="@color/colorPrimaryText"
-               android:textSize="14sp"/>
-       </RelativeLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="24dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginBottom="8dp"
+                    android:layout_below="@+id/iv_img_comanda"
+                    android:text="Ver mais"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="14sp"/>
+            </RelativeLayout>
 
-   </android.support.v7.widget.CardView>
+        </android.support.v7.widget.CardView>
+
+    </RelativeLayout>
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bt_deixar_estabelecimento"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/ripple_efect"
+        android:text="@string/bt_label_deixar_estabelecimento"
+        android:textColor="@color/colorText"/>
+
+
 </RelativeLayout>

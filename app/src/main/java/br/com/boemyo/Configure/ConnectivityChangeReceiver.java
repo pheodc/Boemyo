@@ -25,8 +25,8 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
         NetworkInfo activeNetInfoWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         NetworkInfo activeNetInfoMobile = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
         boolean isConnectedWifi = activeNetInfoWifi != null && activeNetInfoWifi.isConnectedOrConnecting();
-        boolean isConnectedMobile = activeNetInfoMobile != null && activeNetInfoWifi.isConnectedOrConnecting();
-        listener.onConnectivityChanged(isConnectedWifi && isConnectedMobile );
+        boolean isConnectedMobile = activeNetInfoMobile != null && activeNetInfoMobile.isConnectedOrConnecting();
+        listener.onConnectivityChanged(isConnectedMobile || isConnectedWifi );
     }
 
     public interface OnConnectivityChangedListener {

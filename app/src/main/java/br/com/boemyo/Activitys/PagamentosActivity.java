@@ -28,6 +28,7 @@ import br.com.boemyo.Configure.ConnectivityChangeReceiver;
 import br.com.boemyo.Configure.FirebaseInstance;
 import br.com.boemyo.Configure.Preferencias;
 import br.com.boemyo.Configure.RecyclerItemTouchHelper;
+import br.com.boemyo.Model.Carteira;
 import br.com.boemyo.Model.Pagamento;
 import br.com.boemyo.R;
 
@@ -38,7 +39,7 @@ public class PagamentosActivity extends AppCompatActivity implements RecyclerIte
     private ListaPagamentoAdapter adapter;
     private DatabaseReference firebase;
     private ValueEventListener valueEventListener;
-    private ArrayList<Pagamento> arrayPagamento;
+    private ArrayList<Carteira> arrayPagamento;
     private Preferencias preferencias;
     private Toolbar tbPagamentos;
     private RelativeLayout conexao;
@@ -50,8 +51,22 @@ public class PagamentosActivity extends AppCompatActivity implements RecyclerIte
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        firebase.removeEventListener(valueEventListener);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i("TESTE_CICLO", "Passou onResume");
+
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
+        Log.i("TESTE_CICLO", "Passou onStop");
         firebase.removeEventListener(valueEventListener);
     }
 
@@ -98,10 +113,8 @@ public class PagamentosActivity extends AppCompatActivity implements RecyclerIte
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(rvPagamento);
 
-
-
         firebase = FirebaseInstance.getFirebase()
-                .child("Pagamento")
+                .child("carteira")
                 .child(preferencias.getIdentificador());
 
         valueEventListener = new ValueEventListener() {
@@ -110,9 +123,11 @@ public class PagamentosActivity extends AppCompatActivity implements RecyclerIte
                 arrayPagamento.clear();
 
                 for(DataSnapshot dados : dataSnapshot.getChildren()){
-                    Pagamento pagamento = dados.getValue(Pagamento.class);
-                    Log.i("LOG_NOMECAT", pagamento.getNumCartao());
-                    arrayPagamento.add(pagamento);
+                    Carteira carteira = dados.getValue(Carteira.class);
+                    carteira.setTokenCartao(dados.getKey());
+                    arrayPagamento.add(carteira);
+                    Log.i("LOG_CARTEIRA", "Entrou FOR carteira");
+
                 }
                 adapter.notifyDataSetChanged();
             }
@@ -122,6 +137,9 @@ public class PagamentosActivity extends AppCompatActivity implements RecyclerIte
 
             }
         };
+
+
+
     }
 
     @Override
@@ -166,4 +184,6 @@ public class PagamentosActivity extends AppCompatActivity implements RecyclerIte
 
         adapter.deleteCartao(viewHolder.getAdapterPosition());
     }
+
+
 }

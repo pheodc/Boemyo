@@ -263,6 +263,9 @@ public class HomeActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intentConfig = new Intent(HomeActivity.this, ConfigActivity.class);
+            startActivity(intentConfig);
+
             return true;
 
         } else if (id == R.id.action_logout) {
@@ -293,16 +296,22 @@ public class HomeActivity extends AppCompatActivity
             startActivity(intentPagamento);
 
         } else if (id == R.id.nav_promocao) {
+            Snackbar snackbar = Snackbar.make(rlQrcodeDialog, "Em Construção", Snackbar.LENGTH_SHORT);
+            snackbar.show();
 
         } else if (id == R.id.nav_favorito) {
             Intent intentFavorito = new Intent(HomeActivity.this, FavoritoActivity.class);
             startActivity(intentFavorito);
 
-        } else if (id == R.id.nav_avalie) {
-
         } else if (id == R.id.nav_sobre) {
 
+            Intent intentSobre = new Intent(HomeActivity.this, SobreActivity.class);
+            startActivity(intentSobre);
+
         } else if (id == R.id.nav_configuracao) {
+
+            Intent intentConfig = new Intent(HomeActivity.this, ConfigActivity.class);
+            startActivity(intentConfig);
 
         }
 

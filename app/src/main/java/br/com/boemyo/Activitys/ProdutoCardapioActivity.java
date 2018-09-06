@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.google.firebase.database.DataSnapshot;
@@ -44,7 +45,7 @@ public class ProdutoCardapioActivity extends AppCompatActivity implements Recycl
     private Toolbar tbProduto;
     private String categoriaAtual;
     private String nomeCategoriaAtual;
-
+    private ProgressBar pbProdutoCardapio;
     @Override
     protected void onStart() {
         super.onStart();
@@ -92,6 +93,7 @@ public class ProdutoCardapioActivity extends AppCompatActivity implements Recycl
         registerReceiver(connectivityChangeReceiver, filter);
 
         conexao = (RelativeLayout) findViewById(R.id.conexao_produtos);
+        pbProdutoCardapio = (ProgressBar) findViewById(R.id.pb_produto_cardapio);
         rvProduto = (RecyclerView) findViewById(R.id.rv_produto_cardapio);
         arrayProdutos = new ArrayList<>();
 
@@ -117,6 +119,7 @@ public class ProdutoCardapioActivity extends AppCompatActivity implements Recycl
 
                 for(DataSnapshot dados : dataSnapshot.getChildren()){
                     Produto produto = dados.getValue(Produto.class);
+                    pbProdutoCardapio.setVisibility(View.GONE);
                     Log.i("LOG_NOMECAT", produto.getNomeProduto());
                     if(produto.getCategoria().equals(categoriaAtual)){
                         arrayProdutos.add(produto);

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorText"
+    android:background="@color/color_grey"
     tools:context="br.com.boemyo.Activitys.AdicionaNovoCartaoActivity">
 
     <include android:id="@+id/tb_adiciona_cartao"
@@ -15,28 +15,106 @@
         android:visibility="gone"
         ></include>
 
+    <com.braintreepayments.cardform.view.SupportedCardTypesView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/card_types"
+        android:layout_below="@id/tb_adiciona_cartao"
+        android:visibility="gone"/>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/tb_adiciona_cartao">
-        <LinearLayout
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            >
-            <com.braintreepayments.cardform.view.SupportedCardTypesView
-                android:id="@+id/card_types"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingTop="20dp" />
-            <com.braintreepayments.cardform.view.CardForm
-                android:id="@+id/cf_novo_card"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="16dp"/>
-        </LinearLayout>
+                android:id="@+id/card_adiciona_cartao"
+                android:orientation="vertical"
+                android:layout_marginTop="32dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                app:cardElevation="8dp"
+                app:cardCornerRadius="6dp"
+                android:background="@color/colorText"
+
+                >
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="16dp"
+                        android:id="@+id/ll_tipo_cartao">
+                        <Button
+                            android:layout_width="match_parent"
+                            android:layout_height="35dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/style_radius_button_transparent"
+                            android:text="Crédito"
+                            android:textColor="@color/colorAccent"
+                            android:layout_marginLeft="30dp"
+                            android:layout_marginRight="12dp"
+                            android:layout_marginBottom="12dp"
+                            android:id="@+id/bt_tipo_credito"/>
+
+                        <Button
+                            android:layout_width="match_parent"
+                            android:layout_height="35dp"
+                            android:id="@+id/bt_tipo_debito"
+                            android:text="Débito"
+                            android:layout_weight="1"
+                            android:layout_marginLeft="12dp"
+                            android:layout_marginBottom="12dp"
+                            android:layout_marginRight="30dp"
+                            android:textColor="@color/colorAccent"
+                            android:background="@drawable/style_radius_button_transparent"
+                            />
+
+                    </LinearLayout>
+                    <com.braintreepayments.cardform.view.CardForm
+                        android:id="@+id/cf_novo_card"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_below="@+id/ll_tipo_cartao"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="16dp"/>
+
+                </RelativeLayout>
+
+
+            </android.support.v7.widget.CardView>
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_centerInParent="true"
+                android:id="@+id/iv_security_cielo"
+                android:layout_below="@+id/card_adiciona_cartao"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:src="@drawable/pagamento_seguro_cielo"/>
+
+
+        </RelativeLayout>
+
+
+
     </ScrollView>
+
+
+
 
     <Button
         android:layout_width="match_parent"

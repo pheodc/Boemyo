@@ -25,6 +25,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -74,7 +75,8 @@ public class EstabelecimentoMainActivity extends AppCompatActivity
     private String novaComanda;
     private ImageView ivCardapio;
     private ImageView ivComanda;
-
+    private Button btDeixarEstabelecimento;
+    private EditText etFeedback;
 
 
     @Override
@@ -96,7 +98,7 @@ public class EstabelecimentoMainActivity extends AppCompatActivity
         conexao = (RelativeLayout) findViewById(R.id.conexao_estabelecimento_main);
         ivCardapio = (ImageView) findViewById(R.id.iv_img_cardapio);
         ivComanda = (ImageView) findViewById(R.id.iv_img_comanda);
-
+        btDeixarEstabelecimento = (Button) findViewById(R.id.bt_deixar_estabelecimento);
         //Picasso.get().load(R.drawable.comanda_new_menor).resize(200,200).into(ivComanda);
 
 
@@ -150,6 +152,13 @@ public class EstabelecimentoMainActivity extends AppCompatActivity
                 finish();
             }
         });
+
+        btDeixarEstabelecimento.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Feedback();
+            }
+        });
     }
 
     @Override
@@ -178,6 +187,10 @@ public class EstabelecimentoMainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings_estab) {
+
+            Intent intentConfig = new Intent(EstabelecimentoMainActivity.this, ConfigActivity.class);
+            startActivity(intentConfig);
+
             return true;
         }
 
@@ -192,21 +205,36 @@ public class EstabelecimentoMainActivity extends AppCompatActivity
 
         if (id == R.id.nav_home_estab) {
 
-        }else if (id == R.id.nav_promocao_estab) {
+        }else if (id == R.id.nav_pagamento_estab) {
+
+            Intent intentPagamento = new Intent(EstabelecimentoMainActivity.this, PagamentosActivity.class);
+            startActivity(intentPagamento);
+
 
         } else if (id == R.id.nav_favorito_estab) {
             Intent intentFavorito = new Intent(EstabelecimentoMainActivity.this, FavoritoActivity.class);
             startActivity(intentFavorito);
 
-        } else if (id == R.id.nav_avalie_estab) {
-
         } else if (id == R.id.nav_sobre_estab) {
+
+            Intent intentSobre = new Intent(EstabelecimentoMainActivity.this, SobreActivity.class);
+            startActivity(intentSobre);
 
         } else if (id == R.id.nav_configuracao_estab) {
 
+            Intent intentConfig = new Intent(EstabelecimentoMainActivity.this, ConfigActivity.class);
+            startActivity(intentConfig);
+
         } else if (id == R.id.nav_estabelecimentos_estab) {
 
+            Intent intentEstab = new Intent(EstabelecimentoMainActivity.this, ProcuraLocaisActivity.class);
+            startActivity(intentEstab);
+
+
         } else if (id == R.id.nav_indique_estab) {
+
+            Intent intentIndique = new Intent(EstabelecimentoMainActivity.this, IndiqueEstabelecimentoActivity.class);
+            startActivity(intentIndique);
 
         }
 
@@ -273,6 +301,60 @@ public class EstabelecimentoMainActivity extends AppCompatActivity
 
 
 
+    }
+
+    private void Feedback(){
+        AlertDialog.Builder builder = new AlertDialog.Builder( this );
+        View viewCustomDialog = getLayoutInflater().inflate(R.layout.custom_feedback, null);
+        etFeedback = (EditText) viewCustomDialog.findViewById(R.id.et_feedback);
+        builder.setView(viewCustomDialog);
+        builder.setPositiveButton("FINALIZAR", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                databaseReference = FirebaseInstance.getFirebase();
+                databaseReference.child("comanda")
+                        .child(preferencias.getidComanda())
+                        .child("situacaoComanda")
+                        .setValue(false);
+
+                databaseReference.child("usuario")
+                        .child(preferencias.getIdentificador())
+                        .child("comandaAberta")
+                        .removeValue();
+
+                databaseReference.child("feedback")
+                        .child(preferencias.getIdentificador())
+                        .child(preferencias.getIdEstabelecimento())
+                        .child(preferencias.getidComanda())
+                        .setValue(true);
+
+                databaseReference.child("feedback")
+                        .child(preferencias.getIdentificador())
+                        .child(preferencias.getIdEstabelecimento())
+                        .child("mensagemFeed")
+                        .setValue(etFeedback.getText().toString());
+
+
+
+                preferencias.removerPreferencias();
+
+                Intent intent = new Intent(EstabelecimentoMainActivity.this, HomeActivity.class);
+                startActivity(intent);
+                finish();
+
+            }
+        });
+        builder.setNegativeButton(R.string.bt_dialog_nagative, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                dialog.dismiss();
+
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 

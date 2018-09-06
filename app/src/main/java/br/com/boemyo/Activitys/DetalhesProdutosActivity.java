@@ -4,13 +4,21 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.util.AsyncListUtil;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -20,6 +28,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,50 +39,75 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.IntStream;
 
+import br.com.boemyo.Adapter.ListaAdicionalAdapter;
+import br.com.boemyo.Adapter.ListaPedidosAdapter;
+import br.com.boemyo.Configure.Base64Custom;
 import br.com.boemyo.Configure.ConnectivityChangeReceiver;
 import br.com.boemyo.Configure.FirebaseInstance;
 import br.com.boemyo.Configure.Helper;
 import br.com.boemyo.Configure.PicassoClient;
 import br.com.boemyo.Configure.Preferencias;
+import br.com.boemyo.Model.Adicional;
+import br.com.boemyo.Model.Carteira;
 import br.com.boemyo.Model.Comanda;
 import br.com.boemyo.Model.Pagamento;
 import br.com.boemyo.Model.Pedido;
 import br.com.boemyo.Model.Produto;
 import br.com.boemyo.R;
+import cieloecommerce.sdk.Merchant;
+import cieloecommerce.sdk.ecommerce.Card;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 public class DetalhesProdutosActivity extends AppCompatActivity implements ConnectivityChangeReceiver.OnConnectivityChangedListener {
-
+    private final String MERCHANT_ID = "ae999df1-e980-4437-84cd-27f5bc5a8bc6";
+    private final String MERCHANT_KEY = "6T90iOa5b8IPUZUSkqPQuLvshK7vY9SMLLWgvX36";
     private ConnectivityChangeReceiver connectivityChangeReceiver;
     private DatabaseReference firebse;
     private RelativeLayout conexao;
     private Intent intent;
-    private Produto produto;
+    public Produto produto;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private Toolbar tbDetalheProduto;
     private Preferencias preferencias;
     private Date hora = Calendar.getInstance().getTime();
     private ImageView ivImgProduto;
     private TextView tvDescProduto;
-    private TextView tvValorProduto;
-    private TextView tvQtdeProduto;
+    //private TextView tvValorProduto;
+    public TextView tvQtdeProduto;
     private EditText etObsProduto;
-    private ImageView ivSubtraiProduto;
-    private ImageView ivSomaProduto;
-    private Button btConfirmaProduto;
-    private int qtdeAtual = 1;
+    public ImageView ivSubtraiProduto;
+    public ImageView ivSomaProduto;
+    public Button btConfirmaProduto;
+    public int qtdeAtual = 1;
     private String valor;
     private Double subTotal = 0.0;
     private BottomSheetBehavior behavior;
     private DatabaseReference databaseReference = FirebaseInstance.getFirebase();
     private String numMesa;
     private EditText etNuMesa;
-
+    private ProgressBar pbCarregaTransacao;
+    private RelativeLayout rlCarregaProgressProduto;
+    public Button btConfirmaPedidoSheet;
+    public TextView tvValorProduto;
+    private RecyclerView rvAdicional;
+    private ListaAdicionalAdapter adapter;
+    private ArrayList<String> arrayAdicionais;
+    private boolean temAdicional;
+    private CardView cardAdicional;
     @Override
     protected void onResume() {
         super.onResume();
@@ -87,19 +121,26 @@ public class DetalhesProdutosActivity extends AppCompatActivity implements Conne
         preferencias = new Preferencias(DetalhesProdutosActivity.this);
         numMesa = preferencias.getNumMesa();
 
+
         View bottomsheet = findViewById(R.id.ll_bottom_sheet);
 
         behavior = BottomSheetBehavior.from(bottomsheet);
 
 
 
+
         tvDescProduto = (TextView) findViewById(R.id.tv_desc_produto_detalhes);
-        tvValorProduto = (TextView) findViewById(R.id.tv_valor_produto_detalhes);
+        tvValorProduto = (TextView) findViewById(R.id.tv_valor_detalhes);
         tvQtdeProduto = (TextView) findViewById(R.id.tv_valor_qtde_detalhes);
         etObsProduto = (EditText) findViewById(R.id.et_obs_detalhes);
         ivSubtraiProduto = (ImageView) findViewById(R.id.iv_subtrai_qtde_detalhes);
         ivSomaProduto = (ImageView) findViewById(R.id.iv_soma_qtde_detalhes);
         btConfirmaProduto = (Button) findViewById(R.id.bt_confirma_pedido);
+        pbCarregaTransacao = (ProgressBar) findViewById(R.id.pb_carrega_detalhes_produtos);
+        rlCarregaProgressProduto = (RelativeLayout) findViewById(R.id.rl_carrega_detalhes_produtos);
+        btConfirmaPedidoSheet = (Button) findViewById(R.id.bt_confirma_sheet);
+        rvAdicional = (RecyclerView) findViewById(R.id.rv_adicional_detalhes_produtos);
+        cardAdicional = (CardView) findViewById(R.id.card_adicional_detalhes_produto);
 
         intent = getIntent();
         produto = (Produto) intent.getSerializableExtra("produto");
@@ -121,7 +162,12 @@ public class DetalhesProdutosActivity extends AppCompatActivity implements Conne
         conexao = (RelativeLayout) findViewById(R.id.conexao_detalhes_produtos);
 
         ivImgProduto = (ImageView) findViewById(R.id.iv_img_detalhe_produto);
-        PicassoClient.downloadImage(this, produto.getUrlImagemProduto(), ivImgProduto);
+        if (produto.getUrlImagemProduto() == null){
+            PicassoClient.downloadImage(this, "NOIMAGE", ivImgProduto);
+        }else {
+            PicassoClient.downloadImage(this, produto.getUrlImagemProduto(), ivImgProduto);
+        }
+
 
         tbDetalheProduto.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,46 +177,131 @@ public class DetalhesProdutosActivity extends AppCompatActivity implements Conne
         });
         NumberFormat format = NumberFormat.getCurrencyInstance();
         tvDescProduto.setText(produto.getDescProduto());
-        tvValorProduto.setText(format.format(produto.getValorProduto()));
+        tvValorProduto.setText(format.format((produto.getValorProduto()) / 100));
+        btConfirmaPedidoSheet.setText("Confirmar Pagamento - " + format.format(produto.getValorProduto() / 100));
+        btConfirmaProduto.setText("Confirmar Pedido - " + format.format(produto.getValorProduto() / 100));
         Log.i("LOG_IDCOMANDA", String.valueOf(hora));
 
-        if(produto.getIdProduto() != null ){
-            Log.i("LOG_IDPRODUTO", produto.getIdProduto());
-        }
-        ivSubtraiProduto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                qtdeAtual = qtdeAtual - 1;
-                valor = String.valueOf(qtdeAtual);
-                if(qtdeAtual < 1){
-                    qtdeAtual = 1;
-                    valor = String.valueOf(qtdeAtual);
-                    tvQtdeProduto.setText(valor);
-                }else{
 
-                    tvQtdeProduto.setText(valor);
-                }
-            }
-        });
 
-        ivSomaProduto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                qtdeAtual = qtdeAtual + 1;
-                valor = String.valueOf(qtdeAtual);
-                tvQtdeProduto.setText(valor);
-            }
-        });
 
         getSubTotal();
+        //btConfirmaProduto.setText("Confirmar Pedido - " + format.format(produto.getValorProduto() /100));
         btConfirmaProduto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 validaPagamento();
+
+
             }
         });
+
+
+        arrayAdicionais = new ArrayList<>();
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
+        rvAdicional.setLayoutManager(linearLayoutManager);
+
+        adapter = new ListaAdicionalAdapter(this, arrayAdicionais);
+        rvAdicional.setAdapter(adapter);
+
+        //firebase
+        firebse = FirebaseInstance.getFirebase();
+        firebse.child("produto")
+                    .child(preferencias.getIdEstabelecimento())
+                        .child(produto.getIdProduto())
+                            .child("adicional").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                arrayAdicionais.clear();
+
+                for(DataSnapshot dados : dataSnapshot.getChildren()){
+                    arrayAdicionais.add(dados.getKey());
+                    Log.i("LOG_ADICIONAL", dados.getKey());
+                    adapter.notifyDataSetChanged();
+
+                    if(arrayAdicionais.size() < 1){
+                        temAdicional = false;
+
+
+
+                    }else {
+                        temAdicional = true;
+                        cardAdicional.setVisibility(View.VISIBLE);
+                    }
+
+                }
+
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        if(temAdicional == false){
+            ivSubtraiProduto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    NumberFormat format = NumberFormat.getCurrencyInstance();
+                    qtdeAtual = qtdeAtual - 1;
+                    valor = String.valueOf(qtdeAtual);
+                    Double valorProdutoEdit;
+                    if(qtdeAtual < 1){
+                        qtdeAtual = 1;
+                        valor = String.valueOf(qtdeAtual);
+                        tvQtdeProduto.setText(valor);
+                        valorProdutoEdit = (produto.getValorProduto() /100) * Integer.parseInt(valor);
+                        //btConfirmaProduto.setText("Confirmar Pedido - " + format.format(valorProdutoEdit));
+                        btConfirmaPedidoSheet.setText("Confirmar Pagamento - " + format.format(valorProdutoEdit));
+                        tvValorProduto.setText(format.format(valorProdutoEdit));
+
+                    }else{
+
+                        tvQtdeProduto.setText(valor);
+                        valorProdutoEdit = (produto.getValorProduto() /100) * Integer.parseInt(valor);
+                        // btConfirmaProduto.setText("Confirmar Pedido - " + format.format(valorProdutoEdit));
+                        btConfirmaPedidoSheet.setText("Confirmar Pagamento - " + format.format(valorProdutoEdit));
+                        tvValorProduto.setText(format.format(valorProdutoEdit));
+                    }
+                }
+            });
+
+            ivSomaProduto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    NumberFormat format = NumberFormat.getCurrencyInstance();
+                    Double valorProdutoEdit;
+                    qtdeAtual = qtdeAtual + 1;
+                    valor = String.valueOf(qtdeAtual);
+
+                    if(qtdeAtual > 10){
+                        qtdeAtual = 10;
+                        valor = String.valueOf(qtdeAtual);
+                        tvQtdeProduto.setText(valor);
+                        valorProdutoEdit = (produto.getValorProduto() /100) * Integer.parseInt(valor);
+                        btConfirmaProduto.setText("Confirmar Pedido - " + format.format(valorProdutoEdit));
+                        btConfirmaPedidoSheet.setText("Confirmar Pagamento - " + format.format(valorProdutoEdit));
+
+                        tvValorProduto.setText(format.format(valorProdutoEdit));
+                    }else{
+                        tvQtdeProduto.setText(valor);
+                        valorProdutoEdit = (produto.getValorProduto() /100) * Integer.parseInt(valor);
+                        btConfirmaProduto.setText("Confirmar Pedido - " + format.format(valorProdutoEdit));
+                        btConfirmaPedidoSheet.setText("Confirmar Pagamento - " + format.format(valorProdutoEdit));
+                        tvValorProduto.setText(format.format(valorProdutoEdit));
+                    }
+
+
+                }
+            });
+
+        }
 
     }
 
@@ -224,10 +355,6 @@ public class DetalhesProdutosActivity extends AppCompatActivity implements Conne
 
     public void aceitaPedido(){
 
-
-        Button btConfirmaPedidoSheet = (Button) findViewById(R.id.bt_confirma_sheet);
-
-
         btConfirmaPedidoSheet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -235,7 +362,15 @@ public class DetalhesProdutosActivity extends AppCompatActivity implements Conne
                 if(numMesa == null){
                     alertaInformaMesa();
                 }else {
-                    validaPedido();
+                    try {
+
+                        validaPedido();
+                        pbCarregaTransacao.setVisibility(View.VISIBLE);
+                        rlCarregaProgressProduto.setVisibility(View.VISIBLE);
+                        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
 
             }
@@ -294,7 +429,14 @@ public class DetalhesProdutosActivity extends AppCompatActivity implements Conne
                                 .child("numMesa")
                                     .setValue(numMesa);
 
-                validaPedido();
+                try {
+                    validaPedido();
+                    pbCarregaTransacao.setVisibility(View.VISIBLE);
+                    rlCarregaProgressProduto.setVisibility(View.VISIBLE);
+                    behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 dialog.dismiss();
 
 
@@ -303,34 +445,182 @@ public class DetalhesProdutosActivity extends AppCompatActivity implements Conne
     }
 
 
-    public void validaPedido(){
-
-        SimpleDateFormat dataPedidoFormat = new SimpleDateFormat("HH:mm:ss");
-        String idPedido = databaseReference.child("pedido").push().getKey();
+    public void validaPedido() throws JSONException {
+        Log.i("LOG_VALOR_PEDIDO", String.valueOf(adapter.somaTotalGeral));
+        final SimpleDateFormat dataPedidoFormat = new SimpleDateFormat("HH:mm:ss");
+        final String idPedido = databaseReference.child("pedido").push().getKey();
         String horaPedido = dataPedidoFormat.format(hora);
 
-        Pedido pedido =  new Pedido();
-        Comanda comanda = new Comanda();
-        Double valorProdutoTotal = produto.getValorProduto() * qtdeAtual;
+        final Pedido pedido =  new Pedido();
+        final Comanda comanda = new Comanda();
+        final Double valorProdutoTotal;
+        final int qtdeProdutoFinal;
+
+        if(temAdicional == true){
+            valorProdutoTotal = adapter.somaTotalGeral;
+            qtdeProdutoFinal = adapter.qtdeAtual;
+        }else {
+            valorProdutoTotal = produto.getValorProduto() * qtdeAtual;
+            qtdeProdutoFinal = qtdeAtual;
+        }
+
+
+
         pedido.setComanda(preferencias.getidComanda());
         pedido.setIdPedido(idPedido);
         pedido.setProduto(produto.getIdProduto());
-        pedido.setQtdeProduto(String.valueOf(qtdeAtual));
+        pedido.setQtdeProduto(String.valueOf(qtdeProdutoFinal));
         pedido.setObsProduto(etObsProduto.getText().toString());
         pedido.setValorPedido(valorProdutoTotal);
         pedido.setHoraPedido(horaPedido);
         pedido.setIdEstabelecimento(preferencias.getIdEstabelecimento());
+        pedido.setNomeUsuario(preferencias.getNome());
         pedido.setSituacaoPedido(0);
-        pedido.salvarFirebase();
-        pedido.salvarStatusPedido();
-
-
         comanda.setIdPedido(idPedido);
         comanda.setIdComanda(preferencias.getidComanda());
-        //comanda.setIdEstabelecimento(preferencias.getIdEstabelecimento());
-        comanda.salvarPedidoComanda();
-        salvaSubTotal(valorProdutoTotal);
-        finish();
+
+
+        firebse.child("carteira")
+                    .child(preferencias.getIdentificador())
+                        .child(preferencias.getIdPagamento()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                final Carteira carteira = dataSnapshot.getValue(Carteira.class);
+                pedido.setTokenCardPedido(preferencias.getIdPagamento());
+                pedido.setBandeiraCartaoPedido(carteira.getBandeira());
+                pedido.setCvvPedido(Base64Custom.decodifcarBase64(carteira.getCvv()));
+                pedido.setTipoPagamentoPedido(carteira.getTipoPagamento());
+                Log.i("LOG_TIPO_PAG", carteira.getTipoPagamento());
+                if(carteira.getTipoPagamento().equals("DebitCard")){
+                    /*pedido.salvarFirebase();
+                    pedido.salvarStatusPedido();
+                    comanda.salvarPedidoComanda();
+                    salvaSubTotal(valorProdutoTotal);*/
+                    alertaDebito();
+                    pbCarregaTransacao.setVisibility(View.GONE);
+                    rlCarregaProgressProduto.setVisibility(View.GONE);
+                    //Toast.makeText(DetalhesProdutosActivity.this, R.string.cod_zero, Toast.LENGTH_LONG).show();
+                }
+
+                if(carteira.getTipoPagamento().equals("CreditCard")){
+                    try {
+                        pedido.post(new Callback() {
+                            @Override
+                            public void onFailure(Call call, IOException e) {
+
+                            }
+
+                            @Override
+                            public void onResponse(Call call, Response response) throws IOException{
+                                if (response.isSuccessful()) {
+                                    String jsonData = response.body().string();
+                                    Log.i("LOG_TRANSACAO",jsonData);
+
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            pbCarregaTransacao.setVisibility(View.GONE);
+                                            rlCarregaProgressProduto.setVisibility(View.GONE);
+                                        }
+                                    });
+
+                                    try {
+                                        JSONObject jsonOResponse = new JSONObject(jsonData);
+                                        String jsonPay = jsonOResponse.getString("Payment");
+
+                                        JSONObject jsonOResponsePay = new JSONObject(jsonPay);
+                                        String code = jsonOResponsePay.getString("ReturnCode");
+                                        String payId = jsonOResponsePay.getString("PaymentId");
+                                        pedido.setIdCieloPedido(payId);
+
+                                        Log.i("LOG_TRANSACAO", code);
+                                        if(code.equals("0")|| code.equals("00") || code.equals("000")) {
+
+                                            pedido.salvarFirebase();
+                                            pedido.salvarStatusPedido();
+                                            comanda.salvarPedidoComanda();
+                                            salvaSubTotal(valorProdutoTotal);
+                                            if(carteira.getTipoPagamento().equals("CreditCard")){
+                                                pedido.postCaptura(new Callback() {
+                                                    @Override
+                                                    public void onFailure(Call call, IOException e) {
+
+                                                    }
+
+                                                    @Override
+                                                    public void onResponse(Call call, Response response) throws IOException {
+
+                                                        Log.i("LOGCAPTURA", response.body().string());
+                                                    }
+                                                });
+                                            }
+
+                                            runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+
+                                                    Toast.makeText(DetalhesProdutosActivity.this, R.string.cod_zero, Toast.LENGTH_LONG).show();
+
+                                                }
+                                            });
+
+                                            if(temAdicional == true){
+
+                                                for (String idAdicional: adapter.arrayIdAdicionais) {
+                                                    databaseReference.child("pedido")
+                                                                        .child(idPedido)
+                                                                            .child("adicional")
+                                                                                    .child(idAdicional).setValue(true);
+                                                }
+
+
+
+                                            }
+
+                                            finish();
+                                        }else {
+                                            Log.i("LOG_TRANSACAO", "Entrou Helper");
+                                            Helper helper = new Helper();
+
+                                            helper.validaCodCielo(btConfirmaProduto, code);
+                                            //validaCodCielo(code);
+                                        }
+
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                        Log.i("LOG_TRANSACAO", e.toString());
+                                    }
+
+
+                                } else {
+                                    // Request not successful
+                                }
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Log.i("LOG_TRANSACAO", e.toString());
+                    }
+                }
+
+
+
+
+
+
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
 
 
     }
@@ -338,20 +628,30 @@ public class DetalhesProdutosActivity extends AppCompatActivity implements Conne
     public void validaPagamento(){
         firebse = FirebaseInstance.getFirebase();
         final Vibrator vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-        final ArrayList<Pagamento> arrayPagamento = new ArrayList<>();
+        final ArrayList<String> arrayCarteira = new ArrayList<>();
 
-        firebse.child("Pagamento")
+        firebse.child("carteira")
                 .child(preferencias.getIdentificador()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshotPagamento) {
                 for(DataSnapshot dados : dataSnapshotPagamento.getChildren()){
-                    Pagamento pagamento = dados.getValue(Pagamento.class);
-                    arrayPagamento.add(pagamento);
+
+                    arrayCarteira.add(dados.getKey());
+
+                    if(preferencias.getIdPagamento() == null){
+                        Log.i("LOG_SALVA_CARD", "Entrou Novo");
+                        preferencias.salvarIdPagamento(dados.getKey());
+                        alteraCartao();
+                    }else {
+                        alteraCartao();
+                    }
+
                 }
 
-                if(arrayPagamento.size() >= 1){
+                if(arrayCarteira.size() >= 1){
                     aceitaPedido();
                     behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
                 }else{
                     alertaAdicionaCartao();
                     vibrator.vibrate(500);
@@ -375,9 +675,11 @@ public class DetalhesProdutosActivity extends AppCompatActivity implements Conne
         builder.setPositiveButton(R.string.bt_inserir_cartao, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
+                Intent intentInserir = new Intent(DetalhesProdutosActivity.this, AdicionaNovoCartaoActivity.class);
+                startActivity(intentInserir);
                 dialog.dismiss();
-                Intent intent = new Intent(DetalhesProdutosActivity.this, AdicionaNovoCartaoActivity.class);
-                startActivity(intent);
+
             }
         });
         builder.setNegativeButton(R.string.bt_dialog_nagative, new DialogInterface.OnClickListener() {
@@ -391,6 +693,69 @@ public class DetalhesProdutosActivity extends AppCompatActivity implements Conne
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
+    public void alteraCartao(){
+
+        final SupportedCardTypesView ivIconCardSheet = (SupportedCardTypesView) findViewById(R.id.iv_sheet_icon_card_finaliza);
+        final TextView tvNumCardSheet = (TextView) findViewById(R.id.tv_sheet_numero_cartao_finaliza);
+        //final TextView tvAlterarCardSheet = (TextView) findViewById(R.id.tv_sheet_alterar_cartao_finaliza);
+        final RelativeLayout rlAdicionaCartao = (RelativeLayout) findViewById(R.id.rl_aciona_cartao_bottom_sheet_edit_finaliza);
+        firebse = FirebaseInstance.getFirebase();
+        firebse.child("carteira").child(preferencias.getIdentificador()).child(preferencias.getIdPagamento()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Helper helper = new Helper();
+                Carteira carteira= dataSnapshot.getValue(Carteira.class);
+
+                //String numCartaoEdit = pagamento.getNumCartao().substring(pagamento.getNumCartao().length() - 4);
+                tvNumCardSheet.setText("●●●● " + Base64Custom.decodifcarBase64(carteira.getNumCartao()));
+                helper.validaBandeira(carteira, ivIconCardSheet);
+
+
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+        rlAdicionaCartao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DetalhesProdutosActivity.this, EscolhePagamentoActivity.class);
+                startActivity(intent);
+                behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            }
+        });
+
+
+    }
+
+    private void alertaDebito(){
+        AlertDialog.Builder builder = new AlertDialog.Builder( this );
+        builder.setTitle("Cartão de Débito");
+        builder.setMessage(R.string.menssagem_debito);
+
+        builder.setPositiveButton("ENTENDIDO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                dialog.dismiss();
+            }
+        });
+
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+
+
+
 
 
 }

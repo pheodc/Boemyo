@@ -29,6 +29,7 @@ public class Preferencias {
     private String CHAVE_IDPAGAMENTO = "idPagamento";
     private String CHAVE_ABRIR_CATEGORIA = "abrirCategoria";
     private String CHAVE_ABRIR_TUTORIAL = "abrirTutorial";
+    private String CHAVE_VALOR_ADICIONAL = "valorAdicional";
 
     public Preferencias(Context contextoParametro) {
 
@@ -92,6 +93,12 @@ public class Preferencias {
         editor.commit();
     }
 
+    public void salvarValorAdicional(String valorAdicional){
+        editor.putString(CHAVE_VALOR_ADICIONAL, valorAdicional);
+
+        editor.commit();
+    }
+
     public String getIdentificador(){
         return preferences.getString(CHAVE_IDUSUARIO, null);
     }
@@ -144,6 +151,10 @@ public class Preferencias {
         return preferences.getString(CHAVE_ABRIR_TUTORIAL, null);
     }
 
+    public String getValorAdicional(){
+        return preferences.getString(CHAVE_VALOR_ADICIONAL, null);
+    }
+
     public void limparDados(){
         editor.clear();
         editor.commit();
@@ -165,6 +176,16 @@ public class Preferencias {
 
     public void removerAbrirTutorial(){
         editor.remove(CHAVE_ABRIR_TUTORIAL);
+        editor.commit();
+    }
+
+    public void removerValorAdicional(){
+        editor.remove(CHAVE_VALOR_ADICIONAL);
+        editor.commit();
+    }
+
+    public void removerIdPagamento(){
+        editor.remove(CHAVE_IDPAGAMENTO);
         editor.commit();
     }
 

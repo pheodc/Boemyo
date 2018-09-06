@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -60,19 +61,30 @@ public class ComandaActivity extends AppCompatActivity implements RecyclerItemTo
     private RecyclerView rvComanda;
     private ListaPedidosAdapter adapter;
     private DatabaseReference firebase;
+    private ValueEventListener valueEventListener;
     private ArrayList<String> arrayPedidos;
     private Preferencias preferencias;
     private Toolbar tbComanda;
     private TextView tvSubTotal;
-    private Button btFinalizarComanda;
+    //private Button btFinalizarComanda;
     private Button btConfirmaPagamentoSheet;
     private Double subTotal = 0.0;
     private Pedido pedido;
     private NumberFormat format = NumberFormat.getCurrencyInstance();
-    private BottomSheetBehavior behavior;
     private Pagamento pagamento;
     private ProgressBar pbCarregaComanda;
-    Helper helper = new Helper();
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        firebase.addValueEventListener(valueEventListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        firebase.removeEventListener(valueEventListener);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,12 +100,6 @@ public class ComandaActivity extends AppCompatActivity implements RecyclerItemTo
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        View bottomsheet = findViewById(R.id.ll_bottom_sheet_finaliza);
-
-        behavior = BottomSheetBehavior.from(bottomsheet);
-
-        btConfirmaPagamentoSheet = (Button) findViewById(R.id.bt_confirma_sheet_finaliza);
-
 
 
         tbComanda.setNavigationOnClickListener(new View.OnClickListener() {
@@ -106,14 +112,15 @@ public class ComandaActivity extends AppCompatActivity implements RecyclerItemTo
         });
 
         connectivityChangeReceiver = new ConnectivityChangeReceiver(this);
-        IntentFilter filter = new IntentFilter();
+        final IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         registerReceiver(connectivityChangeReceiver, filter);
 
         conexao = (RelativeLayout) findViewById(R.id.conexao_comanda);
         rvComanda = (RecyclerView) findViewById(R.id.rv_comanda);
         tvSubTotal = (TextView) findViewById(R.id.tv_subtotal_pedido);
-        btFinalizarComanda = (Button) findViewById(R.id.bt_finalizar_comanda);
+        //btFinalizarComanda = (Button) findViewById(R.id.bt_finalizar_comanda);
+
         pbCarregaComanda = (ProgressBar) findViewById(R.id.pb_carrega_comanda);
         arrayPedidos = new ArrayList<>();
 
@@ -127,41 +134,57 @@ public class ComandaActivity extends AppCompatActivity implements RecyclerItemTo
 
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelperComanda(0, ItemTouchHelper.LEFT, this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(rvComanda);
-
-        /*lvComanda.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long l) {
-                Date horarioAtual =  Calendar.getInstance().getTime();
-                Pedido pedido = (Pedido) parent.getItemAtPosition(position);
-                SimpleDateFormat dataFormat = new SimpleDateFormat("HH:mm:ss");
-                String horaFormatada = dataFormat.format(horarioAtual);
-                int horaPedido = Integer.parseInt(pedido.getHoraPedido().substring(0,2));
-                int minPedido = Integer.parseInt(pedido.getHoraPedido().substring(3,5));
-                int horaAtual = Integer.parseInt(horaFormatada.substring(0,2));
-                int minAtual = Integer.parseInt(horaFormatada.substring(3,5));
-                Long diferenca = Helper.getDiferencaData(horaPedido, minPedido, horaAtual, minAtual);
-
-                Log.i("LOG_HORA", String.valueOf(diferenca));
-                if(pedido.getSituacaoPedido() == 1) {
-                    Toast.makeText(ComandaActivity.this, R.string.cancelamento_pedido_entregue, Toast.LENGTH_LONG).show();
-                }else if(pedido.getSituacaoPedido() == 2){
-                    Toast.makeText(ComandaActivity.this, R.string.cancelamento_realizado, Toast.LENGTH_LONG).show();
-                }else {
-                    alertaCancelamento(pedido, diferenca);
-                }
-            }
-        });*/
-
         //Recuperar Firebase
 
-        firebase = FirebaseInstance.getFirebase();
+        firebase = FirebaseInstance.getFirebase().child("comanda")
+                                                     .child(preferencias.getidComanda());
 
-        //HashMap<String, Object> timestampNow = new HashMap<>();
-        //timestampNow.put("timestamp", ServerValue.TIMESTAMP);
+        valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                arrayPedidos.clear();
 
 
 
-        firebase.child("comanda")
+                    Comanda comanda = dataSnapshot.getValue(Comanda.class);
+                    Log.i("LOG_COMANDA", comanda.getSubTotal().toString());
+                    //tvSubTotal.setText(format.format( comanda.getSubTotal()));
+                    startCountAnimation(Float.parseFloat(comanda.getSubTotal().toString())/100);
+                firebase = FirebaseInstance.getFirebase();
+                if(preferencias.getidComanda() != null){
+                    firebase.child("comanda").child(preferencias.getidComanda()).child("pedidos").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for(DataSnapshot dados : dataSnapshot.getChildren()){
+                                Log.i("LOG_COMANDA_PEDIDOS", dados.getKey());
+                                arrayPedidos.add(dados.getKey());
+                                adapter.notifyDataSetChanged();
+                                pbCarregaComanda.setVisibility(View.GONE);
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        //Fluxo antigo
+
+        /*firebase.child("comanda")
                     .child(preferencias.getidComanda()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -169,7 +192,7 @@ public class ComandaActivity extends AppCompatActivity implements RecyclerItemTo
                 Comanda comanda = dataSnapshot.getValue(Comanda.class);
                 Log.i("LOG_COMANDA", comanda.getSubTotal().toString());
                 //tvSubTotal.setText(format.format( comanda.getSubTotal()));
-                startCountAnimation(Float.parseFloat(comanda.getSubTotal().toString()));
+                startCountAnimation(Float.parseFloat(comanda.getSubTotal().toString())/100);
 
                 firebase.child("comanda").child(preferencias.getidComanda()).child("pedidos").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -194,34 +217,23 @@ public class ComandaActivity extends AppCompatActivity implements RecyclerItemTo
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        });*/
 
 
 
-        btFinalizarComanda.setOnClickListener(new View.OnClickListener() {
+        /*btFinalizarComanda.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                validaPagamento();
-
+                //Feedback();
 
             }
-        });
+        });*/
 
 
-        btConfirmaPagamentoSheet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                tempFinalizaSemCartao();
-
-
-            }
-        });
 
     }
 
-    public void validaPagamento(){
+   /* public void validaPagamento(){
 
         final SupportedCardTypesView ivIconCardSheet = (SupportedCardTypesView) findViewById(R.id.iv_sheet_icon_card_finaliza);
         final TextView tvNumCardSheet = (TextView) findViewById(R.id.tv_sheet_numero_cartao_finaliza);
@@ -261,7 +273,6 @@ public class ComandaActivity extends AppCompatActivity implements RecyclerItemTo
                 public void onCancelled(DatabaseError databaseError) {
 
                 }
-            });
         }else {
 
             firebase.child("Pagamento")
@@ -336,9 +347,9 @@ public class ComandaActivity extends AppCompatActivity implements RecyclerItemTo
             }
         });
         final AlertDialog dialog = builder.create();
-        dialog.show();*/
+        dialog.show();
 
-    }
+    }*/
 
     @Override
     public void onBackPressed() {
@@ -376,46 +387,5 @@ public class ComandaActivity extends AppCompatActivity implements RecyclerItemTo
         animator.start();
     }
 
-    private void tempFinalizaSemCartao(){
-        AlertDialog.Builder builder = new AlertDialog.Builder( this );
-        builder.setTitle("Antes de Sair...");
-        builder.setMessage("O Boemyo está a cada dia trabalhando mais para proporcionar a melhor experiência a você." +
-                " Porém nesse momento a opção de pagamento por cartão ainda não está disponível, por favor finalize sua" +
-                " comanda no caixa. Obrigado pela compreensão!");
 
-        builder.setPositiveButton("PAGO", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                firebase.child("comanda")
-                        .child(preferencias.getidComanda())
-                        .child("situacaoComanda")
-                        .setValue(false);
-
-                firebase.child("usuario")
-                        .child(preferencias.getIdentificador())
-                        .child("comandaAberta")
-                        .removeValue();
-
-
-
-                preferencias.removerPreferencias();
-
-                Intent intent = new Intent(ComandaActivity.this, HomeActivity.class);
-                startActivity(intent);
-                finish();
-
-            }
-        });
-        builder.setNegativeButton(R.string.bt_dialog_nagative, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int i) {
-                dialog.dismiss();
-
-            }
-        });
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
 }

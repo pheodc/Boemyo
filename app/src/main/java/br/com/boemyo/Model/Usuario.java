@@ -119,4 +119,6 @@ public class Usuario {
     public void setComandaAberta(String comandaAberta) {
         this.comandaAberta = comandaAberta;
     }
+
+
 }

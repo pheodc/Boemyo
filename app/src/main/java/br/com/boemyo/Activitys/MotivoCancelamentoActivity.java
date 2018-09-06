@@ -105,7 +105,7 @@ public class MotivoCancelamentoActivity extends AppCompatActivity {
         switch (view.getId()){
 
             case R.id.rb_motivo_um:
-                if(checked)
+                if( checked)
                     motivo = 1;
                     Log.i("LOG_SELECT_MOTIVO",  String.valueOf(motivo));
                     break;

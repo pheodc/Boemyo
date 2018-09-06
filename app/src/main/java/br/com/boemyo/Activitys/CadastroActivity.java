@@ -315,9 +315,8 @@ public class CadastroActivity extends AppCompatActivity  {
                                                 usuario.salvarFirebase();
                                                 autenticaEmail();
                                                 progressDialog.dismiss();
-                                                Intent intent = new Intent(CadastroActivity.this, LoginActivity.class);
-                                                startActivity(intent);
-                                                finish();
+
+                                                //finish();
 
                             } else {
 
@@ -456,6 +455,24 @@ public class CadastroActivity extends AppCompatActivity  {
         dialog.show();
     }
 
+    private void alertaAutenticarEmail(){
+        AlertDialog.Builder builder = new AlertDialog.Builder( this );
+        builder.setTitle(R.string.dialog_autentica_email_title);
+        builder.setMessage(R.string.dialog_autentica_email_message);
+
+        builder.setPositiveButton(R.string.bt_dialog_positive, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(CadastroActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
     private void autenticaEmail(){
 
         FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -464,8 +481,9 @@ public class CadastroActivity extends AppCompatActivity  {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()){
-                            Snackbar snackbar = Snackbar.make(cadastroUser, R.string.send_email_sucesso, Snackbar.LENGTH_LONG);
-                            snackbar.show();
+                            alertaAutenticarEmail();
+                            //Snackbar snackbar = Snackbar.make(cadastroUser, R.string.send_email_sucesso, Snackbar.LENGTH_LONG);
+                            //snackbar.show();
                             firebaseAuth.signOut();
 
                         }else{

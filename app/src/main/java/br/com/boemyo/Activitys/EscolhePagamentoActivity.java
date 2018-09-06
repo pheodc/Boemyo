@@ -27,6 +27,7 @@ import br.com.boemyo.Configure.ConnectivityChangeReceiver;
 import br.com.boemyo.Configure.FirebaseInstance;
 import br.com.boemyo.Configure.Preferencias;
 import br.com.boemyo.Configure.RecyclerViewOnClickListenerHack;
+import br.com.boemyo.Model.Carteira;
 import br.com.boemyo.Model.Comanda;
 import br.com.boemyo.Model.Pagamento;
 import br.com.boemyo.R;
@@ -35,12 +36,11 @@ public class EscolhePagamentoActivity extends AppCompatActivity implements Recyc
 
     private ConnectivityChangeReceiver connectivityChangeReceiver;
     private RelativeLayout conexao;
-    private RelativeLayout rlPagamentoLocal;
     private RecyclerView rvFinalizaComanda;
     private ListaEscolhePagamentoAdapter adapter;
     private DatabaseReference firebase;
     private ValueEventListener valueEventListener;
-    private ArrayList<Pagamento> arrayFinalizaComanda;
+    private ArrayList<String> arrayFinalizaComanda;
     private Preferencias preferencias;
     private Toolbar tbFizalizaComanda;
     private Comanda comanda;
@@ -75,7 +75,6 @@ public class EscolhePagamentoActivity extends AppCompatActivity implements Recyc
 
         conexao = (RelativeLayout) findViewById(R.id.conexao_finaliza_comanda);
 
-        rlPagamentoLocal = (RelativeLayout) findViewById(R.id.rl_escolhe_local);
         rvFinalizaComanda = (RecyclerView) findViewById(R.id.rv_finaliza_comanda);
 
         arrayFinalizaComanda = new ArrayList<>();
@@ -96,17 +95,8 @@ public class EscolhePagamentoActivity extends AppCompatActivity implements Recyc
                 alertaFinalizarCartao(pagamento);
             }
         });*/
-
-        rlPagamentoLocal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                preferencias.salvarIdPagamento("pag_local");
-                finish();
-            }
-        });
-
         firebase = FirebaseInstance.getFirebase()
-                .child("Pagamento")
+                .child("carteira")
                 .child(preferencias.getIdentificador());
 
         valueEventListener = new ValueEventListener() {
@@ -115,9 +105,8 @@ public class EscolhePagamentoActivity extends AppCompatActivity implements Recyc
                 arrayFinalizaComanda.clear();
 
                 for(DataSnapshot dados : dataSnapshot.getChildren()){
-                    Pagamento pagamento = dados.getValue(Pagamento.class);
-                    Log.i("LOG_NOMECAT", pagamento.getNumCartao());
-                    arrayFinalizaComanda.add(pagamento);
+
+                    arrayFinalizaComanda.add(dados.getKey());
                     adapter.notifyDataSetChanged();
                 }
 

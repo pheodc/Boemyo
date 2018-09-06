@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.google.firebase.database.DataSnapshot;
@@ -44,7 +45,7 @@ public class CategoriaCardapioActivity extends AppCompatActivity implements Recy
     private ArrayList<CategoriaCardapio> arrayCategorias;
     private Preferencias preferencias;
     private Toolbar tbCategoriaCardapio;
-
+    private ProgressBar pbCarregaCategoriaCardapio;
     @Override
     protected void onStart() {
         super.onStart();
@@ -91,6 +92,7 @@ public class CategoriaCardapioActivity extends AppCompatActivity implements Recy
 
         conexao = (RelativeLayout) findViewById(R.id.conexao_categoria_cardapio);
 
+        pbCarregaCategoriaCardapio = (ProgressBar) findViewById(R.id.pb_categoria_cardapio);
         rvCategoria = (RecyclerView) findViewById(R.id.rv_categoria_cardapio);
         rvCategoria.setHasFixedSize(true);
         arrayCategorias = new ArrayList<>();
@@ -132,6 +134,7 @@ public class CategoriaCardapioActivity extends AppCompatActivity implements Recy
                     CategoriaCardapio categoriaCardapio = dados.getValue(CategoriaCardapio.class);
                     Log.i("LOG_NOMECAT", categoriaCardapio.getNomeCategoria());
                     arrayCategorias.add(categoriaCardapio);
+                    pbCarregaCategoriaCardapio.setVisibility(View.GONE);
                 }
                 adapter.notifyDataSetChanged();
             }

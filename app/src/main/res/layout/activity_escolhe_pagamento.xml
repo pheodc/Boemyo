@@ -36,61 +36,6 @@
         android:id="@+id/rv_finaliza_comanda"
         android:layout_below="@+id/tv_title_selecione_pagamento"
         android:divider="@null"
-        android:background="@color/colorText"
         android:layout_marginTop="8dp"></android.support.v7.widget.RecyclerView>
 
-    <RelativeLayout
-        android:id="@+id/rl_escolhe_local"
-        android:layout_width="wrap_content"
-        android:layout_height="72dp"
-        android:layout_below="@+id/rv_finaliza_comanda"
-        android:background="@color/colorText">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginLeft="16dp"
-            android:id="@+id/iv_pag_local"
-            android:background="@mipmap/ic_cash_grey600_48dp"/>
-        <LinearLayout
-
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginLeft="72dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/tv_title_pag_local"
-                android:textSize="16sp"
-                android:text="@string/tv_title_pag_local"
-                android:paddingLeft="8dp"
-                android:textColor="@color/colorPrimaryText"
-                >
-            </TextView>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/tv_siubtile_pag_local"
-                android:textSize="13sp"
-                android:text="@string/tv_subtile_pag_local"
-                android:textColor="@color/colorSecondaryText"
-                android:layout_marginLeft="8dp">
-            </TextView>
-
-
-        </LinearLayout>
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="24dp"
-            android:background="@mipmap/ic_chevron_right_grey600_24dp"/>
-    </RelativeLayout>
 </RelativeLayout>

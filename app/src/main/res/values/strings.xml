@@ -36,6 +36,8 @@
     <string name="login_nao_sucesso">Dados Incorretos</string>
     <string name="dialog_permission_title">Permissões negadas</string>
     <string name="dialog_permission_message">Para utilizar esse app, é necessário aceitar as permissões</string>
+    <string name="dialog_autentica_email_title">Verifique seu E-mail</string>
+    <string name="dialog_autentica_email_message">Enviamos para você um e-mail, por favor clique no link informado para confirmar sua conta!</string>
     <string name="dialog_qrcode_title">QR Code Invalido</string>
     <string name="dialog_qrcode_message">Esse QR CODE não faz parte da rede Boemyo.</string>
     <string name="dialog_confirma_produto_title">Tem certeza que deseja realizar o pedido?</string>
@@ -93,6 +95,7 @@
     <string name="bt_label_cadastro_fb">Cadastro com Facebook</string>
     <string name="bt_label_login_fb">Continue com Facebook</string>
     <string name="bt_label_finalizar_comanda">Encerrar Comanda</string>
+    <string name="bt_label_deixar_estabelecimento">Estou Indo Embora</string>
     <string name="bt_label_adiciona_cartao">Adicionar Cartão</string>
     <string name="bt_label_esqueci_senha">Enviar-me um E-mail</string>
     <string name="bt_label_genero_masculino">Masculino</string>
@@ -106,13 +109,15 @@
     <string name="title_activity_find_place_maps">Map</string>
     <string name="tv_comanda">Comanda</string>
     <string name="tv_cardapio">Cardápio</string>
-    <string name="tv_desc_produto">Descrição:</string>
+    <string name="tv_desc_produto">Descrição</string>
     <string name="tv_valor_produto">Valor:</string>
-    <string name="tv_qtde_produto">Quantidade:</string>
+    <string name="tv_qtde_produto">Quantidade</string>
     <string name="tv_obs_produto">Observações</string>
+    <string name="tv_adicional_produto">Adicionais</string>
     <string name="tv_subtotal">Total</string>
     <string name="tv_obs_hint_produto">Algo que deseja nos informar?</string>
     <string name="tv_title_pag_local">Estabelecimento</string>
+    <string name="tv_title_feedback">Conte-nos como foi a sua experiência, utizando o Boemyo:</string>
     <string name="title_img">Selecione a Imagem:</string>
     <string name="tv_subtile_pag_local">Realize o pagamento no local</string>
     <string name="tv_selecione_pagamento">Selecione a forma de pagamento:</string>
@@ -133,7 +138,10 @@
     <string name="pagamento_null">Adicione um Cartão</string>
     <string name="pagamento_adiciona">Adicionar</string>
     <string name="tv_title_motivo_cancel">Selecione um Motivo para o seu Cancelamento:</string>
-
+    <string name="tv_security_info">Para sua maior segurança as informações de seu cartão são armazenadas
+                                    em um ambiente altamente seguro com a nossa parceira Cielo</string>
+    <string name="menssagem_debito">O Boemyo está fazendo constantes melhorias. Infelizmente ainda não estamos realizando o pagamento por cartão de Débito .
+        Mas fique tranquilo, logo logo você poderá realizar o pagamento direto pelo Boemyo!</string>
 
     <!-- Array String -->
     <string name="info_um">O Boemyo foi pensado para quem ainda gostar de estar presente em bares e restaurantes</string>
@@ -153,7 +161,7 @@
     <string name="title_produto">Escolha um Prato:</string>
     <string name="title_comanda">Comanda</string>
     <string name="title_pagamentos">Meios de Pagamento:</string>
-    <string name="title_escolhe_pagamento">Escolha a forma de Pagamento</string>
+    <string name="title_escolhe_pagamento">Meios de Pagamento</string>
     <string name="title_adiciona_cartao">Informe os dados do Cartão:</string>
     <string name="title_estabelecimento">Estabelecimento</string>
     <string name="sub_title_cadastro">Informe seus dados pessoais:</string>
@@ -163,6 +171,8 @@
     <string name="title_termos">Termos de Uso</string>
     <string name="title_privacidades">Política de Privacidade</string>
     <string name="title_motivos_cancelamento">Cancelar Pedido</string>
+    <string name="title_sobre">Sobre</string>
+    <string name="title_config">Configurações</string>
 
 
     <!-- Facebook Strings -->
@@ -188,6 +198,23 @@
     <!-- Motivos Cancelamentos -->
     <string name="motivos_um">Demora Excessiva para receber o pedido</string>
     <string name="motivos_dois">Preciso deixar o estabelecimento</string>
+
+
+    <!-- Cielo Erros -->
+    <string name="cod_zero">Pedido Realizado com Sucesso.</string>
+    <string name="cod_transacao_nao_autorizada">Transação não autorizada. Entre em contato com seu banco emissor.</string>
+    <string name="cod_transacao_invalida">Não foi possível processar a transação. reveja os dados informados e tente novamente.
+                                            Se o erro persistir, entre em contato com seu banco emissor.</string>
+    <string name="cod_refazer_confirmar_dados">Transação não autorizada. Refazer a transação confirmando os dados.</string>
+    <string name="cod_tente_novamente">	Transação não autorizada. Tente novamente. Se o erro persistir, entre em contato com seu banco emissor.</string>
+    <string name="cod_transacao_nao_processadas">Sua Transação não pode ser processada. Entre em contato com o Emissor do seu cartão.</string>
+    <string name="cod_primeiro_uso">Transação não autorizada. Entre em contato com seu banco emissor e solicite o desbloqueio do cartão.</string>
+    <string name="cod_sistemico">Sua Transação não pode ser processada, Tente novamente mais tarde. Se o erro persistir, entre em contato com o Boemyo.</string>
+    <string name="cod_uso_debito">Transação não autorizada. Tente novamente selecionando a opção de pagamento cartão de débito.</string>
+    <string name="cod_uso_credito">Transação não permitida. Cartão de crédito sendo usado com débito. Solicite ao portador que selecione a opção de pagamento Cartão de Crédito.</string>
+    <string name="cod_limite_excedido">Transação não autorizada. Limite diário excedido. Entre em contato com seu banco emissor.</string>
+    <string name="cod_bloqueado">Transação não autorizada. O cartão ou a conta do portador está bloqueada. Entre em contato com seu banco emissor.</string>
+    <string name="cod_nao_permitida">Transação não permitida. Falha no cartão ou cartão inválido. Digite novamente os dados do cartão, se o erro persistir, entre em contato com o banco.</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->

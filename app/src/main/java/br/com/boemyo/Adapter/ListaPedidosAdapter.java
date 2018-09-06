@@ -1,5 +1,6 @@
 package br.com.boemyo.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -24,7 +25,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.JsonObject;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -44,6 +50,9 @@ import br.com.boemyo.Model.Comanda;
 import br.com.boemyo.Model.Pedido;
 import br.com.boemyo.Model.Produto;
 import br.com.boemyo.R;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * Created by Phelipe Oberst on 12/10/2017.
@@ -90,7 +99,7 @@ public class ListaPedidosAdapter extends RecyclerView.Adapter<ListaPedidosAdapte
 
                 situacaoPedido(holder.ivSituacao,holder.tvSituacao,pedido.getSituacaoPedido());
                 holder.tvHora.setText("Hora do Pedido: " + pedido.getHoraPedido());
-                holder.tvValor.setText(format.format(pedido.getValorPedido()));
+                holder.tvValor.setText(format.format(pedido.getValorPedido()/100));
                 firebase.child("produto").child(preferencias.getIdEstabelecimento()).child(pedido.getProduto()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -136,9 +145,9 @@ public class ListaPedidosAdapter extends RecyclerView.Adapter<ListaPedidosAdapte
             }
         });
 
-        YoYo.with(Techniques.FadeInLeft)
+        /*YoYo.with(Techniques.FadeInLeft)
                 .duration(700)
-                .playOn(holder.itemView);
+                .playOn(holder.itemView);*/
 
         /*valueEventListener = new ValueEventListener() {
             @Override
@@ -277,55 +286,116 @@ public class ListaPedidosAdapter extends RecyclerView.Adapter<ListaPedidosAdapte
                     //Log.i("LOG_CANCEL", String.valueOf(pedidos.get(position)));
 
                     if(diferenca <= 5){
-                        Toast.makeText(context.getApplicationContext(), R.string.cancelamento_ate_cinco, Toast.LENGTH_LONG).show();
 
-                        firebase.child("pedido")
-                                        .child(pedidos.get(position))
-                                            .child("situacaoPedido")
+                        Log.i("LOG_ESTORNO", pedido.getIdCieloPedido());
+
+                        pedido.postEstorno(pedido.getIdCieloPedido(), new Callback() {
+
+
+
+                            @Override
+                            public void onFailure(Call call, IOException e) {
+
+                            }
+
+                            @Override
+                            public void onResponse(Call call, Response response) throws IOException {
+
+
+                                if (response.isSuccessful()) {
+
+                                    String jsonData = response.body().string();
+                                    Log.i("LOG_ESTORNO", jsonData);
+
+
+
+                                    try {
+                                        JSONObject jsonOResponse = new JSONObject(jsonData);
+
+                                        String code = jsonOResponse.getString("ReturnCode");
+
+                                        if(code.equals("9") || code.equals("0")){
+                                            ((ComandaActivity)context).runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    Toast.makeText(context.getApplicationContext(), R.string.cancelamento_ate_cinco, Toast.LENGTH_LONG).show();
+
+                                                }
+                                            });
+
+                                            firebase.child("pedido")
+                                                    .child(pedidos.get(position))
+                                                    .child("situacaoPedido")
                                                     .setValue(3);
 
-                        firebase.child("statusPedido")
-                                    .child("cancelados")
-                                        .child(preferencias.getIdEstabelecimento())
-                                            .child(pedidos.get(position))
-                                                .setValue(true);
+                                            firebase.child("statusPedido")
+                                                    .child("cancelados")
+                                                    .child(preferencias.getIdEstabelecimento())
+                                                    .child(pedidos.get(position))
+                                                    .setValue(true);
 
-                        firebase.child("statusPedido")
-                                    .child("andamentoPedido")
-                                        .child(preferencias.getIdEstabelecimento())
-                                            .child(pedidos.get(position))
-                                                .removeValue();
+                                            firebase.child("statusPedido")
+                                                    .child("andamentoPedido")
+                                                    .child(preferencias.getIdEstabelecimento())
+                                                    .child(pedidos.get(position))
+                                                    .removeValue();
 
-                        firebase.child("statusPedido")
-                                    .child("novoPedido")
-                                        .child(preferencias.getIdEstabelecimento())
-                                            .child(pedidos.get(position))
-                                                .removeValue();
-
-
-
-                        firebase.child("produto")
-                                    .child(preferencias.getIdEstabelecimento())
-                                        .child(pedido.getProduto()).addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                                final Produto produto = dataSnapshot.getValue(Produto.class);
+                                            firebase.child("statusPedido")
+                                                    .child("novoPedido")
+                                                    .child(preferencias.getIdEstabelecimento())
+                                                    .child(pedidos.get(position))
+                                                    .removeValue();
 
 
 
-                                firebase.child("comanda")
-                                        .child(pedido.getComanda())
-                                            .child("subTotal")
-                                                .setValue(subTotalCancel(produto.getValorProduto()));
+                                            firebase.child("produto")
+                                                    .child(preferencias.getIdEstabelecimento())
+                                                    .child(pedido.getProduto()).addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
 
-                            }
+                                                    final Produto produto = dataSnapshot.getValue(Produto.class);
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
 
+
+                                                    firebase.child("comanda")
+                                                            .child(pedido.getComanda())
+                                                            .child("subTotal")
+                                                            .setValue(subTotalCancel(produto.getValorProduto()));
+
+                                                }
+
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
+
+                                                }
+                                            });
+                                        }else{
+
+                                        }
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                        Log.i("LOG_ERROR", e.toString());
+                                        Toast.makeText(context.getApplicationContext(), "Transação não pode ser Cancelada - Entre em contato com o suporte Cielo", Toast.LENGTH_LONG).show();
+
+                                    }
+
+
+                                }else {
+                                    ((ComandaActivity)context).runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(context.getApplicationContext(), "Erro na transação. Não foi possivel realizar o Estorno!", Toast.LENGTH_LONG).show();
+
+                                        }
+                                    });
+
+                                }
                             }
                         });
+
+
 
 
                     }else{
@@ -353,7 +423,7 @@ public class ListaPedidosAdapter extends RecyclerView.Adapter<ListaPedidosAdapte
 
     public Double subTotalCancel(Double valorProduto){
 
-        Double subTotalCancel = subTotal - valorProduto;
+        Double subTotalCancel = subTotal - valorProduto ;
         Log.i("LOG_SUBTOTAL_CANCEL", String.valueOf(subTotalCancel));
 
         return subTotalCancel;

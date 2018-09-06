@@ -7,6 +7,8 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:theme="@style/Theme.MyThemeWrite"
+    android:background="@color/color_grey"
+
     tools:context="br.com.boemyo.Activitys.DetalhesProdutosActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -23,6 +25,7 @@
             app:contentScrim="@color/colorPrimary"
             app:expandedTitleMarginStart="48dp"
             app:expandedTitleMarginEnd="64dp"
+
             app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Headline"
             >
 
@@ -39,6 +42,7 @@
                 android:elevation="0dp"
                 android:minHeight="0dp"
                 app:layout_collapseMode="pin"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 />
 
             <include android:id="@+id/conexao_detalhes_produtos"
@@ -55,196 +59,305 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="50dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:id="@+id/rl_content_detalhes_produtos"
+            android:theme="@style/Theme.MyThemeCru">
 
-            <LinearLayout
+
+
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_marginTop="16dp"
-                android:layout_marginLeft="16dp"
-                android:id="@+id/ll_desc_produto">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@mipmap/ic_food_fork_drink_black_24dp"/>
-                <TextView
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:id="@+id/card_desc_detalhes_produtos"
+                app:cardCornerRadius="2dp"
+                app:cardElevation="3dp">
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_nome_produto_detalhes"
-                    android:layout_marginLeft="8dp"
-                    android:textColor="@color/colorPrimaryText"
-                    android:textStyle="bold"
-                    android:textSize="16sp"
-                    android:text="@string/tv_desc_produto"/>
-
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/tv_desc_produto_detalhes"
-                android:layout_below="@+id/ll_desc_produto"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="8dp"
-                android:text="Desc Produto"
-                android:textColor="@color/colorSecondaryText"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_below="@+id/tv_desc_produto_detalhes"
-                android:layout_marginTop="24dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:id="@+id/ll_valor">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@mipmap/ic_currency_usd_black_24dp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorPrimaryText"
-                    android:id="@+id/tv_label_valor"
-                    android:layout_marginLeft="8dp"
-                    android:textStyle="bold"
-                    android:textSize="16sp"
-                    android:text="@string/tv_valor_produto"/>
-                <View
-                    android:layout_width="140dp"
-                    android:layout_height="2dp"
+                    android:orientation="vertical"
+                    android:layout_marginTop="8dp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
-                    android:layout_marginTop="14dp"
-                    android:background="@color/colorPrimaryText"
-                    android:layout_alignLeft="@id/tv_label_valor"></View>
+                    android:id="@+id/ll_desc_produto">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/tv_valor_produto_detalhes"
-                    android:textSize="18sp"
-                    android:textColor="@color/colorPrimaryText"
-                    android:textStyle="bold"
-                    android:text="R$1000,00"/>
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="24dp"
-                android:layout_marginLeft="16dp"
-                android:layout_below="@+id/ll_valor"
-                android:id="@+id/ll_qtde_produto">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@mipmap/ic_basket_black_24dp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_qtde_produto_detalhes"
-                    android:layout_marginLeft="8dp"
-                    android:textColor="@color/colorPrimaryText"
-                    android:textStyle="bold"
-                    android:textSize="16sp"
-                    android:text="@string/tv_qtde_produto"/>
-                <View
-                    android:layout_width="94dp"
-                    android:layout_height="2dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginTop="14dp"
-                    android:background="@color/colorPrimaryText"
-                    android:layout_alignLeft="@id/tv_label_valor"></View>
-
-                <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_below="@+id/tv_valor_produto_detalhes"
-                android:layout_centerHorizontal="true">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
+                    <TextView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/iv_subtrai_qtde_detalhes"
-                        android:background="@mipmap/ic_minus_circle_outline_grey600_24dp"
-                        android:textSize="30sp"/>
+                        android:layout_below="@+id/tv_nome_produto_detalhes"
+                        android:layout_marginLeft="8dp"
+                        android:textColor="@color/colorPrimaryText"
+                        android:textSize="20sp"
+                        android:text="@string/tv_desc_produto"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_desc_produto_detalhes"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="Desc Produto"
+                        android:textColor="@color/colorSecondaryText"/>
+
+                </LinearLayout>
+
+
+
+            </android.support.v7.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/ll_valor_e_qtde_detalhes_produto"
+                android:layout_marginTop="16dp"
+                android:layout_below="@+id/card_desc_detalhes_produtos">
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/card_qtde_detalhes_produtos"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="8dp"
+
+                    app:cardCornerRadius="18dp"
+                    app:cardElevation="3dp"
+                    android:layout_weight="1">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        >
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:id="@+id/ll_qtde_produto">
+
+
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/tv_valor_produto_detalhes"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginBottom="8dp"
+                                >
+
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/iv_subtrai_qtde_detalhes"
+                                    android:background="@mipmap/ic_minus_circle_outline_grey600_24dp"
+
+                                    android:textSize="30sp"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/tv_valor_qtde_detalhes"
+                                    android:text="1"
+                                    android:layout_centerInParent="true"
+                                    android:textColor="@color/colorAccent"
+                                    android:textStyle="bold"
+
+                                    android:textSize="22sp"/>
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="right"
+                                    android:id="@+id/iv_soma_qtde_detalhes"
+                                    android:layout_alignParentRight="true"
+                                    android:background="@mipmap/ic_plus_circle_outline_grey600_24dp"
+                                    android:textSize="30sp"/>
+
+
+
+
+                            </RelativeLayout>
+
+                        </LinearLayout>
+
+                    </RelativeLayout>
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/card_valor_detalhes_produtos"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:cardCornerRadius="18dp"
+                    app:cardElevation="3dp"
+                    android:layout_weight="1">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/tv_valor_qtde_detalhes"
-                        android:text="1"
-                        android:textColor="@color/colorPrimaryText"
+                        android:id="@+id/tv_valor_detalhes"
+                        android:textColor="@color/colorAccent"
                         android:textStyle="bold"
-                        android:layout_marginLeft="22dp"
-                        android:textSize="20sp"/>
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_gravity="center"
+                        android:textSize="22sp"/>
 
-                    <ImageView
-                        android:layout_width="wrap_content"
+                </android.support.v7.widget.CardView>
+
+            </LinearLayout>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/card_adicional_detalhes_produto"
+                android:layout_below="@+id/ll_valor_e_qtde_detalhes_produto"
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="2dp"
+                app:cardElevation="3dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/iv_soma_qtde_detalhes"
-                        android:background="@mipmap/ic_plus_circle_outline_grey600_24dp"
-                        android:layout_marginLeft="20dp"
-                        android:textSize="30sp"/>
+                        android:layout_below="@+id/tv_nome_produto_detalhes"
+                        android:layout_marginLeft="8dp"
+                        android:textColor="@color/colorPrimaryText"
+                        android:textSize="20sp"
+                        android:text="@string/tv_adicional_produto"/>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/rv_adicional_detalhes_produtos"
+
+                        >
+
+                    </android.support.v7.widget.RecyclerView>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:textColor="@color/colorSecondaryText"
+                        android:textSize="10sp"
+                        android:text="(*) O valores dos adicionais serão multiplicados pela quantidade solicitada"/>
 
                 </LinearLayout>
 
-            </LinearLayout>
+            </android.support.v7.widget.CardView>
 
-            <LinearLayout
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="24dp"
-                android:layout_marginLeft="16dp"
-                android:layout_below="@+id/ll_qtde_produto"
-                android:id="@+id/ll_obs_produto">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@mipmap/ic_alert_circle_outline_black_24dp"/>
-                <TextView
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="16dp"
+                android:id="@+id/card_obs_detalhes_produtos"
+                android:layout_below="@+id/card_adicional_detalhes_produto"
+                app:cardCornerRadius="2dp"
+                app:cardElevation="3dp">
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_nome_produto_detalhes"
+                    android:orientation="vertical"
+                    android:layout_marginTop="8dp"
                     android:layout_marginLeft="8dp"
-                    android:textColor="@color/colorPrimaryText"
-                    android:textStyle="bold"
-                    android:textSize="16sp"
-                    android:text="@string/tv_obs_produto"/>
+                    android:id="@+id/ll_obs_produto">
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_nome_produto_detalhes"
+                        android:layout_marginLeft="8dp"
+                        android:textColor="@color/colorPrimaryText"
+                        android:textSize="20sp"
+                        android:text="@string/tv_obs_produto"/>
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/et_obs_detalhes"
-                android:hint="@string/tv_obs_hint_produto"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:textColor="@color/colorSecondaryText"
-                android:textColorHint="@color/colorSecondaryText"
-                android:layout_below="@+id/ll_obs_produto"/>
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:id="@+id/et_obs_detalhes"
+                        android:hint="@string/tv_obs_hint_produto"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="16dp"
+                        android:textColor="@color/colorSecondaryText"
+                        android:textColorHint="@color/colorSecondaryText"
+                        android:layout_below="@+id/ll_obs_produto"/>
 
+                </LinearLayout>
+
+
+
+
+            </android.support.v7.widget.CardView>
 
         </RelativeLayout>
+
+
 
     </android.support.v4.widget.NestedScrollView>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/rl_carrega_detalhes_produtos"
+            android:visibility="gone"
+            android:background="@color/color_fundo_progress">
+
+            <ProgressBar
+                android:layout_below="@id/conexao_comanda"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/pb_carrega_detalhes_produtos"
+                android:visibility="gone"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="20dp"
+                />
+
+
+        </RelativeLayout>
+
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
