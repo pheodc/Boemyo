@@ -12,6 +12,7 @@ import android.widget.Button;
 import com.braintreepayments.cardform.utils.CardType;
 import com.braintreepayments.cardform.view.SupportedCardTypesView;
 
+import java.text.Normalizer;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -67,6 +68,12 @@ public class Helper {
         }else{
             cardTypesView.setSupportedCardTypes(CardType.UNKNOWN);
         }
+    }
+
+    public static String removeAccent(final String str) {
+        String strNoAccent = Normalizer.normalize(str, Normalizer.Form.NFD);
+        strNoAccent = strNoAccent.replaceAll("[^\\p{ASCII}]", "");
+        return strNoAccent;
     }
 
     public void validaCodCielo(Button button, String codigo){

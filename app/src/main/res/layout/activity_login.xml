@@ -26,8 +26,9 @@
             android:id="@+id/iv_fonte"
             android:layout_marginTop="40dp"
             android:background="@drawable/nova_transparente_certa"
-            android:layout_centerHorizontal="true" />
-        <Button
+            android:layout_centerHorizontal="true"
+             />
+<!--        <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/bt_login_facebook"
@@ -49,14 +50,16 @@
             android:id="@+id/tv_or"
             android:text="OU"
             android:textStyle="bold"
-            android:textSize="18sp"/>
+            android:textSize="18sp"/>-->
+
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/ll_email_login"
-            android:layout_below="@id/tv_or"
-            android:layout_marginTop="14dp"
+            android:layout_below="@+id/iv_fonte"
+            android:layout_marginTop="100dp"
             android:orientation="horizontal">
             <ImageView
                 android:layout_width="wrap_content"

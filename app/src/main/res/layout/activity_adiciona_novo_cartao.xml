@@ -54,7 +54,8 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:layout_marginTop="16dp"
-                        android:id="@+id/ll_tipo_cartao">
+                        android:id="@+id/ll_tipo_cartao"
+                        android:visibility="gone">
                         <Button
                             android:layout_width="match_parent"
                             android:layout_height="35dp"
@@ -113,10 +114,31 @@
 
     </ScrollView>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/rl_carrega_adiciona_cartao"
+            android:visibility="gone"
+            android:background="@color/color_fundo_progress">
+
+            <ProgressBar
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/pb_carrega_adiciona_cartao"
+                android:visibility="gone"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="20dp"
+                />
 
 
+        </RelativeLayout>
+    </RelativeLayout>
 
-    <Button
+
+        <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/bt_adiciona_cartao"

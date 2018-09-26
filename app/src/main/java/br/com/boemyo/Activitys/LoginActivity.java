@@ -68,14 +68,14 @@ public class LoginActivity extends AppCompatActivity {
     private EditText passwordUser;
     private TextView tvCriarConta;
     private Button loginUser;
-    private Button loginFacebookUser;
+//    private Button loginFacebookUser;
     private TextView tvEsqueciSenha;
     private String identificadorUsuarioLogado;
     private FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
     private ValueEventListener valueEventListener;
     private Preferencias preferencias;
-    private CallbackManager callbackManager;
+//    private CallbackManager callbackManager;
     private ProgressBar pbLogin;
     private RelativeLayout rlFundoProgress;
     private FirebaseUser user;
@@ -91,13 +91,13 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         FacebookSdk.sdkInitialize(getApplicationContext());
-        callbackManager = CallbackManager.Factory.create();
+//        callbackManager = CallbackManager.Factory.create();
         preferencias = new Preferencias(LoginActivity.this);
         emailUser = (EditText) findViewById(R.id.et_email_login);
         passwordUser = (EditText) findViewById(R.id.et_password_login);
         tvCriarConta = (TextView) findViewById(R.id.tv_abrir_cadastro);
         loginUser = (Button) findViewById(R.id.bt_login);
-        loginFacebookUser = (Button) findViewById(R.id.bt_login_facebook);
+//        loginFacebookUser = (Button) findViewById(R.id.bt_login_facebook);
         tvEsqueciSenha = (TextView) findViewById(R.id.tv_esqueci_senha);
         pbLogin = (ProgressBar) findViewById(R.id.pb_login);
         rlFundoProgress = (RelativeLayout) findViewById(R.id.rl_fundo_progress);
@@ -108,7 +108,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
 
-        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+/*        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 validaLoginFace(loginResult.getAccessToken());
@@ -122,7 +122,7 @@ public class LoginActivity extends AppCompatActivity {
                 Snackbar snackbar = Snackbar.make(loginUser, error.toString(), Snackbar.LENGTH_SHORT);
                 snackbar.show();
             }
-        });
+        });*/
 
         loginUser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,7 +133,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        loginFacebookUser.setOnClickListener(new View.OnClickListener() {
+/*        loginFacebookUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -141,7 +141,7 @@ public class LoginActivity extends AppCompatActivity {
                         .getInstance()
                         .logInWithReadPermissions(LoginActivity.this, Arrays.asList("public_profile", "email"));
             }
-        });
+        });*/
 
         tvCriarConta.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,11 +161,11 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    @Override
+/*    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
-    }
+    }*/
 
     public void validaLogin(final String emailValido, String senhaValido){
         firebaseAuth = FirebaseInstance.getFirebaseAuth();
@@ -243,7 +243,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public void validaLoginFace(final AccessToken accessToken){
+/*    public void validaLoginFace(final AccessToken accessToken){
         firebaseAuth = FirebaseInstance.getFirebaseAuth();
         exibirProgress(true);
         AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
@@ -274,16 +274,20 @@ public class LoginActivity extends AppCompatActivity {
 
                                             Usuario usuario = dataSnapshot.getValue(Usuario.class);
 
-                                            if(dataSnapshot.getKey() != null){
+//                                            Log.i("LOG_EMAILFACE", usuario.getEmailUsuario());
 
-                                                validaComanda(usuario);
+                                            if(usuario.getEmailUsuario().toString() == ""){
 
-
-                                            }else {
                                                 exibirProgress(false);
                                                 Snackbar snackbar = Snackbar.make(loginUser, R.string.valida_face_nao_cadastrado, Snackbar.LENGTH_SHORT);
                                                 snackbar.show();
                                                 LoginManager.getInstance().logOut();
+
+
+                                            }else {
+
+                                                validaComanda(usuario);
+
                                             }
 
 
@@ -328,7 +332,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-    }
+    }*/
 
     private void exibirProgress(boolean exibir) {
         pbLogin.setVisibility(exibir ? View.VISIBLE : View.GONE);

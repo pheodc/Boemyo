@@ -92,7 +92,7 @@
     <string name="bt_label_confirmar_pagamento">Confirmar Pagamento</string>
     <string name="bt_label_editar_perfil">Atualizar Dados</string>
     <string name="bt_label_sair_estabelecimento">Sair do Estabelecimento</string>
-    <string name="bt_label_cadastro_fb">Cadastro com Facebook</string>
+    <string name="bt_label_cadastro_fb">Entrar com Facebook</string>
     <string name="bt_label_login_fb">Continue com Facebook</string>
     <string name="bt_label_finalizar_comanda">Encerrar Comanda</string>
     <string name="bt_label_deixar_estabelecimento">Estou Indo Embora</string>
@@ -128,7 +128,7 @@
     <string name="tv_title_tres_tutorial">Está em um Estabelecimento? Leia o QRCODE para abrir sua comanda!</string>
     <string name="tv_title_quatro_tutorial">Possui uma comanda aberta? Cardápio do local estará disponível a
                                                 qualquer momento!</string>
-    <string name="tv_title_cinco_tutorial">Escolheu um produto do cardápio? Faça o pedido direto pelo Boemyo!</string>
+    <string name="tv_title_cinco_tutorial">Escolheu um produto do cardápio? Faça o pedido e já realize o pagamento direto pelo Boemyo!</string>
     <string name="tv_title_seis_tutorial">Acesse facilmente o cardápio ou sua comanda, a qualquer momento!</string>
     <string name="tv_title_sete_tutorial">Está na hora de ir embora? Pague sua comanda diretamente pelo Boemyo.
                                             Chega de Filas!</string>

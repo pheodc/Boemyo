@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -29,6 +30,7 @@ import java.util.Date;
 import br.com.boemyo.Configure.Base64Custom;
 import br.com.boemyo.Configure.ConnectivityChangeReceiver;
 import br.com.boemyo.Configure.FirebaseInstance;
+import br.com.boemyo.Configure.Helper;
 import br.com.boemyo.Configure.Preferencias;
 import br.com.boemyo.Model.Pagamento;
 import br.com.boemyo.Model.Usuario;
@@ -51,6 +53,8 @@ public class AdicionaNovoCartaoActivity extends AppCompatActivity implements OnC
     private String bandeiraCartao;
     private RelativeLayout conexao;
     private String tipoPagamento;
+    private RelativeLayout rlCarregaAdicionaCartao;
+    private ProgressBar pbCarregaAdicionaCartao;
     private DatabaseReference databaseReference = FirebaseInstance.getFirebase();
 
 
@@ -99,9 +103,15 @@ public class AdicionaNovoCartaoActivity extends AppCompatActivity implements OnC
         btAddCartao.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                pbCarregaAdicionaCartao.setVisibility(View.VISIBLE);
+                rlCarregaAdicionaCartao.setVisibility(View.VISIBLE);
+
                 onCardFormSubmit();
             }
         });
+        rlCarregaAdicionaCartao = (RelativeLayout) findViewById(R.id.rl_carrega_adiciona_cartao);
+        pbCarregaAdicionaCartao = (ProgressBar) findViewById(R.id.pb_carrega_adiciona_cartao);
 
         selecionaTipoPagamento();
 
@@ -115,11 +125,11 @@ public class AdicionaNovoCartaoActivity extends AppCompatActivity implements OnC
             Log.i("LOG_BANDEIRA", bandeiraCartao);
             String horaFormatada = dateFormat.format(hora);
             String idPagamento = databaseReference.child("Pagamento").push().getKey();
-            Toast.makeText(this, R.string.valida_sucesso, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, R.string.valida_sucesso, Toast.LENGTH_SHORT).show();
             Pagamento pagamento = new Pagamento();
             pagamento.setIdUsuario(preferencias.getIdentificador());
             pagamento.setIdPagamento( idPagamento );
-            pagamento.setNomeUsuario(preferencias.getNome());
+            pagamento.setNomeUsuario(Helper.removeAccent(preferencias.getNome()));
             pagamento.setNumCartao(cfAdicionaCartao.getCardNumber());
             pagamento.setDataValidaMes(cfAdicionaCartao.getExpirationMonth());
             pagamento.setDataValidaAno(cfAdicionaCartao.getExpirationYear());

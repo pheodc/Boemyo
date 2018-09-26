@@ -78,7 +78,7 @@ public class CadastroActivity extends AppCompatActivity  {
     private EditText passwordUser;
     private EditText passwordConfirmUser;
     private Button cadastroUser;
-    private Button cadastroUserFacebook;
+//    private Button cadastroUserFacebook;
     //private CircleImageView inserirImagem;
     private FirebaseAuth firebaseAuth;
     private FirebaseStorage firebaseStorage;
@@ -106,8 +106,8 @@ public class CadastroActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro);
 
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        callbackManager = CallbackManager.Factory.create();
+/*        FacebookSdk.sdkInitialize(getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();*/
         Permissao.validaPermissoes(1 ,this, permissoesNecessarias);
         preferencias = new Preferencias(CadastroActivity.this);
         firebaseStorage = FirebaseInstance.getFirebaseStorage();
@@ -139,14 +139,14 @@ public class CadastroActivity extends AppCompatActivity  {
         passwordUser = (EditText) findViewById(R.id.et_password_cadastro);
         passwordConfirmUser = (EditText) findViewById(R.id.et_password_cnfirma_cadastro);
         cadastroUser = (Button) findViewById(R.id.bt_cadastro);
-        cadastroUserFacebook = (Button) findViewById(R.id.bt_cadastro_facebook);
+//        cadastroUserFacebook = (Button) findViewById(R.id.bt_cadastro_facebook);
         pbCadastro = (ProgressBar) findViewById(R.id.pb_cadastro);
         rlFundoProgressCadastro = (RelativeLayout) findViewById(R.id.rl_fundo_progress_cadastro);
         tvTermosUso = (TextView) findViewById(R.id.tv_termos_uso_link);
         tvPrivacidade = (TextView) findViewById(R.id.tv_privacidade_link);
         //inserirImagem = (CircleImageView) findViewById(R.id.iv_inseirir_imagem);
 
-        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+/*        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 validaLoginFace(loginResult.getAccessToken());
@@ -160,7 +160,7 @@ public class CadastroActivity extends AppCompatActivity  {
                 Snackbar snackbar = Snackbar.make(cadastroUser, error.toString(), Snackbar.LENGTH_SHORT);
                 snackbar.show();
             }
-        });
+        });*/
 
         /*inserirImagem.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,7 +185,7 @@ public class CadastroActivity extends AppCompatActivity  {
             }
         });
 
-        cadastroUserFacebook.setOnClickListener(new View.OnClickListener() {
+/*        cadastroUserFacebook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -193,7 +193,7 @@ public class CadastroActivity extends AppCompatActivity  {
                         .getInstance()
                         .logInWithReadPermissions(CadastroActivity.this, Arrays.asList("public_profile", "email"));
             }
-        });
+        });*/
         bundle = new Bundle();
 
 
@@ -223,13 +223,13 @@ public class CadastroActivity extends AppCompatActivity  {
 
     }
 
-    @Override
+/*    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    /*@Override
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -353,7 +353,7 @@ public class CadastroActivity extends AppCompatActivity  {
         }
     }
 
-    public void validaLoginFace(final AccessToken accessToken){
+/*    public void validaLoginFace(final AccessToken accessToken){
         firebaseAuth = FirebaseInstance.getFirebaseAuth();
         exibirProgress(true);
         AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
@@ -422,7 +422,7 @@ public class CadastroActivity extends AppCompatActivity  {
 
 
 
-    }
+    }*/
 
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

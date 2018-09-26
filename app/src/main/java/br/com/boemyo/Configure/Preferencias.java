@@ -156,9 +156,23 @@ public class Preferencias {
     }
 
     public void limparDados(){
-        editor.clear();
+        editor.remove(CHAVE_IDUSUARIO);
+        editor.remove(CHAVE_NOME);
+        editor.remove(CHAVE_EMAIL);
+        editor.remove(CHAVE_URLIMAGEM);
+        editor.remove(CHAVE_LAT_USUARIO);
+        editor.remove(CHAVE_LONG_USUARIO);
+        editor.remove(CHAVE_QR_CODE);
+        editor.remove(CHAVE_IDCOMANDA);
+        editor.remove(CHAVE_IDESTABELECIMENTO);
+        editor.remove(CHAVE_NUMMESA);
+        editor.remove(CHAVE_IDPAGAMENTO);
+        editor.remove(CHAVE_ABRIR_CATEGORIA);
+        editor.remove(CHAVE_VALOR_ADICIONAL);
+
         editor.commit();
     }
+
 
     public void removerPreferencias(){
         editor.remove(CHAVE_QR_CODE);

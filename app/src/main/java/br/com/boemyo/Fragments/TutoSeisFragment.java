@@ -16,7 +16,7 @@ import br.com.boemyo.R;
 public class TutoSeisFragment extends Fragment {
 
     private TextView tvPularTutoSeis;
-    private TextView tvProximoTutoSeis;
+    private TextView tvConcluidoTutoSeis;
 
 
     public TutoSeisFragment() {
@@ -31,7 +31,7 @@ public class TutoSeisFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_tuto_seis, container, false);
 
-        tvProximoTutoSeis = (TextView) view.findViewById(R.id.tv_proximo_tuto_seis);
+        tvConcluidoTutoSeis = (TextView) view.findViewById(R.id.tv_concluido_tuto_seis);
         tvPularTutoSeis = (TextView) view.findViewById(R.id.tv_pular_tuto_seis);
 
         tvPularTutoSeis.setOnClickListener(new View.OnClickListener() {
@@ -43,16 +43,11 @@ public class TutoSeisFragment extends Fragment {
             }
         });
 
-        tvProximoTutoSeis.setOnClickListener(new View.OnClickListener() {
+        tvConcluidoTutoSeis.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-                TutoSeteFragment tutoSeteFragment= new TutoSeteFragment();
-                fragmentTransaction.add(R.id.rl_tutorial, tutoSeteFragment);
-                fragmentTransaction.commit();
-                getActivity().getSupportFragmentManager().beginTransaction().remove(TutoSeisFragment.this).commit();
+                getActivity().finish();
             }
         });
 

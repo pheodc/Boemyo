@@ -20,9 +20,9 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-
             android:orientation="vertical">
-            <Button
+
+<!--            <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/bt_cadastro_facebook"
@@ -44,12 +44,12 @@
                 android:id="@+id/tv_or_cadastro"
                 android:text="OU"
                 android:textStyle="bold"
-                android:textSize="18sp"/>
+                android:textSize="18sp"/>-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/ll_nome"
-                android:layout_below="@id/tv_or_cadastro"
+                android:layout_marginTop="80dp"
                 android:orientation="horizontal">
                 <ImageView
                     android:layout_width="wrap_content"
@@ -171,10 +171,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="18dp"
                 android:layout_marginRight="18dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="30dp"
+                android:layout_below="@+id/ll_senha_confirma"
                 android:background="@drawable/ripple_efect_circle"
                 android:textColor="@color/colorText"
-                android:layout_below="@id/ll_senha_confirma"
                 android:id="@+id/bt_cadastro"
                 android:text="Cadastrar"
 
@@ -238,8 +238,11 @@
             </LinearLayout>
 
 
+
         </RelativeLayout>
     </ScrollView>
+
+
 
     <RelativeLayout
         android:layout_width="match_parent"
